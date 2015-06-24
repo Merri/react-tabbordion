@@ -18,12 +18,12 @@ Component has ARIA accessibility attributes and panel state is manipulated via b
 
 ```js
 var classNames = {
-  content: 'traditional-tabs-content',
-  panel: 'traditional-tabs-panel',
-  title: 'traditional-tabs-title'
+  content: 'tabs-content',
+  panel: 'tabs-panel',
+  title: 'tabs-title'
 }
 
-<Tabbordion className="traditional-tabs" classNames={classNames} initialIndex={0} name="traditional-tabs">
+<Tabbordion className="tabs" classNames={classNames} initialIndex={0} name="tabs">
   <Panel title={<span>My title</span>}>
     <h2>Sample</h2>
     <p>Content</p>
@@ -35,25 +35,25 @@ var classNames = {
 </Tabbordion>
 ```
 
-**OUTPUT**
+**OUTPUT:**
 ```html
-<ul role="tablist" class="traditional-tabs traditional-tabs--count-2">
-  <li aria-expanded="true" aria-selected="true" class="traditional-tabs-panel traditional-tabs-panel--checked traditional-tabs-panel--content">
-    <input aria-controls="panel-traditional-tabs-0" checked data-state="tabbordion" id="traditional-tabs-0" name="traditional-tabs" role="tab" value="0" type="radio" />
-    <label class="traditional-tabs-title traditional-tabs-title--checked traditional-tabs-title--content" id="label-traditional-tabs-0" for="traditional-tabs-0">
+<ul role="tablist" class="tabs tabs--count-2">
+  <li aria-expanded="true" aria-selected="true" class="tabs-panel tabs-panel--checked tabs-panel--content">
+    <input aria-controls="panel-tabs-0" checked data-state="tabbordion" id="tabs-0" name="tabs" role="tab" value="0" type="radio" />
+    <label class="tabs-title tabs-title--checked tabs-title--content" id="label-tabs-0" for="tabs-0">
       <span>My title</span>
     </label>
-    <div aria-labelledby="traditional-tabs-0" class="traditional-tabs-content traditional-tabs-content--checked traditional-tabs-content--content" id="panel-traditional-tabs-0" role="tabpanel">
+    <div aria-labelledby="tabs-0" class="tabs-content tabs-content--checked tabs-content--content" id="panel-tabs-0" role="tabpanel">
       <h2>Sample</h2>
       <p>Content</p>
     </div>
   </li>
-  <li aria-expanded="false" aria-selected="false" class="traditional-tabs-panel traditional-tabs-panel--content">
-    <input aria-controls="panel-traditional-tabs-1" data-state="tabbordion" id="traditional-tabs-1" name="traditional-tabs" role="tab" value="1" type="radio" />
-    <label class="traditional-tabs-title traditional-tabs-title--content" id="label-traditional-tabs-1" for="traditional-tabs-1">
+  <li aria-expanded="false" aria-selected="false" class="tabs-panel tabs-panel--content">
+    <input aria-controls="panel-tabs-1" data-state="tabbordion" id="tabs-1" name="tabs" role="tab" value="1" type="radio" />
+    <label class="tabs-title tabs-title--content" id="label-tabs-1" for="tabs-1">
       <span>Another title</span>
     </label>
-    <div aria-labelledby="traditional-tabs-1" class="traditional-tabs-content traditional-tabs-content--content" id="panel-traditional-tabs-1" role="tabpanel">
+    <div aria-labelledby="tabs-1" class="tabs-content tabs-content--content" id="panel-tabs-1" role="tabpanel">
       <h2>Another Sample</h2>
       <p>Some other kind of content</p>
     </div>

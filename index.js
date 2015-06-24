@@ -108,7 +108,7 @@
 
         render: function() {
             var elementProps = {
-                'aria-expanded': this.props.checked ? 'true' : 'false',
+                'aria-expanded': this.props.children ? (this.props.checked ? 'true' : 'false') : null,
                 'aria-selected': this.props.checked ? 'true' : 'false'
             }
 

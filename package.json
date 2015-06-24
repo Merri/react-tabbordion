@@ -1,0 +1,33 @@
+{
+  "name": "react-tabbordion",
+  "version": "0.0.1",
+  "description": "eact Tabs, Accordion, Panel, Checkbox list, Radio list Component",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/merri/react-tabbordion.git"
+  },
+  "author": "Vesa Piittinen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/merri/react-tabbordion/issues"
+  },
+  "homepage": "https://github.com/merri/react-tabbordion",
+  "keywords": [
+    "react",
+    "react-component",
+    "accordion",
+    "panel",
+    "tabs",
+    "single",
+    "multiple",
+    "a11y",
+    "bem"
+  ],
+  "dependencies": {
+    "react": "^0.13.3"
+  },
+  "devDependencies": {
+    "normalize.css": "^3.0.3"
+  }
+}

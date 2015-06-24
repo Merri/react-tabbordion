@@ -1,0 +1,8 @@
+[data-state="tabbordion"] {
+    clip: rect(0 0 0 0);
+    height: 1px;
+    position: absolute;
+    position: fixed;
+    width: 1px;
+    z-index: -1;
+}

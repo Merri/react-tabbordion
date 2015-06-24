@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>React Tabbordion Component: Traditional Tabs Demo</title>
+        <link href="../node_modules/normalize.css/normalize.css" rel="stylesheet" />
+        <link href="../style/index.css" rel="stylesheet" />
+        <style>
+/* Traditional Tabs Style Demo */
+html {
+    background: #333;
+    color: #DDD;
+}
+
+body {
+    background: #555;
+    margin: 2em auto;
+    padding: 2em 3em;
+    width: 40em;
+}
+
+.demo {
+    clear: both;
+    padding: 1em;
+}
+
+.traditional-tabs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+.traditional-tabs:after {
+    clear: both;
+    content: '';
+    display: table;
+}
+
+.traditional-tabs-panel {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+.traditional-tabs-title {
+    cursor: pointer;
+    display: inline-block;
+    padding: 0.5em;
+}
+
+.traditional-tabs-title--checked {
+    background: #DDD;
+    color: #333;
+}
+
+.traditional-tabs-content {
+    background: #DDD;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    color: #333;
+    display: none;
+    float: left;
+    overflow: hidden;
+    padding: 1em;
+    width: 100%;
+}
+
+.traditional-tabs-content--checked {
+    display: block;
+}
+        </style>
+    </head>
+    <body>
+        <h1>React Tabbordion: Traditional Tabs Demo</h1>
+        <div id="app"></div>
+        <script src="../node_modules/react/dist/react.js"></script>
+        <script src="../index.js"></script>
+        <script>
+var TraditionalTabsDemo = React.createClass({
+    displayName: 'TraditionalTabsDemo',
+    
+    render: function() {
+        return React.createElement(
+            Tabbordion,
+            {
+                className: 'traditional-tabs',
+                classNames: {
+                    content: 'traditional-tabs-content',
+                    panel: 'traditional-tabs-panel',
+                    title: 'traditional-tabs-title'
+                },
+                initialIndex: 0,
+                name: 'traditional-tabs'
+            },
+            React.createElement(
+                Panel,
+                { className: 'custom', title: React.DOM.span({}, 'Hello') },
+                React.DOM.span({}, 'This is content')
+            ),
+            React.createElement(
+                Panel,
+                { title: React.DOM.span({}, 'Hello Here Too!') },
+                React.DOM.span({}, 'This is some other content')
+            ),
+            React.createElement(
+                Panel,
+                { title: React.DOM.span({}, 'I have no content :(') }
+            ),
+            // non-Panel elements are allowed to be here
+            React.DOM.div(
+                { className: 'demo' },
+                React.DOM.small({}, 'Traditional tabs demo')
+            )
+        )
+    }
+})
+
+React.render(React.createElement(TraditionalTabsDemo), document.getElementById('app'))
+        </script>
+    </body>
+</html>

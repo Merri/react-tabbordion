@@ -245,8 +245,8 @@
 
         componentWillMount: function() {
             var checked = this.state.checked,
-                newLength = React.Children.count(this.props.children)
-            
+                newLength = this.getCountOfPanels(this.props)
+
             checked.length = newLength
             for (var index = 0; index < checked.length; index++)
                 checked[index] = !!checked[index]
@@ -260,12 +260,22 @@
 
         componentWillReceiveProps: function(nextProps) {
             var checked = this.state.checked,
-                newLength = React.Children.count(nextProps.children)
+                newLength = this.getCountOfPanels(nextProps)
             
             if (checked.length !== newLength) {
                 checked.length = newLength
                 this.setState({ checked: checked.map(Boolean) })
             }
+        },
+
+        getCountOfPanels: function(props) {
+            var panelCount = 0
+
+            React.Children.map(props.children, function(child) {
+                panelCount += child.type === Panel
+            })
+
+            return panelCount
         },
 
         setIndex: function(newIndex) {
@@ -293,8 +303,15 @@
             this.setState(newState)
         },
 
-        renderPanel: function(panel, index) {
-            return React.cloneElement(panel, {
+        renderedPanelCount: 0,
+        renderChild: function(child, index) {
+            // renderedPanelCount must be 0 before renderChild is called
+            if (child.type === Panel)
+                index = this.renderedPanelCount++
+            else
+                index = null
+
+            return React.cloneElement(child, {
                 checked: this.state.checked[index],
                 classModifiers: this.props.classModifiers,
                 classNames: this.props.classNames,
@@ -321,15 +338,17 @@
             if (elementProps.className) {
                 elementProps.className = classWithModifiers(
                     elementProps.className,
-                    ['count-' + React.Children.count(this.props.children)],
+                    ['count-' + this.getCountOfPanels(this.props)],
                     this.props.classSeparator
                 )
             }
 
+            this.renderedPanelCount = 0
+
             return React.createElement(
                 this.props.tag,
                 elementProps,
-                React.Children.map(this.props.children, this.renderPanel)
+                React.Children.map(this.props.children, this.renderChild)
             )
         }
     })

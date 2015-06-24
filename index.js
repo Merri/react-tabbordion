@@ -338,7 +338,12 @@
             if (elementProps.className) {
                 elementProps.className = classWithModifiers(
                     elementProps.className,
-                    ['count-' + this.getCountOfPanels(this.props)],
+                    [
+                        'checked-count-' + this.state.checked.reduce(function(count, checked) {
+                            return count + checked
+                        }, 0),
+                        'count-' + this.getCountOfPanels(this.props)
+                    ],
                     this.props.classSeparator
                 )
             }

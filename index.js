@@ -209,6 +209,7 @@
                 'toggle'        // only one panel may be open at one time (normal accordion behavior)
             ]),
             name: React.PropTypes.string,
+            onIndexChange: React.PropTypes.func,
             panelTag: React.PropTypes.string,
             tag: React.PropTypes.string
         },
@@ -231,6 +232,7 @@
                 initialIndex: null,
                 mode: 'single',
                 name: tabbordionUuid(),
+                onIndexChange: function(){},
                 panelTag: 'li',
                 tag: 'ul'
             }
@@ -301,6 +303,8 @@
             }
 
             this.setState(newState)
+
+            this.props.onIndexChange(newState.index, newState.checked)
         },
 
         renderedPanelCount: 0,

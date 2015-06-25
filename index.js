@@ -6,6 +6,22 @@ var tabbordionUuid = (function() {
     }
 })()
 
+var isFunction = (function() {
+    function typeOfFn(fn) {
+        return typeof fn === 'function'
+    }
+
+    function objectFn(fn) {
+        return Object.prototype.toString.call(fn) === '[object Function]'
+    }
+
+    // typeof is fastest way to check if a function but older IEs don't support it for that and Chrome had a bug
+    if (typeof typeOfFn === 'function' && typeof /./ !== 'function')
+        return typeOfFn
+    else
+        return objectFn
+})()
+
 function classWithModifiers(className, modifiers, separator) {
     var BEM, classNames = '', i
 
@@ -32,6 +48,7 @@ function classWithModifiers(className, modifiers, separator) {
 }
 
 (function(global) {'use strict'
+
     var PANEL_PROPTYPES
 
     var Panel = React.createClass({
@@ -208,7 +225,9 @@ function classWithModifiers(className, modifiers, separator) {
                 'toggle'        // only one panel may be open at one time (normal accordion behavior)
             ]),
             name: React.PropTypes.string,
-            onIndexChange: React.PropTypes.func,
+            onAfterChange: React.PropTypes.func,
+            onBeforeChange: React.PropTypes.func,
+            onChange: React.PropTypes.func,
             panelTag: React.PropTypes.string,
             tag: React.PropTypes.string
         },
@@ -231,7 +250,6 @@ function classWithModifiers(className, modifiers, separator) {
                 initialIndex: null,
                 mode: 'single',
                 name: '',
-                onIndexChange: function(){},
                 panelTag: 'li',
                 tag: 'ul'
             }
@@ -302,9 +320,33 @@ function classWithModifiers(className, modifiers, separator) {
                     break;
             }
 
-            this.setState(newState)
+            if (isFunction(this.props.onBeforeChange)) {
+                var stateOverride = this.props.onBeforeChange(
+                    { checked: newState.checked.slice(0), index: newState.index },
+                    { checked: this.state.checked.slice(0), index: this.state.index }
+                )
 
-            this.props.onIndexChange(newState.index, newState.checked)
+                if (typeof stateOverride === 'object' && Array.isArray(stateOverride.checked)
+                    && stateOverride.checked.length === newState.checked.length && stateOverride.hasOwnProperty('index')
+                ) {
+                    newState = {
+                        checked: stateOverride.checked.map(Boolean),
+                        index: stateOverride.index != null ? ~~stateOverride.index : null
+                    }
+                }
+            }
+
+            if (isFunction(this.props.onAfterChange)) {
+                this.setState(newState, function() {
+                    this.props.onAfterChange({ checked: newState.checked.slice(0), index: newState.index })
+                }.bind(this))
+            } else {
+                this.setState(newState)
+            }
+
+            if (isFunction(this.props.onChange)) {
+                this.props.onChange({ checked: newState.checked.slice(0), index: newState.index })
+            }
         },
 
         renderedPanelCount: 0,

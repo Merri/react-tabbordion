@@ -3,6 +3,11 @@
     margin: 0;
     padding: 0;
     position: relative;
+    white-space: nowrap;
+}
+
+.traditional-tabs > :not(.traditional-tabs-panel) {
+    white-space: normal;
 }
 
 .traditional-tabs:after {
@@ -18,26 +23,48 @@
 }
 
 .traditional-tabs-title {
+    background: #EBEBEB;
+    color: #363636;
     cursor: pointer;
     display: inline-block;
-    padding: 0.5em;
+    font-weight: bold;
+    padding: 1em;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    white-space: normal;
+}
+
+.traditional-tabs-title--between,
+.traditional-tabs-title--last {
+    border-left: 1px solid #D2D2D2;
+}
+
+.traditional-tabs-title--first {
+    border-top-left-radius: 3px;
+}
+
+.traditional-tabs-title--last {
+    border-top-right-radius: 3px;
 }
 
 .traditional-tabs-title--checked {
-    background: #DDD;
-    color: #333;
+    background: #FAFAFA;
 }
 
 .traditional-tabs-content {
-    background: #DDD;
+    background: #FAFAFA;
+    border-radius: 0 3px 3px 3px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    color: #333;
+    color: #363636;
     display: none;
     float: left;
     overflow: hidden;
-    padding: 1em;
+    padding: 0 1em;
+    white-space: normal;
     width: 100%;
 }
 

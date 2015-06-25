@@ -11,6 +11,12 @@
     position: relative;
 }
 
+.accordion-panel:after {
+    clear: both;
+    content: '';
+    display: table;
+}
+
 .accordion-panel--between,
 .accordion-panel--last {
     border-top: 1px solid #D2D2D2;
@@ -72,17 +78,38 @@
 
 .accordion-content {
     background: #FAFAFA;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
     color: #363636;
-    max-height: 0;
+    display: none;
+    float: left;
     overflow: hidden;
     padding: 0 1em;
-    -webkit-transition: max-height 0.375s ease-out, padding 0.375s ease-in-out;
-    transition: max-height 0.375s ease-out, padding 0.375s ease-in-out;
+    width: 100%;
+}
+
+.accordion-content--css-only-animation {
+    display: block;
+    margin: -50% 0;
+    opacity: 0;
+    pointer-events: none;
+    -webkit-transform: translateY(50%);
+    transform: translateY(50%);
+    -webkit-transition: margin 0.375s ease-in-out, opacity 0.375s ease-in-ou, -webkit-transform 0.375s ease-in-out;
+    transition: margin 0.375s ease-in-out, opacity 0.375s ease-in-out, transform 0.375s ease-in-out;
 }
 
 .accordion-content--checked {
-    max-height: 2000px;
-    padding: 1em;
-    -webkit-transition: max-height 0.375s ease-in, padding 0.375s ease-in-out;
-    transition: max-height 0.375s ease-in, padding 0.375s ease-in-out;
+    display: block;
+}
+
+.accordion-content--checked.accordion-content--css-only-animation {
+    margin: 0;
+    opacity: 1;
+    pointer-events: auto;
+    -webkit-transform: translateY(0%);
+    transform: translateY(0%);
+    -webkit-transition: margin 0.375s ease-in-out, opacity 0.375s ease-in-out, -webkit-transform 0.375s ease-in-out;
+    transition: margin 0.375s ease-in-out, opacity 0.375s ease-in-out, transform 0.375s ease-in-out;
 }

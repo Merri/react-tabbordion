@@ -47,6 +47,7 @@ var Demo = React.createClass({
             index: INITIAL,
             demoProps: [
                 {
+                    demo: 'Tabs',
                     className: 'traditional-tabs',
                     classNames: {
                         content: 'traditional-tabs-content',
@@ -56,9 +57,21 @@ var Demo = React.createClass({
                     initialIndex: INITIAL
                 },
                 {
+                    demo: 'Accordion',
                     className: 'accordion',
                     classNames: {
                         content: 'accordion-content',
+                        panel: 'accordion-panel',
+                        title: 'accordion-title'
+                    },
+                    initialIndex: INITIAL,
+                    mode: 'toggle'
+                },
+                {
+                    demo: 'Accordion + CSS-only animation',
+                    className: 'accordion',
+                    classNames: {
+                        content: 'accordion-content accordion-content--css-only-animation',
                         panel: 'accordion-panel',
                         title: 'accordion-title'
                     },
@@ -89,7 +102,7 @@ var Demo = React.createClass({
                     this.state.demoProps.map(function(props, index) {
                         return React.createElement(
                             Panel,
-                            { key: 'demo-' + index, title: React.DOM.span({}, props.className) }
+                            { key: 'demo-' + index, title: React.DOM.span({}, props.demo) }
                         )
                     })
                 )
@@ -119,7 +132,8 @@ var Demo = React.createClass({
                     // non-Panel elements are allowed to be here
                     React.DOM.div(
                         { className: 'demo' },
-                        React.DOM.small({}, 'This is just a normal div here')
+                        React.DOM.small({}, 'This is just a normal div here together with the panels.' + 
+                            ' If you don\'t see what is awesome: doesn\'t break those nice border-radius styles!')
                     )
                 )
             )

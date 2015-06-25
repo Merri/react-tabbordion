@@ -59,7 +59,13 @@ function classWithModifiers(className, modifiers, separator) {
             classModifiers: React.PropTypes.shape({
                 checked: React.PropTypes.string,
                 content: React.PropTypes.string,
-                disabled: React.PropTypes.string
+                disabled: React.PropTypes.string,
+                enabled: React.PropTypes.string,
+                noContent: React.PropTypes.string,
+                unchecked: React.PropTypes.string,
+                visibleBetween: React.PropTypes.string,
+                visibleFirst: React.PropTypes.string,
+                visibleLast: React.PropTypes.string
             }),
             classNames: React.PropTypes.shape({
                 content: React.PropTypes.string,
@@ -84,7 +90,13 @@ function classWithModifiers(className, modifiers, separator) {
                 classModifiers: {
                     checked: 'checked',
                     content: 'content',
-                    disabled: 'disabled'
+                    disabled: 'disabled',
+                    enabled: 'enabled',
+                    noContent: 'no-content',
+                    unchecked: 'unchecked',
+                    visibleBetween: 'between',
+                    visibleFirst: 'first',
+                    visibleLast: 'last'
                 },
                 classNames: {
                     content: 'panel__content',
@@ -144,10 +156,21 @@ function classWithModifiers(className, modifiers, separator) {
                 id = this.props.name + '-' + this.props.index,
                 value = '' + this.props.index
 
-            var modifiers = []
+            var classModifiers = this.props.classModifiers,
+                modifiers = []
 
-            if (this.props.checked) modifiers.push(this.props.classModifiers.checked)
-            if (this.props.disabled) modifiers.push(this.props.classModifiers.disabled)
+            modifiers.push(this.props.checked ? classModifiers.checked : classModifiers.unchecked)
+            modifiers.push(this.props.disabled ? classModifiers.disabled : classModifiers.enabled)
+
+            if (this.props.isBetween) {
+                modifiers.push(classModifiers.visibleBetween)
+            } else {
+                if (this.props.isFirst)
+                    modifiers.push(classModifiers.visibleFirst)
+
+                if (this.props.isLast)
+                    modifiers.push(classModifiers.visibleLast)
+            }
 
             if (this.props.children) {
                 var children = React.createElement(
@@ -160,7 +183,9 @@ function classWithModifiers(className, modifiers, separator) {
                     },
                     React.Children.map(this.props.children, this.renderChild)
                 )
-                modifiers.push(this.props.classModifiers.content)
+                modifiers.push(classModifiers.content)
+            } else {
+                modifiers.push(classModifiers.noContent)
             }
 
             if (elementProps.className)
@@ -208,7 +233,13 @@ function classWithModifiers(className, modifiers, separator) {
             classModifiers: React.PropTypes.shape({
                 checked: React.PropTypes.string,
                 content: React.PropTypes.string,
-                disabled: React.PropTypes.string
+                disabled: React.PropTypes.string,
+                enabled: React.PropTypes.string,
+                noContent: React.PropTypes.string,
+                unchecked: React.PropTypes.string,
+                visibleBetween: React.PropTypes.string,
+                visibleFirst: React.PropTypes.string,
+                visibleLast: React.PropTypes.string
             }),
             classNames: React.PropTypes.shape({
                 content: React.PropTypes.string,
@@ -237,7 +268,13 @@ function classWithModifiers(className, modifiers, separator) {
                 classModifiers: {
                     checked: 'checked',
                     content: 'content',
-                    disabled: 'disabled'
+                    disabled: 'disabled',
+                    enabled: 'enabled',
+                    noContent: 'no-content',
+                    unchecked: 'unchecked',
+                    visibleBetween: 'between',
+                    visibleFirst: 'first',
+                    visibleLast: 'last'
                 },
                 classNames: {
                     content: 'panel__content',
@@ -265,7 +302,7 @@ function classWithModifiers(className, modifiers, separator) {
 
         componentWillMount: function() {
             var checked = this.state.checked,
-                newLength = this.getCountOfPanels(this.props)
+                newLength = this.getCountsOfPanels(this.props).count
 
             checked.length = newLength
             for (var index = 0; index < checked.length; index++)
@@ -280,7 +317,7 @@ function classWithModifiers(className, modifiers, separator) {
 
         componentWillReceiveProps: function(nextProps) {
             var checked = this.state.checked,
-                newLength = this.getCountOfPanels(nextProps)
+                newLength = this.getCountsOfPanels(nextProps).count
             
             if (checked.length !== newLength) {
                 checked.length = newLength
@@ -288,14 +325,23 @@ function classWithModifiers(className, modifiers, separator) {
             }
         },
 
-        getCountOfPanels: function(props) {
-            var panelCount = 0
+        getCountsOfPanels: function(props) {
+            var count = 0,
+                visibleCount = 0
 
             React.Children.map(props.children, function(child) {
-                panelCount += child.type === Panel
+                if (child.type === Panel) {
+                    count ++
+
+                    if (child._store.props.visible)
+                        visibleCount++
+                }
             })
 
-            return panelCount
+            return {
+                count: count,
+                visibleCount: visibleCount
+            }
         },
 
         setIndex: function(newIndex) {
@@ -350,12 +396,29 @@ function classWithModifiers(className, modifiers, separator) {
         },
 
         renderedPanelCount: 0,
+        renderedPanelCounter: 0,
+        renderedVisibleCount: 0,
+        renderedVisibleCounter: 0,
         renderChild: function(child, index) {
-            // renderedPanelCount must be 0 before renderChild is called
-            if (child.type === Panel)
-                index = this.renderedPanelCount++
-            else
+            var isBetween = false, isFirst = false, isLast = false
+
+            if (child.type === Panel) {
+                index = this.renderedPanelCounter++
+
+                if (child._store.props.visible) {
+                    this.renderedVisibleCounter++
+
+                    if (index === 0)
+                        isFirst = true
+
+                    if (this.renderedVisibleCount === this.renderedVisibleCounter)
+                        isLast = true
+
+                    isBetween = !(isFirst || isLast)
+                }
+            } else {
                 index = null
+            }
 
             return React.cloneElement(child, {
                 checked: this.state.checked[index],
@@ -364,6 +427,9 @@ function classWithModifiers(className, modifiers, separator) {
                 classSeparator: this.props.classSeparator,
                 contentTag: this.props.contentTag,
                 index: index,
+                isBetween: isBetween,
+                isFirst: isFirst,
+                isLast: isLast,
                 name: this.props.name.length ? this.props.name : this.state.name,
                 selectedIndex: this.state.index,
                 setIndex: this.setIndex,
@@ -381,6 +447,13 @@ function classWithModifiers(className, modifiers, separator) {
                 }
             }
 
+            var panelCounts = this.getCountsOfPanels(this.props)
+
+            this.renderedPanelCount = panelCounts.count
+            this.renderedPanelCounter = 0
+            this.renderedVisibleCount = panelCounts.visibleCount
+            this.renderedVisibleCounter = 0
+
             if (elementProps.className) {
                 elementProps.className = classWithModifiers(
                     elementProps.className,
@@ -388,13 +461,11 @@ function classWithModifiers(className, modifiers, separator) {
                         'checked-count-' + this.state.checked.reduce(function(count, checked) {
                             return count + checked
                         }, 0),
-                        'count-' + this.getCountOfPanels(this.props)
+                        'count-' + this.renderedPanelCount
                     ],
                     this.props.classSeparator
                 )
             }
-
-            this.renderedPanelCount = 0
 
             return React.createElement(
                 this.props.tag,

@@ -4,9 +4,9 @@
         <meta charset="UTF-8" />
         <title>React Tabbordion Component: Traditional Tabs Demo</title>
         <link href="../node_modules/normalize.css/normalize.css" rel="stylesheet" />
+        <link href="./traditional-tabs.css" rel="stylesheet" />
         <link href="../style/index.css" rel="stylesheet" />
         <style>
-/* Traditional Tabs Style Demo */
 html {
     background: #333;
     color: #DDD;
@@ -24,51 +24,72 @@ body {
     padding: 1em;
 }
 
-.traditional-tabs {
+.option-list {
     list-style: none;
+    margin: 1em 0;
+    padding: 0;
+}
+
+.option-item {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.option-label {
+    background: white;
+    color: #333;
+    cursor: pointer;
+    display: block;
+    padding: 0.5em;
+}
+
+.option-label--checked {
+    background: black;
+    color: white;
+}
+
+.accordion {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.accordion-panel {
+    display: block;
     margin: 0;
     padding: 0;
     position: relative;
 }
 
-.traditional-tabs:after {
-    clear: both;
-    content: '';
-    display: table;
-}
-
-.traditional-tabs-panel {
-    display: inline;
-    margin: 0;
-    padding: 0;
-}
-
-.traditional-tabs-title {
+.accordion-title {
+    background: white;
+    color: #333;
     cursor: pointer;
-    display: inline-block;
+    display: block;
     padding: 0.5em;
 }
 
-.traditional-tabs-title--checked {
-    background: #DDD;
-    color: #333;
+.accordion-title--checked {
+    background: black;
+    color: white;
 }
 
-.traditional-tabs-content {
-    background: #DDD;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    color: #333;
-    display: none;
-    float: left;
+.accordion-content {
+    background: black;
+    border-bottom: 2px solid #888;
+    color: white;
+    max-height: 0;
     overflow: hidden;
-    padding: 1em;
-    width: 100%;
+    padding: 0 1em;
+    -webkit-transition: max-height 0.375s ease-out, padding 0.375s ease-in-out;
+    transition: max-height 0.375s ease-out, padding 0.375s ease-in-out;
 }
 
-.traditional-tabs-content--checked {
-    display: block;
+.accordion-content--checked {
+    max-height: 2000px;
+    padding: 1em;
+    -webkit-transition: max-height 0.375s ease-in, padding 0.375s ease-in-out;
+    transition: max-height 0.375s ease-in, padding 0.375s ease-in-out;
 }
         </style>
     </head>
@@ -78,46 +99,101 @@ body {
         <script src="../node_modules/react/dist/react.js"></script>
         <script src="../index.js"></script>
         <script>
-var TraditionalTabsDemo = React.createClass({
-    displayName: 'TraditionalTabsDemo',
+var Demo = React.createClass({
+    displayName: 'Demo',
     
-    render: function() {
-        return React.createElement(
-            Tabbordion,
-            {
-                className: 'traditional-tabs',
-                classNames: {
-                    content: 'traditional-tabs-content',
-                    panel: 'traditional-tabs-panel',
-                    title: 'traditional-tabs-title'
+    getInitialState: function() {
+        var INITIAL = 0
+
+        return {
+            demoProp: INITIAL,
+            demoProps: [
+                {
+                    className: 'traditional-tabs',
+                    classNames: {
+                        content: 'traditional-tabs-content',
+                        panel: 'traditional-tabs-panel',
+                        title: 'traditional-tabs-title'
+                    },
+                    initialIndex: INITIAL
                 },
-                initialIndex: 0,
-                name: 'traditional-tabs'
-            },
-            React.createElement(
-                Panel,
-                { className: 'custom', title: React.DOM.span({}, 'Hello') },
-                React.DOM.span({}, 'This is content')
+                {
+                    className: 'accordion',
+                    classNames: {
+                        content: 'accordion-content',
+                        panel: 'accordion-panel',
+                        title: 'accordion-title'
+                    },
+                    initialIndex: INITIAL,
+                    mode: 'toggle'
+                }
+            ]
+        }
+    },
+
+    handleIndexChange: function(index, checked) {
+        this.setState({ demoProp: index })
+    },
+
+    render: function() {
+        return React.DOM.article(
+            {},
+            React.DOM.header(
+                {},
+                React.DOM.p({}, 'Choose display style and mode'),
+                React.createElement(
+                    Tabbordion,
+                    {
+                        className: 'option-list',
+                        classNames: {
+                            panel: 'option-item',
+                            title: 'option-label'
+                        },
+                        initialIndex: this.state.demoProp,
+                        onIndexChange: this.handleIndexChange
+                    },
+                    this.state.demoProps.map(function(props, index) {
+                        return React.createElement(
+                            Panel,
+                            { key: 'demo-' + index, title: React.DOM.span({}, props.className) }
+                        )
+                    })
+                )
             ),
-            React.createElement(
-                Panel,
-                { title: React.DOM.span({}, 'Hello Here Too!') },
-                React.DOM.span({}, 'This is some other content')
-            ),
-            React.createElement(
-                Panel,
-                { title: React.DOM.span({}, 'I have no content :(') }
-            ),
-            // non-Panel elements are allowed to be here
-            React.DOM.div(
-                { className: 'demo' },
-                React.DOM.small({}, 'Traditional tabs demo')
+            React.DOM.section(
+                {},
+                React.DOM.p({}, 'The component below remains the same. It just receives new props.'),
+                React.createElement(
+                    Tabbordion,
+                    this.state.demoProps[this.state.demoProp],
+                    React.createElement(
+                        Panel,
+                        { title: React.DOM.span({}, 'Panel #1') },
+                        React.DOM.h2({}, 'Content Be Here'),
+                        React.DOM.p({}, 'Unless we have nothing.')
+                    ),
+                    React.createElement(
+                        Panel,
+                        { title: React.DOM.span({}, 'Panel #2') },
+                        React.DOM.h2({}, 'More Content Be Here'),
+                        React.DOM.p({}, 'But we have something.')
+                    ),
+                    React.createElement(
+                        Panel,
+                        { title: React.DOM.span({}, 'Contentless Panel') }
+                    ),
+                    // non-Panel elements are allowed to be here
+                    React.DOM.div(
+                        { className: 'demo' },
+                        React.DOM.small({}, 'This is just a normal div here')
+                    )
+                )
             )
         )
     }
 })
 
-React.render(React.createElement(TraditionalTabsDemo), document.getElementById('app'))
+React.render(React.createElement(Demo), document.getElementById('app'))
         </script>
     </body>
 </html>

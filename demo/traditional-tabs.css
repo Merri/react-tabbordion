@@ -1,0 +1,46 @@
+.traditional-tabs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+.traditional-tabs:after {
+    clear: both;
+    content: '';
+    display: table;
+}
+
+.traditional-tabs-panel {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+.traditional-tabs-title {
+    cursor: pointer;
+    display: inline-block;
+    padding: 0.5em;
+}
+
+.traditional-tabs-title--checked {
+    background: #DDD;
+    color: #333;
+}
+
+.traditional-tabs-content {
+    background: #DDD;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    color: #333;
+    display: none;
+    float: left;
+    overflow: hidden;
+    padding: 1em;
+    width: 100%;
+}
+
+.traditional-tabs-content--checked {
+    display: block;
+}

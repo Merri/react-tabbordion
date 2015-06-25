@@ -395,49 +395,6 @@ function classWithModifiers(className, modifiers, separator) {
             }
         },
 
-        renderedPanelCount: 0,
-        renderedPanelCounter: 0,
-        renderedVisibleCount: 0,
-        renderedVisibleCounter: 0,
-        renderChild: function(child, index) {
-            var isBetween = false, isFirst = false, isLast = false
-
-            if (child.type === Panel) {
-                index = this.renderedPanelCounter++
-
-                if (child._store.props.visible) {
-                    this.renderedVisibleCounter++
-
-                    if (this.renderedVisibleCounter === 1)
-                        isFirst = true
-
-                    if (this.renderedVisibleCount === this.renderedVisibleCounter)
-                        isLast = true
-
-                    isBetween = !(isFirst || isLast)
-                }
-            } else {
-                index = null
-            }
-
-            return React.cloneElement(child, {
-                checked: this.state.checked[index],
-                classModifiers: this.props.classModifiers,
-                classNames: this.props.classNames,
-                classSeparator: this.props.classSeparator,
-                contentTag: this.props.contentTag,
-                index: index,
-                isBetween: isBetween,
-                isFirst: isFirst,
-                isLast: isLast,
-                name: this.props.name.length ? this.props.name : this.state.name,
-                selectedIndex: this.state.index,
-                setIndex: this.setIndex,
-                tag: this.props.panelTag,
-                type: this.props.mode === 'multiple' ? 'checkbox' : 'radio'
-            })
-        },
-
         render: function() {
             var elementProps = { role: 'tablist' }
 
@@ -449,11 +406,6 @@ function classWithModifiers(className, modifiers, separator) {
 
             var panelCounts = this.getCountsOfPanels(this.props)
 
-            this.renderedPanelCount = panelCounts.count
-            this.renderedPanelCounter = 0
-            this.renderedVisibleCount = panelCounts.visibleCount
-            this.renderedVisibleCounter = 0
-
             if (elementProps.className) {
                 elementProps.className = classWithModifiers(
                     elementProps.className,
@@ -461,7 +413,7 @@ function classWithModifiers(className, modifiers, separator) {
                         'checked-count-' + this.state.checked.reduce(function(count, checked) {
                             return count + checked
                         }, 0),
-                        'count-' + this.renderedPanelCount
+                        'count-' + panelCounts.count
                     ],
                     this.props.classSeparator
                 )
@@ -470,7 +422,49 @@ function classWithModifiers(className, modifiers, separator) {
             return React.createElement(
                 this.props.tag,
                 elementProps,
-                React.Children.map(this.props.children, this.renderChild)
+                (function(props, state, setIndex, visibleCount) {
+                    var panelCounter = 0,
+                        visibleCounter = 0
+
+                    return React.Children.map(props.children, function(child, index) {
+                        var isBetween = false, isFirst = false, isLast = false
+
+                        if (child.type === Panel) {
+                            index = panelCounter++
+
+                            if (child._store.props.visible) {
+                                visibleCounter++
+
+                                if (visibleCounter === 1)
+                                    isFirst = true
+
+                                if (visibleCounter === visibleCount)
+                                    isLast = true
+
+                                isBetween = !(isFirst || isLast)
+                            }
+                        } else {
+                            index = null
+                        }
+
+                        return React.cloneElement(child, {
+                            checked: state.checked[index],
+                            classModifiers: props.classModifiers,
+                            classNames: props.classNames,
+                            classSeparator: props.classSeparator,
+                            contentTag: props.contentTag,
+                            index: index,
+                            isBetween: isBetween,
+                            isFirst: isFirst,
+                            isLast: isLast,
+                            name: props.name.length ? props.name : state.name,
+                            selectedIndex: state.index,
+                            setIndex: setIndex,
+                            tag: props.panelTag,
+                            type: props.mode === 'multiple' ? 'checkbox' : 'radio'
+                        })
+                    })
+                })(this.props, this.state, this.setIndex, panelCounts.visibleCount)
             )
         }
     })

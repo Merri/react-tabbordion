@@ -2,10 +2,11 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <title>React Tabbordion Component: Traditional Tabs Demo</title>
+        <title>React Tabbordion Component Demo</title>
         <link href="../node_modules/normalize.css/normalize.css" rel="stylesheet" />
-        <link href="./traditional-tabs.css" rel="stylesheet" />
         <link href="../style/index.css" rel="stylesheet" />
+        <link href="./traditional-tabs.css" rel="stylesheet" />
+        <link href="./accordion.css" rel="stylesheet" />
         <style>
 html {
     background: #333;
@@ -47,55 +48,15 @@ body {
     background: black;
     color: white;
 }
-
-.accordion {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.accordion-panel {
-    display: block;
-    margin: 0;
-    padding: 0;
-    position: relative;
-}
-
-.accordion-title {
-    background: white;
-    color: #333;
-    cursor: pointer;
-    display: block;
-    padding: 0.5em;
-}
-
-.accordion-title--checked {
-    background: black;
-    color: white;
-}
-
-.accordion-content {
-    background: black;
-    border-bottom: 2px solid #888;
-    color: white;
-    max-height: 0;
-    overflow: hidden;
-    padding: 0 1em;
-    -webkit-transition: max-height 0.375s ease-out, padding 0.375s ease-in-out;
-    transition: max-height 0.375s ease-out, padding 0.375s ease-in-out;
-}
-
-.accordion-content--checked {
-    max-height: 2000px;
-    padding: 1em;
-    -webkit-transition: max-height 0.375s ease-in, padding 0.375s ease-in-out;
-    transition: max-height 0.375s ease-in, padding 0.375s ease-in-out;
-}
         </style>
     </head>
     <body>
-        <h1>React Tabbordion: Traditional Tabs Demo</h1>
+        <h1>React Tabbordion Demo</h1>
         <div id="app"></div>
+        <hr />
+        <footer>
+            <strong><small>Disclaimer: these styles are NOT final... if you're wondering about that</small></strong>
+        </footer>
         <script src="../node_modules/react/dist/react.js"></script>
         <script src="../index.js"></script>
         <script>

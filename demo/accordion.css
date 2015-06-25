@@ -1,0 +1,43 @@
+.accordion {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.accordion-panel {
+    display: block;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+.accordion-title {
+    background: white;
+    color: #333;
+    cursor: pointer;
+    display: block;
+    padding: 0.5em;
+}
+
+.accordion-title--checked {
+    background: black;
+    color: white;
+}
+
+.accordion-content {
+    background: black;
+    border-bottom: 2px solid #888;
+    color: white;
+    max-height: 0;
+    overflow: hidden;
+    padding: 0 1em;
+    -webkit-transition: max-height 0.375s ease-out, padding 0.375s ease-in-out;
+    transition: max-height 0.375s ease-out, padding 0.375s ease-in-out;
+}
+
+.accordion-content--checked {
+    max-height: 2000px;
+    padding: 1em;
+    -webkit-transition: max-height 0.375s ease-in, padding 0.375s ease-in-out;
+    transition: max-height 0.375s ease-in, padding 0.375s ease-in-out;
+}

@@ -49,12 +49,10 @@ function classWithModifiers(className, modifiers, separator) {
 
 (function(global) {'use strict'
 
-    var PANEL_PROPTYPES
-
     var Panel = React.createClass({
         displayName: 'Panel',
 
-        propTypes: PANEL_PROPTYPES = {
+        propTypes: {
             checked: React.PropTypes.bool,
             classModifiers: React.PropTypes.shape({
                 checked: React.PropTypes.string,
@@ -77,7 +75,12 @@ function classWithModifiers(className, modifiers, separator) {
             contentTag: React.PropTypes.string,
             disabled: React.PropTypes.bool,
             index: React.PropTypes.number,
+            isBetween: React.PropTypes.bool,
+            isFirst: React.PropTypes.bool,
+            isLast: React.PropTypes.bool,
             name: React.PropTypes.string,
+            selectedChecked: React.PropTypes.array,
+            selectedIndex: React.PropTypes.number,
             setIndex: React.PropTypes.func,
             tag: React.PropTypes.string,
             title: React.PropTypes.node.isRequired,
@@ -129,6 +132,7 @@ function classWithModifiers(className, modifiers, separator) {
                 isPanelVisible: this.props.visible,
                 panelIndex: this.props.index,
                 panelName: this.props.name,
+                panelSelectedChecked: this.props.selectedChecked,
                 panelSelectedIndex: this.props.selectedIndex,
                 setPanelIndex: this.props.setIndex
             })
@@ -141,7 +145,7 @@ function classWithModifiers(className, modifiers, separator) {
             }
 
             for (var key in this.props) {
-                if (this.props.hasOwnProperty(key) && !PANEL_PROPTYPES.hasOwnProperty(key)) {
+                if (this.props.hasOwnProperty(key) && !Panel.propTypes.hasOwnProperty(key)) {
                     elementProps[key] = this.props[key]
                 }
             }
@@ -224,12 +228,10 @@ function classWithModifiers(className, modifiers, separator) {
         }
     })
 
-    var TABBORDION_PROPTYPES
-
     var Tabbordion = React.createClass({
         displayName: 'Tabbordion',
 
-        propTypes: TABBORDION_PROPTYPES = {
+        propTypes: {
             classModifiers: React.PropTypes.shape({
                 checked: React.PropTypes.string,
                 content: React.PropTypes.string,
@@ -399,7 +401,7 @@ function classWithModifiers(className, modifiers, separator) {
             var elementProps = { role: 'tablist' }
 
             for (var key in this.props) {
-                if (this.props.hasOwnProperty(key) && !TABBORDION_PROPTYPES.hasOwnProperty(key)) {
+                if (this.props.hasOwnProperty(key) && !Tabbordion.propTypes.hasOwnProperty(key)) {
                     elementProps[key] = this.props[key]
                 }
             }
@@ -458,6 +460,7 @@ function classWithModifiers(className, modifiers, separator) {
                             isFirst: isFirst,
                             isLast: isLast,
                             name: props.name.length ? props.name : state.name,
+                            selectedChecked: state.checked.slice(0),
                             selectedIndex: state.index,
                             setIndex: setIndex,
                             tag: props.panelTag,

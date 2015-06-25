@@ -89,6 +89,7 @@ Output can be fully customized using `classModifiers`, `classNames` and `classSe
 `classSeparator` defaults to `--` and it is added between the block element and modifier parts of the class.
 
 `classNames` is an object with four customizable panel elements with following defaults:
+
 1. `panel` = 'panel' > `.panel` (container element)
 2. `state` = 'panel__state' > `.panel__state` (input element)
 3. `title` = 'panel__title' > `.panel__title` (label element)

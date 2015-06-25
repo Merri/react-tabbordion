@@ -134,7 +134,6 @@
             if (this.props.disabled) modifiers.push(this.props.classModifiers.disabled)
 
             if (this.props.children) {
-                modifiers.push(this.props.classModifiers.content)
                 var children = React.createElement(
                     this.props.contentTag,
                     {
@@ -145,6 +144,7 @@
                     },
                     React.Children.map(this.props.children, this.renderChild)
                 )
+                modifiers.push(this.props.classModifiers.content)
             }
 
             if (elementProps.className)

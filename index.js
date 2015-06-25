@@ -1,38 +1,37 @@
-(function(global) {'use strict'
+var tabbordionUuid = (function() {
+    var index = 0
 
-    var tabbordionUuid = (function() {
-        var index = 0
+    return function() {
+        return 'tabbordion-' + index++
+    }
+})()
 
-        return function() {
-            return 'tabbordion-' + index++
-        }
-    })()
+function classWithModifiers(className, modifiers, separator) {
+    var BEM, classNames = '', i
 
-    function classWithModifiers(className, modifiers, separator) {
-        var BEM, classNames = '', i
+    if (className == null) return null
+    if (typeof className !== 'string') className = String(className)
+    if (!Array.isArray(modifiers) || modifiers.length === 0) return className
+    if (typeof separator !== 'string') separator = '--'
 
-        if (className == null) return null
-        if (typeof className !== 'string') className = String(className)
-        if (!Array.isArray(modifiers) || modifiers.length === 0) return className
-        if (typeof separator !== 'string') separator = '--'
+    i = className.indexOf(' ')
 
-        i = className.indexOf(' ')
-
-        if (i >= 0) {
-            classNames = className.slice(i)
-            className = className.slice(0, i)
-        }
-
-        BEM = className
-
-        for (i = 0; i < modifiers.length; i++) {
-            if ((typeof modifiers[i] === 'string') && (modifiers[i].length > 0))
-                BEM += ' ' + className + separator + modifiers[i]
-        }
-
-        return BEM + classNames
+    if (i >= 0) {
+        classNames = className.slice(i)
+        className = className.slice(0, i)
     }
 
+    BEM = className
+
+    for (i = 0; i < modifiers.length; i++) {
+        if ((typeof modifiers[i] === 'string') && (modifiers[i].length > 0))
+            BEM += ' ' + className + separator + modifiers[i]
+    }
+
+    return BEM + classNames
+}
+
+(function(global) {'use strict'
     var PANEL_PROPTYPES
 
     var Panel = React.createClass({
@@ -231,7 +230,7 @@
                 contentTag: 'div',
                 initialIndex: null,
                 mode: 'single',
-                name: tabbordionUuid(),
+                name: '',
                 onIndexChange: function(){},
                 panelTag: 'li',
                 tag: 'ul'
@@ -241,7 +240,8 @@
         getInitialState: function() {
             return {
                 checked: [],
-                index: this.props.initialIndex || null
+                index: this.props.initialIndex || null,
+                name: tabbordionUuid()
             }
         },
 
@@ -322,7 +322,7 @@
                 classSeparator: this.props.classSeparator,
                 contentTag: this.props.contentTag,
                 index: index,
-                name: this.props.name,
+                name: this.props.name.length ? this.props.name : this.state.name,
                 selectedIndex: this.state.index,
                 setIndex: this.setIndex,
                 tag: this.props.panelTag,

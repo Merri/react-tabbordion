@@ -4,49 +4,26 @@
         <meta charset="UTF-8" />
         <title>React Tabbordion Component Demo</title>
         <link href="../node_modules/normalize.css/normalize.css" rel="stylesheet" />
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" />
         <link href="../style/index.css" rel="stylesheet" />
         <link href="./traditional-tabs.css" rel="stylesheet" />
+        <link href="./option-list.css" rel="stylesheet" />
         <link href="./accordion.css" rel="stylesheet" />
         <style>
 html {
-    background: #333;
-    color: #DDD;
+    background: #4C5D6A;
+    color: #F1F1F1;
 }
 
 body {
-    background: #555;
     margin: 2em auto;
     padding: 2em 3em;
-    width: 40em;
+    max-width: 40em;
 }
 
 .demo {
     clear: both;
     padding: 1em;
-}
-
-.option-list {
-    list-style: none;
-    margin: 1em 0;
-    padding: 0;
-}
-
-.option-item {
-    display: inline-block;
-    vertical-align: middle;
-}
-
-.option-label {
-    background: white;
-    color: #333;
-    cursor: pointer;
-    display: block;
-    padding: 0.5em;
-}
-
-.option-label--checked {
-    background: black;
-    color: white;
 }
         </style>
     </head>
@@ -67,7 +44,7 @@ var Demo = React.createClass({
         var INITIAL = 0
 
         return {
-            demoProp: INITIAL,
+            index: INITIAL,
             demoProps: [
                 {
                     className: 'traditional-tabs',
@@ -92,26 +69,22 @@ var Demo = React.createClass({
         }
     },
 
-    handleIndexChange: function(index, checked) {
-        this.setState({ demoProp: index })
-    },
-
     render: function() {
         return React.DOM.article(
             {},
             React.DOM.header(
                 {},
-                React.DOM.p({}, 'Choose display style and mode'),
+                React.DOM.p({}, 'Choose display style and mode:'),
                 React.createElement(
                     Tabbordion,
                     {
                         className: 'option-list',
                         classNames: {
-                            panel: 'option-item',
+                            panel: 'option-item option-item--horizontal',
                             title: 'option-label'
                         },
-                        initialIndex: this.state.demoProp,
-                        onIndexChange: this.handleIndexChange
+                        initialIndex: this.state.index,
+                        onChange: this.setState.bind(this)
                     },
                     this.state.demoProps.map(function(props, index) {
                         return React.createElement(
@@ -123,10 +96,10 @@ var Demo = React.createClass({
             ),
             React.DOM.section(
                 {},
-                React.DOM.p({}, 'The component below remains the same. It just receives new props.'),
+                React.DOM.p({}, 'The component below remains the same, it just receives new props:'),
                 React.createElement(
                     Tabbordion,
-                    this.state.demoProps[this.state.demoProp],
+                    this.state.demoProps[this.state.index],
                     React.createElement(
                         Panel,
                         { title: React.DOM.span({}, 'Panel #1') },
@@ -141,7 +114,7 @@ var Demo = React.createClass({
                     ),
                     React.createElement(
                         Panel,
-                        { title: React.DOM.span({}, 'Contentless Panel') }
+                        { title: React.DOM.span({}, 'Panel #3 - No Content') }
                     ),
                     // non-Panel elements are allowed to be here
                     React.DOM.div(

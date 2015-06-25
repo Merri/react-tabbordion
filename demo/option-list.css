@@ -1,0 +1,56 @@
+.option-list {
+    list-style: none;
+    margin: 1em 0;
+    padding: 0;
+    position: relative;
+}
+
+.option-item {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.option-item--vertical {
+    width: 100%;
+}
+
+.option-item--vertical > .option-label--first {
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+.option-item--vertical > .option-label--last {
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.option-item--horizontal > .option-label--first {
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+}
+
+.option-item--horizontal > .option-label--last {
+    border-bottom-right-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+.option-label {
+    background: #EBEBEB;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5), 0 0 0 transparent;
+    color: #363636;
+    cursor: pointer;
+    display: block;
+    padding: 0.5em;
+    -webkit-transition: background-color 0.125s ease-in-out, box-shadow 0.125s ease-in-out, margin 0.125s ease-in-out, padding 0.125s ease-in-out;
+    transition: background-color 0.125s ease-in-out, box-shadow 0.125s ease-in-out, margin 0.125s ease-in-out, padding 0.125s ease-in-out;
+    will-change: background-color, box-shadow, margin, padding;
+}
+
+.option-label--checked {
+    background: #FAFAFA;
+    border-radius: 3px;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 5px rgba(0, 0, 0, 0.5);
+    margin: -0.125em;
+    padding: 0.625em;
+    position: relative;
+}

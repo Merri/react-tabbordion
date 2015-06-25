@@ -11,23 +11,68 @@
     position: relative;
 }
 
+.accordion-panel--between,
+.accordion-panel--last {
+    border-top: 1px solid #D2D2D2;
+}
+
 .accordion-title {
-    background: white;
-    color: #333;
+    background: #EBEBEB;
+    color: #363636;
     cursor: pointer;
     display: block;
-    padding: 0.5em;
+    font-weight: bold;
+    padding: 1rem;
+    position: relative;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-transition: background-color 0.125s ease-in-out;
+    transition: background-color 0.125s ease-in-out;
+}
+
+.accordion-panel > .accordion-title--first {
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+.accordion-panel > .accordion-content--last,
+.accordion-panel--no-content > .accordion-title--last {
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.accordion-title--content:before {
+    content: "\f107";
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: 1.5em;
+    line-height: 1rem;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+    -webkit-transition: -webkit-transform 0.375s ease-in-out;
+    transition: transform 0.375s ease-in-out;
+    will-change: transform;
 }
 
 .accordion-title--checked {
-    background: black;
-    color: white;
+    background: #FAFAFA;
+}
+
+.accordion-title--checked:before {
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
 }
 
 .accordion-content {
-    background: black;
-    border-bottom: 2px solid #888;
-    color: white;
+    background: #FAFAFA;
+    color: #363636;
     max-height: 0;
     overflow: hidden;
     padding: 0 1em;

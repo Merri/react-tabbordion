@@ -408,7 +408,7 @@ function classWithModifiers(className, modifiers, separator) {
                 if (child._store.props.visible) {
                     this.renderedVisibleCounter++
 
-                    if (index === 0)
+                    if (this.renderedVisibleCounter === 1)
                         isFirst = true
 
                     if (this.renderedVisibleCount === this.renderedVisibleCounter)

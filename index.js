@@ -1,53 +1,52 @@
-var tabbordionUuid = (function() {
-    var index = 0
-
-    return function() {
-        return 'tabbordion-' + index++
-    }
-})()
-
-var isFunction = (function() {
-    function typeOfFn(fn) {
-        return typeof fn === 'function'
-    }
-
-    function objectFn(fn) {
-        return Object.prototype.toString.call(fn) === '[object Function]'
-    }
-
-    // typeof is fastest way to check if a function but older IEs don't support it for that and Chrome had a bug
-    if (typeof typeOfFn === 'function' && typeof /./ !== 'function')
-        return typeOfFn
-    else
-        return objectFn
-})()
-
-function classWithModifiers(className, modifiers, separator) {
-    var BEM, classNames = '', i
-
-    if (className == null) return null
-    if (typeof className !== 'string') className = String(className)
-    if (!Array.isArray(modifiers) || modifiers.length === 0) return className
-    if (typeof separator !== 'string') separator = '--'
-
-    i = className.indexOf(' ')
-
-    if (i >= 0) {
-        classNames = className.slice(i)
-        className = className.slice(0, i)
-    }
-
-    BEM = className
-
-    for (i = 0; i < modifiers.length; i++) {
-        if ((typeof modifiers[i] === 'string') && (modifiers[i].length > 0))
-            BEM += ' ' + className + separator + modifiers[i]
-    }
-
-    return BEM + classNames
-}
-
 (function(global) {'use strict'
+    var tabbordionUuid = (function() {
+        var index = 0
+
+        return function() {
+            return 'tabbordion-' + index++
+        }
+    })()
+
+    var isFunction = (function() {
+        function typeOfFn(fn) {
+            return typeof fn === 'function'
+        }
+
+        function objectFn(fn) {
+            return Object.prototype.toString.call(fn) === '[object Function]'
+        }
+
+        // typeof is fastest way to check if a function but older IEs don't support it for that and Chrome had a bug
+        if (typeof typeOfFn === 'function' && typeof /./ !== 'function')
+            return typeOfFn
+        else
+            return objectFn
+    })()
+
+    function classWithModifiers(className, modifiers, separator) {
+        var BEM, classNames = '', i
+
+        if (className == null) return null
+        if (typeof className !== 'string') className = String(className)
+        if (!Array.isArray(modifiers) || modifiers.length === 0) return className
+        if (typeof separator !== 'string') separator = '--'
+
+        i = className.indexOf(' ')
+
+        if (i >= 0) {
+            classNames = className.slice(i)
+            className = className.slice(0, i)
+        }
+
+        BEM = className
+
+        for (i = 0; i < modifiers.length; i++) {
+            if ((typeof modifiers[i] === 'string') && (modifiers[i].length > 0))
+                BEM += ' ' + className + separator + modifiers[i]
+        }
+
+        return BEM + classNames
+    }
 
     var Panel = React.createClass({
         displayName: 'Panel',

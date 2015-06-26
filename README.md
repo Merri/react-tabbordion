@@ -20,7 +20,9 @@ rule!
 This hides native HTML input elements so that they remain accessible. While we are at accessibility the component also
 includes ARIA attributes. You can also add CSS-only (= JS disabled) support by using `:checked` in your stylesheets.
 
-## Installation
+## Demo and Getting It
+
+[View Tabbordion demo](https://merri.github.io/react-tabbordion/)
 
 ```
 npm install --save react-tabbordion

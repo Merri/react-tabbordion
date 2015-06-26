@@ -428,11 +428,9 @@
                         visibleCounter = 0
 
                     return React.Children.map(props.children, function(child, index) {
-                        var isBetween = false, isFirst = false, isLast = false
+                        var isBetween = false, isFirst = false, isLast = false, additionalProps
 
                         if (child.type === Panel) {
-                            index = panelCounter++
-
                             if ((child.props || child._store.props).visible) {
                                 visibleCounter++
 
@@ -442,29 +440,35 @@
                                 if (visibleCounter === visibleCount)
                                     isLast = true
 
-                                isBetween = !(isFirst || isLast)
+                                isBetween = !isFirst && !isLast
+                            }
+
+                            additionalProps = {
+                                checked: state.checked[index],
+                                classModifiers: props.classModifiers,
+                                classNames: props.classNames,
+                                classSeparator: props.classSeparator,
+                                contentTag: props.contentTag,
+                                index: panelCounter++,
+                                isBetween: isBetween,
+                                isFirst: isFirst,
+                                isLast: isLast,
+                                name: props.name.length ? props.name : state.name,
+                                selectedChecked: state.checked.slice(0),
+                                selectedIndex: state.index,
+                                setIndex: setIndex,
+                                tag: props.panelTag,
+                                type: props.mode === 'multiple' ? 'checkbox' : 'radio'
                             }
                         } else {
-                            index = null
+                            additionalProps = {
+                                selectedChecked: state.checked.slice(0),
+                                selectedIndex: state.index,
+                                setIndex: setIndex
+                            }
                         }
 
-                        return React.cloneElement(child, {
-                            checked: state.checked[index],
-                            classModifiers: props.classModifiers,
-                            classNames: props.classNames,
-                            classSeparator: props.classSeparator,
-                            contentTag: props.contentTag,
-                            index: index,
-                            isBetween: isBetween,
-                            isFirst: isFirst,
-                            isLast: isLast,
-                            name: props.name.length ? props.name : state.name,
-                            selectedChecked: state.checked.slice(0),
-                            selectedIndex: state.index,
-                            setIndex: setIndex,
-                            tag: props.panelTag,
-                            type: props.mode === 'multiple' ? 'checkbox' : 'radio'
-                        })
+                        return React.cloneElement(child, additionalProps)
                     })
                 })(this.props, this.state, this.setIndex, panelCounts.visibleCount)
             )

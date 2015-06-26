@@ -37,7 +37,7 @@
                         className: 'accordion',
                         classNames: {
                             animator: 'accordion-animator',
-                            content: 'accordion-content', // accordion-content--css-only-animation
+                            content: 'accordion-content',
                             panel: 'accordion-panel',
                             title: 'accordion-title'
                         },
@@ -60,7 +60,7 @@
                             className: 'option-list',
                             classNames: {
                                 panel: 'option-item option-item--horizontal',
-                                title: 'option-label'
+                                title: 'option-label option-label--horizontal'
                             },
                             initialIndex: this.state.index,
                             onChange: this.setState.bind(this)

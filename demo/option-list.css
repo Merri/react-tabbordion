@@ -14,22 +14,22 @@
     width: 100%;
 }
 
-.option-item--vertical > .option-label--first {
+.option-label--vertical.option-label--first {
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
 }
 
-.option-item--vertical > .option-label--last {
+.option-label--vertical.option-label--last {
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
 }
 
-.option-item--horizontal > .option-label--first {
+.option-label--horizontal.option-label--first {
     border-bottom-left-radius: 3px;
     border-top-left-radius: 3px;
 }
 
-.option-item--horizontal > .option-label--last {
+.option-label--horizontal.option-label--last {
     border-bottom-right-radius: 3px;
     border-top-right-radius: 3px;
 }

@@ -1,4 +1,4 @@
-(function(global) {'use strict'
+;(function() {'use strict'
     var tabbordionUuid = (function() {
         var index = 0
 
@@ -615,7 +615,7 @@
         })
     // support browser
     else {
-        global.Panel = Panel
-        global.Tabbordion = Tabbordion
+        window.Panel = Panel
+        window.Tabbordion = Tabbordion
     }
-})(this)
+})();

@@ -19,9 +19,11 @@
                         initialIndex: INITIAL
                     },
                     {
+                        animateContent: 'height',
                         demo: 'Accordion',
                         className: 'accordion',
                         classNames: {
+                            animator: 'accordion-animator',
                             content: 'accordion-content',
                             panel: 'accordion-panel',
                             title: 'accordion-title'
@@ -30,10 +32,12 @@
                         mode: 'toggle'
                     },
                     {
+                        animateContent: 'height',
                         demo: 'Multiselect accordion',
                         className: 'accordion',
                         classNames: {
-                            content: 'accordion-content accordion-content--css-only-animation',
+                            animator: 'accordion-animator',
+                            content: 'accordion-content', // accordion-content--css-only-animation
                             panel: 'accordion-panel',
                             title: 'accordion-title'
                         },

@@ -76,6 +76,11 @@
     transform: rotate(180deg);
 }
 
+.accordion-animator {
+    -webkit-transition: height 0.375s ease-in-out;
+    transition: height 0.375s ease-in-out;
+}
+
 .accordion-content {
     background: #FAFAFA;
     -webkit-box-sizing: border-box;
@@ -84,9 +89,31 @@
     color: #363636;
     display: none;
     float: left;
-    overflow: hidden;
     padding: 0 1em;
     width: 100%;
+}
+
+.accordion-content--animated {
+    background: #EBEBEB;
+    display: block;
+    -webkit-transition: background-color 0.125s ease-in-out;
+    transition: background-color 0.125s ease-in-out;
+    will-change: background;
+}
+
+.accordion-content--marginTop {
+    margin-top: -65535px;
+    -webkit-transition: background-color 0.125s ease-in-out, margin-top 0.375s ease-in-out;
+    transition: background-color 0.125s ease-in-out, margin-top 0.375s ease-in-out;
+    will-change: background, margin;
+}
+
+.accordion-content--checked.accordion-content--animated {
+    background: #FAFAFA;
+}
+
+.accordion-content--checked.accordion-content--marginTop {
+    margin-top: 0;
 }
 
 .accordion-content--css-only-animation {
@@ -98,6 +125,7 @@
     transform: translateY(50%);
     -webkit-transition: margin 0.375s ease-in-out, opacity 0.375s ease-in-ou, -webkit-transform 0.375s ease-in-out;
     transition: margin 0.375s ease-in-out, opacity 0.375s ease-in-out, transform 0.375s ease-in-out;
+    will-change: margin, opacity, transform;
 }
 
 .accordion-content--checked {

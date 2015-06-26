@@ -48,12 +48,25 @@
         return BEM + classNames
     }
 
+    function getElementHeight(element) {
+        var bounds = element.getBoundingClientRect(),
+            elementHeightInPixels = Math.ceil(bounds.bottom - bounds.top)
+
+        return elementHeightInPixels
+    }
+
     var Panel = React.createClass({
         displayName: 'Panel',
 
         propTypes: {
+            animateContent: React.PropTypes.oneOf([
+                false,
+                'height',
+                'marginTop'
+            ]),
             checked: React.PropTypes.bool,
             classModifiers: React.PropTypes.shape({
+                animated: React.PropTypes.string,
                 checked: React.PropTypes.string,
                 content: React.PropTypes.string,
                 disabled: React.PropTypes.string,
@@ -65,6 +78,7 @@
                 visibleLast: React.PropTypes.string
             }),
             classNames: React.PropTypes.shape({
+                animator: React.PropTypes.string,
                 content: React.PropTypes.string,
                 panel: React.PropTypes.string,
                 state: React.PropTypes.string,
@@ -89,7 +103,9 @@
 
         getDefaultProps: function() {
             return {
+                animateContent: false,
                 classModifiers: {
+                    animated: 'animated',
                     checked: 'checked',
                     content: 'content',
                     disabled: 'disabled',
@@ -101,6 +117,7 @@
                     visibleLast: 'last'
                 },
                 classNames: {
+                    animator: 'panel__animator',
                     content: 'panel__content',
                     panel: 'panel',
                     state: 'panel__state',
@@ -114,6 +131,74 @@
             }
         },
 
+        getInitialState: function() {
+            return {
+                contentHeight: null
+            }
+        },
+
+        componentDidMount: function() {
+            this.updateHeight()
+            if (window.addEventListener)
+                addEventListener('resize', this.updateHeight)
+        },
+
+        componentDidUpdate: function() {
+            this.updateHeight()
+        },
+
+        componentWillUnmount: function() {
+            if (window.removeEventListener)
+                removeEventListener('resize', this.updateHeight)
+        },
+
+        updateHeight: function() {
+            if (this.props.animateContent && this.refs.content) {
+                var animator = React.findDOMNode(this.refs.animator),
+                    content = React.findDOMNode(this.refs.content), height = null
+
+                switch (this.props.animateContent) {
+                    case 'height':
+                        height = this.props.checked ? getElementHeight(content) : 0
+
+                        var cssHeight = height + 'px'
+
+                        if (animator.style.height === cssHeight)
+                            return
+
+                        animator.style.height = cssHeight
+
+                        if (content.style.marginTop)
+                            content.style.marginTop = null
+
+                        break
+                    case 'marginTop':
+                        height = !this.props.checked ? getElementHeight(content) : 0
+
+                        // required for transitions: display: none; in parent will result any child to have zero height
+                        // (yes, even before the display rule visually kicks in we will get zero for any child it has)
+                        if (this.props.checked === false && marginTop === 0)
+                            return
+
+                        var marginTop = -height + 'px'
+
+                        if (content.style.marginTop === marginTop)
+                            return
+
+                        content.style.marginTop = marginTop
+
+                        if (animator.style.height)
+                            animator.style.height = null
+
+                        break
+                }
+
+                // would infinite loop if used setState
+                if (this.state.height !== height)
+                    this.state.height = height
+            }
+        },
+
         handleInputChange: function(event) {
             this.props.setIndex(this.props.index)
         },
@@ -123,18 +208,6 @@
             var input = React.findDOMNode(this.refs.input)
             input.click()
             input.focus()
-        },
-
-        renderChild: function(child) {
-            return React.cloneElement(child, {
-                isPanelChecked: this.props.checked,
-                isPanelVisible: this.props.visible,
-                panelIndex: this.props.index,
-                panelName: this.props.name,
-                panelSelectedChecked: this.props.selectedChecked,
-                panelSelectedIndex: this.props.selectedIndex,
-                setPanelIndex: this.props.setIndex
-            })
         },
 
         render: function() {
@@ -162,6 +235,9 @@
             var classModifiers = this.props.classModifiers,
                 modifiers = []
 
+            if (this.props.animateContent)
+                modifiers.push(classModifiers.animated)
+
             modifiers.push(this.props.checked ? classModifiers.checked : classModifiers.unchecked)
             modifiers.push(this.props.disabled ? classModifiers.disabled : classModifiers.enabled)
 
@@ -176,16 +252,53 @@
             }
 
             if (this.props.children) {
+                var animatedModifiers = modifiers.concat(this.props.animateContent)
+
+                var contentProps = {
+                    'aria-labelledby': id,
+                    className: classWithModifiers(classNames.content, animatedModifiers, separator),
+                    id: 'panel-' + id,
+                    ref: 'content',
+                    role: 'tabpanel',
+                    style: { marginTop: '' }
+                }
+
+                var animatorProps = {
+                    className: classWithModifiers(classNames.animator, animatedModifiers, separator),
+                    ref: 'animator',
+                    style: { height: '', overflow: 'hidden' }
+                }
+
+                switch (this.props.animateContent && this.state.contentHeight != null) {
+                    case 'height':
+                        animatorProps.style.height = this.state.contentHeight + 'px'
+                        break
+                    case 'marginTop':
+                        contentProps.style.marginTop = -this.state.contentHeight + 'px'
+                        break
+                }
+
                 var children = React.createElement(
                     this.props.contentTag,
-                    {
-                        'aria-labelledby': id,
-                        className: classWithModifiers(classNames.content, modifiers, separator),
-                        id: 'panel-' + id,
-                        role: 'tabpanel'
-                    },
-                    React.Children.map(this.props.children, this.renderChild)
+                    contentProps,
+                    (function(props) {
+                        return React.Children.map(props.children, function(child) {
+                            return React.cloneElement(child, {
+                                isPanelChecked: props.checked,
+                                isPanelVisible: props.visible,
+                                panelIndex: props.index,
+                                panelName: props.name,
+                                panelSelectedChecked: props.selectedChecked,
+                                panelSelectedIndex: props.selectedIndex,
+                                setPanelIndex: props.setIndex
+                            })
+                        })
+                    })(this.props)
                 )
+
+                if (this.props.animateContent)
+                    children = React.DOM.div(animatorProps, children)
+
                 modifiers.push(classModifiers.content)
             } else {
                 modifiers.push(classModifiers.noContent)
@@ -231,7 +344,13 @@
         displayName: 'Tabbordion',
 
         propTypes: {
+            animateContent: React.PropTypes.oneOf([
+                false,
+                'height',
+                'marginTop'
+            ]),
             classModifiers: React.PropTypes.shape({
+                animated: React.PropTypes.string,
                 checked: React.PropTypes.string,
                 content: React.PropTypes.string,
                 disabled: React.PropTypes.string,
@@ -243,6 +362,7 @@
                 visibleLast: React.PropTypes.string
             }),
             classNames: React.PropTypes.shape({
+                animator: React.PropTypes.string,
                 content: React.PropTypes.string,
                 panel: React.PropTypes.string,
                 state: React.PropTypes.string,
@@ -266,7 +386,9 @@
 
         getDefaultProps: function() {
             return {
+                animateContent: false,
                 classModifiers: {
+                    animated: 'animated',
                     checked: 'checked',
                     content: 'content',
                     disabled: 'disabled',
@@ -278,6 +400,7 @@
                     visibleLast: 'last'
                 },
                 classNames: {
+                    animator: 'panel__animator',
                     content: 'panel__content',
                     panel: 'panel',
                     state: 'panel__state',
@@ -444,6 +567,7 @@
                             }
 
                             additionalProps = {
+                                animateContent: props.animateContent,
                                 checked: state.checked[index],
                                 classModifiers: props.classModifiers,
                                 classNames: props.classNames,

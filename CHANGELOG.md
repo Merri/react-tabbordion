@@ -1,3 +1,9 @@
+v0.1.2 - 2015-06-XX
+---
+
+- Add support for animators (using height and marginTop)
+
+
 v0.1.1 - 2015-06-26
 ---
 

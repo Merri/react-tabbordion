@@ -332,9 +332,9 @@
 
             React.Children.map(props.children, function(child) {
                 if (child.type === Panel) {
-                    count ++
+                    count++
 
-                    if (child._store.props.visible)
+                    if ((child.props || child._store.props).visible)
                         visibleCount++
                 }
             })
@@ -433,7 +433,7 @@
                         if (child.type === Panel) {
                             index = panelCounter++
 
-                            if (child._store.props.visible) {
+                            if ((child.props || child._store.props).visible) {
                                 visibleCounter++
 
                                 if (visibleCounter === 1)

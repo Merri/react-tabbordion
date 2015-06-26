@@ -21,6 +21,46 @@ body {
     max-width: 40em;
 }
 
+a:link,
+a:visited {
+    color: #1698CE;
+    text-decoration: none;
+}
+
+a:hover,
+a:focus {
+    outline: none;
+    text-decoration: underline;
+}
+
+footer {
+    background: #253447;
+    border-radius: 3px;
+    color: #FAFAFA;
+    font-size: 0.875em;
+    font-style: italic;
+    margin-top: 2em;
+    padding: 1em;
+    text-align: center;
+}
+
+footer a:link,
+footer a:visited {
+    color: #5AC1ED;
+}
+
+footer .fa-stack-1x {
+    color: #363636;
+}
+
+footer .fa-stack-2x {
+    color: #FAFAFA;
+}
+
+footer .fa-download {
+    color: #1C720E;
+}
+
 .demo {
     clear: both;
     padding: 1em;
@@ -30,6 +70,15 @@ body {
     <body>
         <h1>React Tabbordion Demo</h1>
         <div id="app"></div>
+        <footer>
+            <nav>
+                <a href="https://github.com/Merri/react-tabbordion"><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-github fa-stack-1x fa-lg"></i></span> GitHub: react-tabbordion</a>
+                |
+                <a href="https://www.npmjs.com/package/react-tabbordion"><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-download fa-stack-1x fa-lg"></i></span> npm: react-tabbordion</a>
+                |
+                <a href="https://codepen.io/Merri/"><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-codepen fa-stack-1x fa-lg"></i></span> CodePen: Merri</a>
+            </nav>
+        </footer>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.min.js"></script>
         <script src="./index.js"></script>
         <script src="./demo/app.js"></script>

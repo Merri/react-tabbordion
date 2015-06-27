@@ -1,4 +1,4 @@
-# react-tabbordion
+# react-tabbordion <img alt="Travis CI" src="https://travis-ci.org/Merri/react-tabbordion.svg" />
 
 Provides base for handling state and styles for technically similar components such as tabs, accordions, option lists,
 multiselect lists and so on.

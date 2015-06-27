@@ -7,7 +7,8 @@
     "pretest": "npm run lint",
     "lint": "eslint .",
     "prepublish": "npm prune && npm test && npm run build",
-    "build": "webpack",
+    "build": "NODE_ENV=production webpack",
+    "build_windows": "set NODE_ENV=production&&webpack",
     "watch": "webpack --watch",
     "test": "mocha --reporter spec"
   },

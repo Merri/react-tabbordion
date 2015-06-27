@@ -1,4 +1,8 @@
-;(function() {'use strict'
+(function(inBrowser) {
+    'use strict'
+
+    var React = inBrowser ? window.React : require('react')
+
     var tabbordionUuid = (function() {
         var index = 0
 
@@ -17,19 +21,31 @@
         }
 
         // typeof is fastest way to check if a function but older IEs don't support it for that and Chrome had a bug
-        if (typeof typeOfFn === 'function' && typeof /./ !== 'function')
+        if (typeof typeOfFn === 'function' && typeof /./ !== 'function') {
             return typeOfFn
-        else
-            return objectFn
+        }
+
+        return objectFn
     })()
 
     function classWithModifiers(className, modifiers, separator) {
         var BEM, classNames = '', i
 
-        if (className == null) return null
-        if (typeof className !== 'string') className = String(className)
-        if (!Array.isArray(modifiers) || modifiers.length === 0) return className
-        if (typeof separator !== 'string') separator = '--'
+        if (className == null) {
+            return null
+        }
+
+        if (typeof className !== 'string') {
+            className = String(className)
+        }
+
+        if (!Array.isArray(modifiers) || modifiers.length === 0) {
+            return className
+        }
+
+        if (typeof separator !== 'string') {
+            separator = '--'
+        }
 
         i = className.indexOf(' ')
 
@@ -41,8 +57,9 @@
         BEM = className
 
         for (i = 0; i < modifiers.length; i++) {
-            if ((typeof modifiers[i] === 'string') && (modifiers[i].length > 0))
+            if ((typeof modifiers[i] === 'string') && (modifiers[i].length > 0)) {
                 BEM += ' ' + className + separator + modifiers[i]
+            }
         }
 
         return BEM + classNames
@@ -139,8 +156,9 @@
 
         componentDidMount: function() {
             this.updateHeight()
-            if (window.addEventListener)
+            if (window.addEventListener) {
                 addEventListener('resize', this.updateHeight)
+            }
         },
 
         componentDidUpdate: function() {
@@ -148,14 +166,16 @@
         },
 
         componentWillUnmount: function() {
-            if (window.removeEventListener)
+            if (window.removeEventListener) {
                 removeEventListener('resize', this.updateHeight)
+            }
         },
 
         updateHeight: function() {
             if (this.props.animateContent && this.refs.content) {
                 var animator = React.findDOMNode(this.refs.animator),
-                    content = React.findDOMNode(this.refs.content), height = null
+                    content = React.findDOMNode(this.refs.content),
+                    height = null
 
                 switch (this.props.animateContent) {
                     case 'height':
@@ -163,13 +183,15 @@
 
                         var cssHeight = height + 'px'
 
-                        if (animator.style.height === cssHeight)
+                        if (animator.style.height === cssHeight) {
                             return
+                        }
 
                         animator.style.height = cssHeight
 
-                        if (content.style.marginTop)
+                        if (content.style.marginTop) {
                             content.style.marginTop = null
+                        }
 
                         break
                     case 'marginTop':
@@ -177,29 +199,34 @@
 
                         // required for transitions: display: none; in parent will result any child to have zero height
                         // (yes, even before the display rule visually kicks in we will get zero for any child it has)
-                        if (this.props.checked === false && marginTop === 0)
+                        if (this.props.checked === false && height === 0) {
                             return
+                        }
 
                         var marginTop = -height + 'px'
 
-                        if (content.style.marginTop === marginTop)
+                        if (content.style.marginTop === marginTop) {
                             return
+                        }
 
                         content.style.marginTop = marginTop
 
-                        if (animator.style.height)
+                        if (animator.style.height) {
                             animator.style.height = null
+                        }
 
                         break
+                    default:
                 }
 
                 // would infinite loop if used setState
-                if (this.state.height !== height)
+                if (this.state.height !== height) {
                     this.state.height = height
+                }
             }
         },
 
-        handleInputChange: function(event) {
+        handleInputChange: function() {
             this.props.setIndex(this.props.index)
         },
 
@@ -207,13 +234,14 @@
             event.preventDefault()
             var input = React.findDOMNode(this.refs.input)
             input.click()
-            input.focus()
         },
 
         render: function() {
+            var ariaSelected = this.props.checked ? 'true' : 'false'
+
             var elementProps = {
-                'aria-expanded': this.props.children ? (this.props.checked ? 'true' : 'false') : null,
-                'aria-selected': this.props.checked ? 'true' : 'false'
+                'aria-expanded': this.props.children ? ariaSelected : null,
+                'aria-selected': ariaSelected
             }
 
             for (var key in this.props) {
@@ -235,8 +263,9 @@
             var classModifiers = this.props.classModifiers,
                 modifiers = []
 
-            if (this.props.animateContent)
+            if (this.props.animateContent) {
                 modifiers.push(classModifiers.animated)
+            }
 
             modifiers.push(this.props.checked ? classModifiers.checked : classModifiers.unchecked)
             modifiers.push(this.props.disabled ? classModifiers.disabled : classModifiers.enabled)
@@ -244,11 +273,13 @@
             if (this.props.isBetween) {
                 modifiers.push(classModifiers.visibleBetween)
             } else {
-                if (this.props.isFirst)
+                if (this.props.isFirst) {
                     modifiers.push(classModifiers.visibleFirst)
+                }
 
-                if (this.props.isLast)
+                if (this.props.isLast) {
                     modifiers.push(classModifiers.visibleLast)
+                }
             }
 
             if (this.props.children) {
@@ -276,6 +307,7 @@
                     case 'marginTop':
                         contentProps.style.marginTop = -this.state.contentHeight + 'px'
                         break
+                    default:
                 }
 
                 var children = React.createElement(
@@ -296,18 +328,20 @@
                     })(this.props)
                 )
 
-                if (this.props.animateContent)
+                if (this.props.animateContent) {
                     children = React.DOM.div(animatorProps, children)
+                }
 
                 modifiers.push(classModifiers.content)
             } else {
                 modifiers.push(classModifiers.noContent)
             }
 
-            if (elementProps.className)
+            if (elementProps.className) {
                 elementProps.className += ' ' + classWithModifiers(classNames.panel, modifiers, separator)
-            else
+            } else {
                 elementProps.className = classWithModifiers(classNames.panel, modifiers, separator)
+            }
 
             return React.createElement(
                 this.props.tag,
@@ -344,11 +378,7 @@
         displayName: 'Tabbordion',
 
         propTypes: {
-            animateContent: React.PropTypes.oneOf([
-                false,
-                'height',
-                'marginTop'
-            ]),
+            animateContent: React.PropTypes.oneOf([false, 'height', 'marginTop']),
             classModifiers: React.PropTypes.shape({
                 animated: React.PropTypes.string,
                 checked: React.PropTypes.string,
@@ -371,11 +401,7 @@
             classSeparator: React.PropTypes.string,
             contentTag: React.PropTypes.string,
             initialIndex: React.PropTypes.number,
-            mode: React.PropTypes.oneOf([
-                'multiple',     // any panel can be open or closed (plausible accordion behavior)
-                'single',       // one panel is always open (normal tabs behavior)
-                'toggle'        // only one panel may be open at one time (normal accordion behavior)
-            ]),
+            mode: React.PropTypes.oneOf(['multiple', 'single', 'toggle']),
             name: React.PropTypes.string,
             onAfterChange: React.PropTypes.func,
             onBeforeChange: React.PropTypes.func,
@@ -429,8 +455,9 @@
                 newLength = this.getCountsOfPanels(this.props).count
 
             checked.length = newLength
-            for (var index = 0; index < checked.length; index++)
+            for (var index = 0; index < checked.length; index++) {
                 checked[index] = !!checked[index]
+            }
 
             if (this.props.initialIndex >= 0 && this.props.initialIndex < newLength) {
                 checked[this.props.initialIndex] = true
@@ -442,7 +469,7 @@
         componentWillReceiveProps: function(nextProps) {
             var checked = this.state.checked,
                 newLength = this.getCountsOfPanels(nextProps).count
-            
+
             if (checked.length !== newLength) {
                 checked.length = newLength
                 this.setState({ checked: checked.map(Boolean) })
@@ -457,8 +484,9 @@
                 if (child.type === Panel) {
                     count++
 
-                    if ((child.props || child._store.props).visible)
+                    if ((child.props || child._store.props).visible) {
                         visibleCount++
+                    }
                 }
             })
 
@@ -472,22 +500,27 @@
             var newState = { checked: this.state.checked, index: this.state.index }
 
             switch (this.props.mode) {
+                // any panel can be open or closed (plausible accordion behavior)
                 case 'multiple':
                     newState.index = newIndex
                     newState.checked[newIndex] = !newState.checked[newIndex]
                     break;
+                // one panel is always open (normal tabs behavior)
                 case 'single':
                     newState.index = newIndex
                     newState.checked = newState.checked.map(function(checked, index) {
                         return index === newIndex
                     })
                     break;
+                // only one panel may be open at one time (normal accordion behavior)
                 case 'toggle':
                     newState.index = newState.index !== newIndex ? newIndex : null
                     newState.checked = newState.checked.map(function(checked, index) {
                         return index === newIndex && newIndex === newState.index
                     })
                     break;
+                default:
+                    throw new Error('unknown mode: ' + this.props.mode)
             }
 
             if (isFunction(this.props.onBeforeChange)) {
@@ -557,11 +590,13 @@
                             if ((child.props || child._store.props).visible) {
                                 visibleCounter++
 
-                                if (visibleCounter === 1)
+                                if (visibleCounter === 1) {
                                     isFirst = true
+                                }
 
-                                if (visibleCounter === visibleCount)
+                                if (visibleCounter === visibleCount) {
                                     isLast = true
+                                }
 
                                 isBetween = !isFirst && !isLast
                             }
@@ -599,23 +634,13 @@
         }
     })
 
-    // support CommonJS
-    if (typeof exports === 'object')
+    if (inBrowser) {
+        window.Panel = Panel
+        window.Tabbordion = Tabbordion
+    } else {
         module.exports = {
             Panel: Panel,
             Tabbordion: Tabbordion
         }
-    // support AMD
-    else if (typeof define === 'function' && define.amd)
-        define(function() {
-            return {
-                Panel: Panel,
-                Tabbordion: Tabbordion
-            }
-        })
-    // support browser
-    else {
-        window.Panel = Panel
-        window.Tabbordion = Tabbordion
     }
-})();
+})(typeof window !== 'undefined')

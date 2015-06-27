@@ -337,11 +337,9 @@
                 modifiers.push(classModifiers.noContent)
             }
 
-            if (elementProps.className) {
-                elementProps.className += ' ' + classWithModifiers(classNames.panel, modifiers, separator)
-            } else {
-                elementProps.className = classWithModifiers(classNames.panel, modifiers, separator)
-            }
+            elementProps.className = classWithModifiers(classNames.panel, modifiers, separator) + (
+                elementProps.className ? ' ' + elementProps.className : ''
+            )
 
             return React.createElement(
                 this.props.tag,

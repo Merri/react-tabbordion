@@ -195,7 +195,7 @@ classSeparator    | string        | Inherited.
 name              | string        | Inherited.
 contentTag        | string        | Inherited.
 tag               | string        | Inherited (from Tabbordion's panelTag).
-:-----------------|:--------------|:-----------
+
 Property          | Type          | Description
 :-----------------|:--------------|:-----------
 checked           | bool          | Set by Tabbordion.
@@ -207,7 +207,7 @@ selectedChecked   | array         | Set by Tabbordion. Current active Panels.
 selectedIndex     | number/null   | Set by Tabbordion. Latest active Panel, or null if none active.
 setIndex          | func          | Set by Tabbordion. Toggles given index.
 type              | string        | Set by Tabbordion. 'checkbox' or 'radio'.
-:-----------------|:--------------|:-----------
+
 Property          | Type          | Description
 :-----------------|:--------------|:-----------
 disabled          | bool          | Defaults to false. Should the Panel be disabled?

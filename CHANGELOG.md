@@ -1,8 +1,13 @@
-v0.2.0 - 2015-06-XX
+v0.2.0 - 2015-06-27
 ---
 
+- Set up environment: linting, tests, Travis
+- Add first set of tests
 - Add support for animators (using height and marginTop)
-- Set up environment: linting and tests
+- Change names of properties passed to non-Panel children of Tabbordion.
+- Fix bug in Panel where between, first and last modifiers were applied when not visible.
+- Fix incorrect order of merging classNames in Panel.
+- Improve documentation.
 
 
 v0.1.1 - 2015-06-26

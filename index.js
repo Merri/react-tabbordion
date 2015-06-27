@@ -621,9 +621,10 @@
                             }
                         } else {
                             additionalProps = {
-                                selectedChecked: state.checked.slice(0),
-                                selectedIndex: state.index,
-                                setIndex: setIndex
+                                panelName: props.name.length ? props.name : state.name,
+                                panelSelectedChecked: state.checked.slice(0),
+                                panelSelectedIndex: state.index,
+                                panelSetIndex: setIndex
                             }
                         }
 

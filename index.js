@@ -270,15 +270,17 @@
             modifiers.push(this.props.checked ? classModifiers.checked : classModifiers.unchecked)
             modifiers.push(this.props.disabled ? classModifiers.disabled : classModifiers.enabled)
 
-            if (this.props.isBetween) {
-                modifiers.push(classModifiers.visibleBetween)
-            } else {
-                if (this.props.isFirst) {
-                    modifiers.push(classModifiers.visibleFirst)
-                }
+            if (this.props.visible) {
+                if (this.props.isBetween) {
+                    modifiers.push(classModifiers.visibleBetween)
+                } else {
+                    if (this.props.isFirst) {
+                        modifiers.push(classModifiers.visibleFirst)
+                    }
 
-                if (this.props.isLast) {
-                    modifiers.push(classModifiers.visibleLast)
+                    if (this.props.isLast) {
+                        modifiers.push(classModifiers.visibleLast)
+                    }
                 }
             }
 

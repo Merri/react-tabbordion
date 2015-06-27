@@ -20,7 +20,8 @@ rule!
 This hides native HTML input elements so that they remain accessible. While we are at accessibility the component also
 includes ARIA attributes. You can also add CSS-only (= JS disabled) support by using `:checked` in your stylesheets.
 
-## Demo and Getting It
+
+## Demo and Installation
 
 [View Tabbordion demo](https://merri.github.io/react-tabbordion/)
 
@@ -28,7 +29,7 @@ includes ARIA attributes. You can also add CSS-only (= JS disabled) support by u
 npm install --save react-tabbordion
 ```
 
-## An example
+### Usage example and sample output
 
 ```js
 var classNames = {
@@ -76,77 +77,163 @@ var classNames = {
 </ul>
 ```
 
+
 ## Tabbordion
 This is the main controller component. It handles state and passes properties to all children.
 
-### Props
+Property          | Type          | Description
+:-----------------|:--------------|:-----------
+animateContent    | string/false  | Default to false. Can be 'height' or 'marginTop'. Read more below.
+initialIndex      | number        | Defaults to null. Sets the Panel that is active on initial render.
+mode              | string        | Can be single, toggle or multiple. Read more below.
+onBeforeChange    | func          | Gets new state and old state as objects in arguments. Read more below.
+onChange          | func          | Gets new state object as argument. Triggered before render.
+onAfterChange     | func          | Gets new state object as argument. Triggered after render.
+classModifiers    | object        | Object containing strings to use as class modifiers in Panel's classes.
+classNames        | object        | Object containing strings to use as class block-elements in Panel's classes.
+classSeparator    | string        | Separator string to use between BEM block-elements and modifiers.
+name              | string        | Name attribute in Panel's hidden input element to group them. Also used for IDs.
+contentTag        | string        | Tag to use in Panel's content element. Defaults to div.
+panelTag          | string        | Tag to use in Panel's root element. Defaults to li.
+tag               | string        | Tag to use in Tabbordion's root element. Defaults to ul.
 
-The following special props are accepted:
-- `classModifiers`
-- `classNames`
-- `classSeparator`
-- `initialIndex`
-- `mode`
-- `name`
-- `onChange`
-- `onAfterChange`
-- `onBeforeChange`
-- `contentTag`
-- `panelTag`
-- `tag`
-
-#### `initialIndex`
-
-Defaults to `null`. You most likely want to give it 0. Otherwise none of the panels is active until opened.
-
-### Classes
+### About classes
 
 Tabbordion uses minimal BEM style in it's classes. This means if you name panel element as `derp`, you will get
-`className="derp derp--checked"` when the panel is active.
+`className="derp derp--checked"` when the panel is active. Output can be fully customized using `classModifiers`,
+`classNames` and `classSeparator`.
 
-Output can be fully customized using `classModifiers`, `classNames` and `classSeparator`.
+```js
+// classNames defaults
+{
+  panel: 'panel',
+  state: 'panel__state',
+  title: 'panel__title',
+  content: 'panel__content',
+  animator: 'panel__animator'
+}
 
-`classSeparator` defaults to `--` and it is added between the block element and modifier parts of the class.
+// classModifiers defaults
+{
+  animated: 'animated',
+  checked: 'checked',
+  content: 'content',
+  disabled: 'disabled',
+  enabled: 'enabled',
+  noContent: 'no-content',
+  unchecked: 'unchecked',
+  visibleBetween: 'between',
+  visibleFirst: 'first',
+  visibleLast: 'last'
+}
+```
 
-`classNames` is an object with four customizable panel elements with following defaults:
+Say you have three panels. First one is active. `animateContent` is set to 'height'. Following classes are generated:
 
-1. `panel` = 'panel' > `.panel` (container element)
-2. `state` = 'panel__state' > `.panel__state` (input element)
-3. `title` = 'panel__title' > `.panel__title` (label element)
-4. `content` = 'panel__content' > `.panel__content` (content container element)
+```js
+panel1.className === 'panel panel--animated panel--checked panel--content panel--enabled panel--first'
+panel2.className === 'panel panel--animated panel--unchecked panel--content panel--enabled panel--between'
+panel3.className === 'panel panel--animated panel--unchecked panel--content panel--enabled panel--last'
+```
 
-`classModifiers` are the M in BEM and are added after the separator when a specific modifier state is met.
+### About animateContent
 
-1. `checked` = 'checked' > `.panel .panel--checked`
-2. `content` = 'content' > `.panel .panel--content`
-3. `disabled` = 'disabled' > `.panel .panel--disabled`
+Enabling this will do two things:
 
-Modifiers are applied to all elements defined in `classNames`.
+1. A new `panel__animated` element is added to wrap `panel__content`.
+2. `height` of `panel__animated` changes **or** `margin-top` of `panel__content` changes when checked/unchecked.
 
-#### `mode` (string)
+You can use transitions in CSS to get smooth animations. Check
+[demo/accordion.css](https://github.com/Merri/react-tabbordion/blob/gh-pages/demo/accordion.css) for an example.
 
-1. `single` (default)
+### About modes
 
-    A single panel is always open. Just like normal tabs component (or a normal radio list).
+There are three modes: single, toggle and multiple.
 
-2. `toggle`
+With **single** there is always one panel open. This behavior is like a normal Tabs or Radio option list component.
 
-    A single panel may be open; active can be closed by toggling it. Just like your usual accordion component.
+With **toggle** there may be one panel open. Or all can be closed. This behavior is like a normal Accordion component.
 
-3. `multiple`
+With **multiple** any panel may be open or closed. This behavior is like a Checkbox option list component.
 
-    Multiple panels may be open. Just like any checkbox list. Panels are grouped together, but each has it's own state.
+### About onBeforeChange
 
-#### `name` (string)
+This function is triggered before a change triggered by user is applied. Two objects are received in arguments:
+newState and oldState. Both have two keys: checked and index.
 
-This string is passed to input elements name attribute as-is to allow for native browser grouping behavior.
+**checked** is an array of booleans and contains the state of each Panel inside Tabbordion.
 
-This value is also used for generating input, label and content container id attributes.
+**index** is the latest active Panel index, or null if none is active.
 
-#### `tag`, `panelTag` and `contentTag` (string)
+The function may return a modified object in the same format and this new state will be used instead.
 
-Element to generate the semantic structure. Defaults to `ul`, `li` and `div` respectively.
+### About inheritance
+
+Tabbordion does not make use of classModifiers, classNames, name, contentTag or panelTag. These are passed directly to
+child Panels.
+
+The following props are provided for each direct child of a Tabbordion that is **not a Panel**:
+
+- panelName
+- panelSelectedChecked
+- panelSelectedIndex
+- setPanelIndex
+
+You can use this information to make customized components that depend on Tabbordion.
 
 
+## Panel
 
-*TODO: documentation for Panel and Animated components, demos for all mentioned five use cases*
+This component generates native HTML radio or checkbox inputs and labels, and content wrapper element if needed.
+
+Property          | Type          | Description
+:-----------------|:--------------|:-----------
+animateContent    | string/false  | Inherited.
+classModifiers    | object        | Inherited.
+classNames        | object        | Inherited.
+classSeparator    | string        | Inherited.
+name              | string        | Inherited.
+contentTag        | string        | Inherited.
+tag               | string        | Inherited (from Tabbordion's panelTag).
+:-----------------|:--------------|:-----------
+Property          | Type          | Description
+:-----------------|:--------------|:-----------
+checked           | bool          | Set by Tabbordion.
+index             | number        | Set by Tabbordion.
+isBetween         | bool          | Set by Tabbordion. Is visible and between other visible elements.
+isFirst           | bool          | Set by Tabbordion. Is the first visible element.
+isLast            | bool          | Set by Tabbordion. Is the last visible element.
+selectedChecked   | array         | Set by Tabbordion. Current active Panels.
+selectedIndex     | number/null   | Set by Tabbordion. Latest active Panel, or null if none active.
+setIndex          | func          | Set by Tabbordion. Toggles given index.
+type              | string        | Set by Tabbordion. 'checkbox' or 'radio'.
+:-----------------|:--------------|:-----------
+Property          | Type          | Description
+:-----------------|:--------------|:-----------
+disabled          | bool          | Defaults to false. Should the Panel be disabled?
+title             | node          | Content to be rendered inside the label element.
+visible           | bool          | Defaults to true. Should the Panel be visible?
+
+As you can see most of Panel's props are set by a parent Tabbordion.
+
+The following props are provided for each direct child of a Panel:
+
+- isPanelChecked
+- isPanelVisible
+- panelIndex
+- panelName
+- panelSelectedChecked
+- panelSelectedIndex
+- setPanelIndex
+
+You can use this information to make customized components that depend on Tabbordion's Panel.
+
+
+## Developing
+
+```
+git clone git@github.com:merri/react-tabbordion.git
+cd react-tabbordion
+npm install
+npm test
+```

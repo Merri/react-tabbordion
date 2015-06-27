@@ -6,7 +6,7 @@
   "scripts": {
     "pretest": "npm run lint",
     "lint": "eslint .",
-    "prepublish": "npm prune && npm test && npm run build",
+    "prepublish": "npm prune && npm test",
     "build": "NODE_ENV=production webpack",
     "build_windows": "set NODE_ENV=production&&webpack",
     "watch": "webpack --watch",

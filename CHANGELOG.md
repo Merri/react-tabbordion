@@ -1,7 +1,8 @@
-v0.1.2 - 2015-06-XX
+v0.2.0 - 2015-06-XX
 ---
 
 - Add support for animators (using height and marginTop)
+- Set up environment: linting and tests
 
 
 v0.1.1 - 2015-06-26

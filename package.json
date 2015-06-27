@@ -1,8 +1,16 @@
 {
   "name": "react-tabbordion",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "React Tabs, Accordion, Panel, Checkbox list, Radio list Component",
   "main": "index.js",
+  "scripts": {
+    "pretest": "npm run lint",
+    "lint": "eslint .",
+    "prepublish": "npm prune && npm test && npm run build",
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "test": "mocha --reporter spec"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/merri/react-tabbordion.git"
@@ -12,15 +20,13 @@
   "bugs": {
     "url": "https://github.com/merri/react-tabbordion/issues"
   },
-  "homepage": "https://github.com/merri/react-tabbordion",
+  "homepage": "https://merri.github.io/react-tabbordion/",
   "keywords": [
     "react",
     "react-component",
     "accordion",
     "panel",
     "tabs",
-    "single",
-    "multiple",
     "a11y",
     "bem"
   ],
@@ -28,6 +34,17 @@
     "react": "^0.13.3"
   },
   "devDependencies": {
-    "normalize.css": "^3.0.3"
+    "babel-core": "^5.4.3",
+    "babel-loader": "^5.1.2",
+    "chai": "^2.3.0",
+    "eslint": "^0.21.2",
+    "eslint-config-vaffel": "^1.0.0",
+    "eslint-plugin-react": "^2.3.0",
+    "jsdom": "3.1.2",
+    "mocha": "^2.2.5",
+    "mocha-jsdom": "^0.3.0",
+    "normalize.css": "^3.0.3",
+    "node-libs-browser": "^0.5.0",
+    "webpack": "^1.9.7"
   }
 }

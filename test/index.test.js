@@ -54,6 +54,95 @@ describe('Tabbordion', function() {
 
         expect(React.findDOMNode(rendered).nodeName).to.equal('SPAN')
     })
+
+    describe('Panel', function() {
+        var title = React.DOM.span({}, 'Test title')
+
+        it('should inherit properties from parent Tabbordion', function() {
+            var rendered = TestUtils.renderIntoDocument(
+                React.createElement(Tabbordion, {
+                    animateContent: 'height',
+                    classModifiers: {
+                        checked: 'test1',
+                        visibleFirst: 'test5',
+                        visibleLast: 'test6'
+                    },
+                    classNames: {
+                        animator: 'test2',
+                        panel: 'test'
+                    },
+                    classSeparator: '|',
+                    initialIndex: 0,
+                    name: 'test4',
+                    contentTag: 'article',
+                    panelTag: 'section'
+                }, React.createElement(Panel, { title: title }, React.DOM.span({})))
+            )
+
+            var element = React.findDOMNode(rendered).firstChild
+
+            expect(element.getAttribute('class')).to.equal('test test|test1 test|test5 test|test6')
+            expect(element.nodeName).to.equal('SECTION')
+            expect(element.childNodes[2].getAttribute('class')).to.equal(
+                'test2 test2|test1 test2|test5 test2|test6 test2|height'
+            )
+            expect(element.childNodes[0].getAttribute('name')).to.equal('test4')
+            expect(element.childNodes[0].getAttribute('checked')).to.equal('')
+            expect(element.childNodes[0].getAttribute('type')).to.equal('radio')
+            expect(element.childNodes[2].firstChild.nodeName).to.equal('ARTICLE')
+        })
+
+        it('should toggle state in TOGGLE mode when title is clicked', function() {
+            var rendered = TestUtils.renderIntoDocument(
+                React.createElement(
+                    Tabbordion,
+                    { mode: 'toggle' },
+                    React.createElement(Panel, { title: title })
+                )
+            )
+
+            var input = TestUtils.findRenderedDOMComponentWithTag(rendered, 'input')
+            expect(React.findDOMNode(input).checked).to.equal(false)
+
+            var label = TestUtils.findRenderedDOMComponentWithTag(rendered, 'label')
+            TestUtils.Simulate.click(label)
+            expect(React.findDOMNode(input).checked).to.equal(true)
+        })
+
+        it('should toggle state in MULTIPLE mode when title is clicked', function() {
+            var rendered = TestUtils.renderIntoDocument(
+                React.createElement(
+                    Tabbordion,
+                    { mode: 'multiple' },
+                    React.createElement(Panel, { title: title })
+                )
+            )
+
+            var input = TestUtils.findRenderedDOMComponentWithTag(rendered, 'input')
+            expect(React.findDOMNode(input).checked).to.equal(false)
+
+            var label = TestUtils.findRenderedDOMComponentWithTag(rendered, 'label')
+            TestUtils.Simulate.click(label)
+            expect(React.findDOMNode(input).checked).to.equal(true)
+        })
+
+        it('should NOT toggle state in SINGLE mode when title is clicked', function() {
+            var rendered = TestUtils.renderIntoDocument(
+                React.createElement(
+                    Tabbordion,
+                    { initialIndex: 0, mode: 'single' },
+                    React.createElement(Panel, { title: title })
+                )
+            )
+
+            var input = TestUtils.findRenderedDOMComponentWithTag(rendered, 'input')
+            expect(React.findDOMNode(input).checked).to.equal(true)
+
+            var label = TestUtils.findRenderedDOMComponentWithTag(rendered, 'label')
+            TestUtils.Simulate.click(label)
+            expect(React.findDOMNode(input).checked).to.equal(true)
+        })
+    })
 })
 
 describe('Panel', function() {

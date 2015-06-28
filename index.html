@@ -44,6 +44,8 @@ footer {
     text-align: center;
 }
 
+.about a:link,
+.about a:visited,
 footer a:link,
 footer a:visited {
     color: #5AC1ED;
@@ -65,16 +67,57 @@ footer .fa-download {
     clear: both;
     padding: 1em;
 }
+
+.about {
+    list-style: square;
+    margin: 1em 2em 2em;
+}
+
+.about__title {
+    display: list-item;
+    font-weight: bold;
+}
+
+.about__content {
+    margin: 0 0 2em;
+    padding: 0;
+}
         </style>
     </head>
     <body>
         <h1>React Tabbordion Demo</h1>
         <div id="app"></div>
+        <h2>Things to notice</h2>
+        <dl class="about">
+            <dt class="about__title">No forced default styles</dt>
+            <dd class="about__content">
+                <p><strong>You</strong> do the styles. Or you rip these demo styles and customize.</p>
+            </dd>
+            <dt class="about__title">No forced classnames</dt>
+            <dd class="about__content">
+                <p>Tabbordion defaults to <a href="https://css-tricks.com/bem-101/">BEM style</a> classes:
+                panel, panel__state, panel__title, panel__content, panel__animator&hellip; and does the hard work of
+                adding enough modifiers to make styling easy!</p>
+                <p>As you can see by looking at <a href="./demo/app.js">demo app.js</a> or
+                <a href="./demo/accordion.css">CSS files</a> these are customizable and even removable.</p>
+            </dd>
+            <dt class="about__title">No dependencies</dt>
+            <dd class="about__content">
+                <p>This demo uses <a href="http://fortawesome.github.io/Font-Awesome/">Font Awesome</a> in Accordion
+                styles and <a href="http://necolas.github.io/normalize.css/">Normalize.css</a> to unite rendering
+                across browsers. Because default styles are not enforced you don't need to rip these away if you don't
+                happen to like or otherwise need them.</p>
+            </dd>
+        </dl>
         <footer>
             <nav>
-                <a href="https://github.com/Merri/react-tabbordion"><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-github fa-stack-1x fa-lg"></i></span> GitHub: react-tabbordion</a>
+                <a href="https://github.com/Merri/react-tabbordion"><span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-github fa-stack-1x fa-lg"></i>
+                </span> GitHub: react-tabbordion</a>
                 |
-                <a href="https://www.npmjs.com/package/react-tabbordion"><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-download fa-stack-1x fa-lg"></i></span> npm: react-tabbordion</a>
+                <a href="https://www.npmjs.com/package/react-tabbordion"><span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-download fa-stack-1x fa-lg"></i>
+                </span> npm: react-tabbordion</a>
             </nav>
         </footer>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.min.js"></script>

@@ -65,6 +65,26 @@
         return BEM + classNames
     }
 
+    function getCountsOfType(props, reactType) {
+        var count = 0,
+            visibleCount = 0
+
+        React.Children.map(props.children, function(child) {
+            if (child.type === reactType) {
+                count++
+
+                if ((child.props || child._store.props).visible) {
+                    visibleCount++
+                }
+            }
+        })
+
+        return {
+            count: count,
+            visibleCount: visibleCount
+        }
+    }
+
     function getElementHeight(element) {
         var bounds = element.getBoundingClientRect(),
             elementHeightInPixels = Math.ceil(bounds.bottom - bounds.top)
@@ -456,7 +476,7 @@
 
         componentWillMount: function() {
             var checked = this.state.checked,
-                newLength = this.getCountsOfPanels(this.props).count
+                newLength = getCountsOfType(this.props, Panel).count
 
             checked.length = newLength
             for (var index = 0; index < checked.length; index++) {
@@ -472,31 +492,11 @@
 
         componentWillReceiveProps: function(nextProps) {
             var checked = this.state.checked,
-                newLength = this.getCountsOfPanels(nextProps).count
+                newLength = getCountsOfType(nextProps, Panel).count
 
             if (checked.length !== newLength) {
                 checked.length = newLength
                 this.setState({ checked: checked.map(Boolean) })
-            }
-        },
-
-        getCountsOfPanels: function(props) {
-            var count = 0,
-                visibleCount = 0
-
-            React.Children.map(props.children, function(child) {
-                if (child.type === Panel) {
-                    count++
-
-                    if ((child.props || child._store.props).visible) {
-                        visibleCount++
-                    }
-                }
-            })
-
-            return {
-                count: count,
-                visibleCount: visibleCount
             }
         },
 
@@ -565,7 +565,7 @@
                 }
             }
 
-            var panelCounts = this.getCountsOfPanels(this.props)
+            var panelCounts = getCountsOfType(this.props, Panel)
 
             if (elementProps.className) {
                 elementProps.className = classWithModifiers(

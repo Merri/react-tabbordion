@@ -82,6 +82,10 @@
                 'marginTop'
             ]),
             checked: React.PropTypes.bool,
+            children: React.PropTypes.oneOfType([
+                React.PropTypes.arrayOf(React.PropTypes.node),
+                React.PropTypes.node
+            ]),
             classModifiers: React.PropTypes.shape({
                 animated: React.PropTypes.string,
                 checked: React.PropTypes.string,

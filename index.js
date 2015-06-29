@@ -1,7 +1,7 @@
-(function(inBrowser) {
+(function(isCommonJs) {
     'use strict'
 
-    var React = inBrowser ? window.React : require('react')
+    var React = isCommonJs ? require('react') : window.React
 
     var tabbordionUuid = (function() {
         var index = 0
@@ -639,13 +639,13 @@
         }
     })
 
-    if (inBrowser) {
-        window.Panel = Panel
-        window.Tabbordion = Tabbordion
-    } else {
+    if (isCommonJs) {
         module.exports = {
             Panel: Panel,
             Tabbordion: Tabbordion
         }
+    } else {
+        window.Panel = Panel
+        window.Tabbordion = Tabbordion
     }
-})(typeof window !== 'undefined')
+})(typeof exports === 'object')

@@ -142,6 +142,22 @@ describe('Tabbordion', function() {
             TestUtils.Simulate.click(label)
             expect(React.findDOMNode(input).checked).to.equal(true)
         })
+
+        it('\'s existance should affect count modifiers of parent Tabbordion', function() {
+            var rendered = TestUtils.renderIntoDocument(
+                React.createElement(
+                    Tabbordion,
+                    { className: 'test', initialIndex: 0, mode: 'single' },
+                    React.createElement(Panel, { title: title }),
+                    React.createElement(Panel, { title: title }),
+                    React.createElement(Panel, { title: title })
+                )
+            )
+
+            expect(React.findDOMNode(rendered).getAttribute('class')).to.equal(
+                'test test--checked-count-1 test--count-3'
+            )
+        })
     })
 })
 

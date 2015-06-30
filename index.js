@@ -649,7 +649,9 @@
             Panel: Panel,
             Tabbordion: Tabbordion
         }
-    } else {
+    }
+
+    if(typeof window !== 'undefined') {
         window.Panel = Panel
         window.Tabbordion = Tabbordion
     }

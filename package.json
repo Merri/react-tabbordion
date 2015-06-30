@@ -1,6 +1,6 @@
 {
   "name": "react-tabbordion",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "React Tabs, Accordion, Panel, Checkbox list, Radio list Component",
   "main": "index.js",
   "scripts": {
@@ -32,7 +32,7 @@
     "bem"
   ],
   "dependencies": {
-    "react": "^0.13.3"
+    "react": "~0.13.0"
   },
   "devDependencies": {
     "babel-core": "^5.4.3",

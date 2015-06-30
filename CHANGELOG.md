@@ -1,5 +1,10 @@
-v0.2.0 - 2015-06-27
----
+## v0.2.1 - 2015-06-30
+
+- Make isomorphic rendering possible
+- More tests
+
+
+## v0.2.0 - 2015-06-27
 
 - Set up environment: linting, tests, Travis
 - Add first set of tests
@@ -10,13 +15,11 @@ v0.2.0 - 2015-06-27
 - Improve documentation.
 
 
-v0.1.1 - 2015-06-26
----
+## v0.1.1 - 2015-06-26
 
 - Fix critical issue where not working with minified React due to differences in React's internals.
 
 
-v0.1.0 - 2015-06-26
----
+## v0.1.0 - 2015-06-26
 
 - Initial release

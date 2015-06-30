@@ -1,3 +1,8 @@
+## v0.2.2 - 2015-06-30
+
+- Fix crashes with undefined or null children
+
+
 ## v0.2.1 - 2015-06-30
 
 - Make isomorphic rendering possible

@@ -651,7 +651,7 @@
         }
     }
 
-    if(typeof window !== 'undefined') {
+    if (typeof window !== 'undefined') {
         window.Panel = Panel
         window.Tabbordion = Tabbordion
     }

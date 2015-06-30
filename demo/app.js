@@ -1,4 +1,7 @@
 ;(function() {
+    var Tabbordion = React.createFactory(window.Tabbordion),
+        Panel = React.createFactory(window.Panel)
+
     var Demo = React.createClass({
         displayName: 'Demo',
         
@@ -54,8 +57,7 @@
                 React.DOM.header(
                     {},
                     React.DOM.p({}, 'Choose display style and mode:'),
-                    React.createElement(
-                        Tabbordion,
+                    Tabbordion(
                         {
                             className: 'option-list',
                             classNames: {
@@ -66,35 +68,29 @@
                             onChange: this.setState.bind(this)
                         },
                         this.state.demoProps.map(function(props, index) {
-                            return React.createElement(
-                                Panel,
-                                { key: 'demo-' + index, title: React.DOM.span({}, props.demo) }
-                            )
+                            return Panel({
+                                key: 'demo-' + index,
+                                title: React.DOM.span({}, props.demo)
+                            })
                         })
                     )
                 ),
                 React.DOM.section(
                     {},
                     React.DOM.p({}, 'The component below remains the same, it just receives new props:'),
-                    React.createElement(
-                        Tabbordion,
+                    Tabbordion(
                         this.state.demoProps[this.state.index],
-                        React.createElement(
-                            Panel,
+                        Panel(
                             { title: React.DOM.span({}, 'Panel #1') },
                             React.DOM.h2({}, 'Content Be Here'),
                             React.DOM.p({}, 'Unless we have nothing.')
                         ),
-                        React.createElement(
-                            Panel,
+                        Panel(
                             { title: React.DOM.span({}, 'Panel #2') },
                             React.DOM.h2({}, 'More Content Be Here'),
                             React.DOM.p({}, 'But we have something.')
                         ),
-                        React.createElement(
-                            Panel,
-                            { title: React.DOM.span({}, 'Panel #3 - No Content') }
-                        ),
+                        Panel({ title: React.DOM.span({}, 'Panel #3 - No Content') }),
                         // non-Panel elements are allowed to be here
                         React.DOM.div(
                             { className: 'demo' },

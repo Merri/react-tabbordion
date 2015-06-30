@@ -467,27 +467,24 @@
         },
 
         getInitialState: function() {
-            return {
-                checked: [],
-                index: this.props.initialIndex || null,
-                name: tabbordionUuid()
-            }
-        },
-
-        componentWillMount: function() {
-            var checked = this.state.checked,
+            var checked = [],
+                index = this.props.initialIndex === ~~this.props.initialIndex ? this.props.initialIndex : null,
                 newLength = getCountsOfType(this.props, Panel).count
 
             checked.length = newLength
-            for (var index = 0; index < checked.length; index++) {
-                checked[index] = !!checked[index]
+            for (var i = 0; i < checked.length; i++) {
+                checked[i] = !!checked[i]
             }
 
-            if (this.props.initialIndex >= 0 && this.props.initialIndex < newLength) {
-                checked[this.props.initialIndex] = true
+            if (index !== null && index >= 0 && index < newLength) {
+                checked[index] = true
             }
 
-            this.setState({ checked: checked })
+            return {
+                checked: checked,
+                index: index,
+                name: tabbordionUuid()
+            }
         },
 
         componentWillReceiveProps: function(nextProps) {

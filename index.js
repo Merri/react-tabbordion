@@ -341,15 +341,19 @@
                     contentProps,
                     (function(props) {
                         return React.Children.map(props.children, function(child) {
-                            return React.cloneElement(child, {
-                                isPanelChecked: props.checked,
-                                isPanelVisible: props.visible,
-                                panelIndex: props.index,
-                                panelName: props.name,
-                                panelSelectedChecked: props.selectedChecked,
-                                panelSelectedIndex: props.selectedIndex,
-                                setPanelIndex: props.setIndex
-                            })
+                            if (child && (child.props || child._store.props)) {
+                                return React.cloneElement(child, {
+                                    isPanelChecked: props.checked,
+                                    isPanelVisible: props.visible,
+                                    panelIndex: props.index,
+                                    panelName: props.name,
+                                    panelSelectedChecked: props.selectedChecked,
+                                    panelSelectedIndex: props.selectedIndex,
+                                    setPanelIndex: props.setIndex
+                                })
+                            }
+
+                            return child
                         })
                     })(this.props)
                 )
@@ -585,7 +589,11 @@
                         visibleCounter = 0
 
                     return React.Children.map(props.children, function(child, index) {
-                        var isBetween = false, isFirst = false, isLast = false, additionalProps
+                        var isBetween = false, isFirst = false, isLast = false
+
+                        if (!child) {
+                            return child
+                        }
 
                         if (child.type === Panel) {
                             if ((child.props || child._store.props).visible) {
@@ -602,7 +610,7 @@
                                 isBetween = !isFirst && !isLast
                             }
 
-                            additionalProps = {
+                            child = React.cloneElement(child, {
                                 animateContent: props.animateContent,
                                 checked: state.checked[index],
                                 classModifiers: props.classModifiers,
@@ -619,17 +627,17 @@
                                 setIndex: setIndex,
                                 tag: props.panelTag,
                                 type: props.mode === 'multiple' ? 'checkbox' : 'radio'
-                            }
-                        } else {
-                            additionalProps = {
+                            })
+                        } else if (child.props || child._store.props) {
+                            child = React.cloneElement(child, {
                                 panelName: props.name.length ? props.name : state.name,
                                 panelSelectedChecked: state.checked.slice(0),
                                 panelSelectedIndex: state.index,
                                 panelSetIndex: setIndex
-                            }
+                            })
                         }
 
-                        return React.cloneElement(child, additionalProps)
+                        return child
                     })
                 })(this.props, this.state, this.setIndex, panelCounts.visibleCount)
             )

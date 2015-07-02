@@ -52,6 +52,19 @@
         if (i >= 0) {
             classNames = className.slice(i)
             className = className.slice(0, i)
+
+            if (separator.length > 0) {
+                var prefixedClassName = ' ' + className + separator,
+                    prefixedSeparator = ' ' + separator
+
+                for (
+                    i = classNames.indexOf(prefixedSeparator);
+                    i >= 0;
+                    i = classNames.indexOf(prefixedSeparator, i + className.length)
+                ) {
+                    classNames = classNames.replace(prefixedSeparator, prefixedClassName)
+                }
+            }
         }
 
         BEM = className

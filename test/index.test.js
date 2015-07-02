@@ -422,4 +422,21 @@ describe('Panel', function() {
         expect(element.getAttribute('style')).to.equal('display:none;')
         expect(element.childNodes[0].getAttribute('disabled')).to.equal('')
     })
+
+    it('should extend shorthand BEM modifiers', function() {
+        var rendered = TestUtils.renderIntoDocument(
+            React.createElement(Panel, {
+                classModifiers: {},
+                classNames: {
+                    panel: 'test --test1'
+                },
+                className: 'TEST --TEST1',
+                title: title
+            })
+        )
+
+        var element = React.findDOMNode(rendered)
+
+        expect(element.getAttribute('class')).to.equal('test test--test1 TEST test--TEST1')
+    })
 })

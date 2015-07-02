@@ -39,7 +39,7 @@
             className = String(className)
         }
 
-        if (!Array.isArray(modifiers) || modifiers.length === 0) {
+        if (!Array.isArray(modifiers)) {
             return className
         }
 
@@ -380,8 +380,10 @@
                 modifiers.push(classModifiers.noContent)
             }
 
-            elementProps.className = classWithModifiers(classNames.panel, modifiers, separator) + (
-                elementProps.className ? ' ' + elementProps.className : ''
+            elementProps.className = classWithModifiers(
+                classNames.panel + (elementProps.className ? ' ' + elementProps.className : ''),
+                modifiers,
+                separator
             )
 
             return React.createElement(

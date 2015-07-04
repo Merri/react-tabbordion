@@ -61,11 +61,11 @@
                         {
                             className: 'option-list',
                             classNames: {
-                                panel: 'option-item option-item--horizontal',
-                                title: 'option-label option-label--horizontal'
+                                panel: 'option-item --horizontal',
+                                title: 'option-label --horizontal'
                             },
                             initialIndex: this.state.index,
-                            onChange: this.setState.bind(this)
+                            onAfterChange: this.setState.bind(this)
                         },
                         this.state.demoProps.map(function(props, index) {
                             return Panel({

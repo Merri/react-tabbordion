@@ -78,26 +78,6 @@
         return BEM + classNames
     }
 
-    function getCountsOfType(props, reactType) {
-        var count = 0,
-            visibleCount = 0
-
-        React.Children.map(props.children, function(child) {
-            if (child.type === reactType) {
-                count++
-
-                if ((child.props || child._store.props).visible) {
-                    visibleCount++
-                }
-            }
-        })
-
-        return {
-            count: count,
-            visibleCount: visibleCount
-        }
-    }
-
     function getElementHeight(element) {
         var bounds = element.getBoundingClientRect(),
             elementHeightInPixels = Math.ceil(bounds.bottom - bounds.top)
@@ -476,43 +456,71 @@
                     title: 'panel__title'
                 },
                 classSeparator: '--',
-                contentTag: 'div',
                 initialIndex: null,
                 mode: 'single',
                 name: '',
-                panelTag: 'li',
                 tag: 'ul'
             }
         },
 
         getInitialState: function() {
-            var checked = [],
-                index = this.props.initialIndex === ~~this.props.initialIndex ? this.props.initialIndex : null,
-                newLength = getCountsOfType(this.props, Panel).count
+            var index = this.props.initialIndex === ~~this.props.initialIndex ? this.props.initialIndex : null,
+                nextState = this.getNextState(this.props, tabbordionUuid(), [])
 
-            checked.length = newLength
-            for (var i = 0; i < checked.length; i++) {
-                checked[i] = !!checked[i]
+            if (nextState.index === null && index !== null && index >= 0 && index < nextState.count) {
+                nextState.checked[index] = true
+                nextState.index = index
             }
 
-            if (index !== null && index >= 0 && index < newLength) {
-                checked[index] = true
+            return nextState
+        },
+
+        componentWillReceiveProps: function(nextProps) {
+            this.setState(this.getNextState(nextProps, this.state.name, this.state.checked))
+        },
+
+        getNextState: function(props, name, checked) {
+            var childProps,
+                count = 0,
+                index = null,
+                visibleCount = 0
+
+            React.Children.map(props.children, function(child) {
+                if (child.type && child.type === Panel) {
+                    childProps = child.props || child._store.props || {}
+
+                    if (childProps.hasOwnProperty('checked')) {
+                        checked[count] = !!childProps.checked
+                        if (index === null && checked[count]) {
+                            index = count
+                        }
+                    }
+
+                    if (childProps.hasOwnProperty('visible')) {
+                        visibleCount++
+                    }
+
+                    count++
+                }
+            })
+
+            checked.length = count
+
+            for (var i = 0; i < count; i++) {
+                if (typeof checked[i] !== 'boolean') {
+                    checked[i] = !!checked[i]
+                }
+                if (index === null && checked[i]) {
+                    index = i
+                }
             }
 
             return {
                 checked: checked,
+                count: count,
                 index: index,
-                name: tabbordionUuid()
-            }
-        },
-
-        componentWillReceiveProps: function(nextProps) {
-            var checked = this.state.checked,
-                newLength = getCountsOfType(nextProps, Panel).count
-
-            if (checked.length !== newLength) {
-                checked.length = newLength
-                this.setState({ checked: checked.map(Boolean) })
+                name: name,
+                visibleCount: visibleCount
             }
         },
 
@@ -581,8 +589,6 @@
                 }
             }
 
-            var panelCounts = getCountsOfType(this.props, Panel)
-
             if (elementProps.className) {
                 elementProps.className = classWithModifiers(
                     elementProps.className,
@@ -590,7 +596,7 @@
                         'checked-count-' + this.state.checked.reduce(function(count, checked) {
                             return count + checked
                         }, 0),
-                        'count-' + panelCounts.count
+                        'count-' + this.state.count
                     ],
                     this.props.classSeparator
                 )
@@ -599,11 +605,15 @@
             return React.createElement(
                 this.props.tag,
                 elementProps,
-                (function(props, state, setIndex, visibleCount) {
-                    var panelCounter = 0,
+                (function(props, state, setIndex) {
+                    var childProps,
+                        index,
+                        modeType = props.mode === 'multiple' ? 'checkbox' : 'radio',
+                        name = props.name.length ? props.name : state.name,
+                        panelCounter = 0,
                         visibleCounter = 0
 
-                    return React.Children.map(props.children, function(child, index) {
+                    return React.Children.map(props.children, function(child) {
                         var isBetween = false, isFirst = false, isLast = false
 
                         if (!child) {
@@ -611,14 +621,17 @@
                         }
 
                         if (child.type === Panel) {
-                            if ((child.props || child._store.props).visible) {
+                            childProps = child.props || child._store.props || {}
+                            index = panelCounter++
+
+                            if (childProps.visible) {
                                 visibleCounter++
 
                                 if (visibleCounter === 1) {
                                     isFirst = true
                                 }
 
-                                if (visibleCounter === visibleCount) {
+                                if (visibleCounter === state.visibleCount) {
                                     isLast = true
                                 }
 
@@ -631,21 +644,21 @@
                                 classModifiers: props.classModifiers,
                                 classNames: props.classNames,
                                 classSeparator: props.classSeparator,
-                                contentTag: props.contentTag,
-                                index: panelCounter++,
+                                contentTag: props.contentTag || childProps.contentTag,
+                                index: index,
                                 isBetween: isBetween,
                                 isFirst: isFirst,
                                 isLast: isLast,
-                                name: props.name.length ? props.name : state.name,
+                                name: childProps.name || name,
                                 selectedChecked: state.checked.slice(0),
                                 selectedIndex: state.index,
                                 setIndex: setIndex,
-                                tag: props.panelTag,
-                                type: props.mode === 'multiple' ? 'checkbox' : 'radio'
+                                tag: props.panelTag || childProps.tag,
+                                type: childProps.type || modeType
                             })
-                        } else if (child.props || child._store.props) {
+                        } else if (typeof child.type === 'object' && (child.props || child._store.props)) {
                             child = React.cloneElement(child, {
-                                panelName: props.name.length ? props.name : state.name,
+                                panelName: name,
                                 panelSelectedChecked: state.checked.slice(0),
                                 panelSelectedIndex: state.index,
                                 panelSetIndex: setIndex
@@ -654,7 +667,7 @@
 
                         return child
                     })
-                })(this.props, this.state, this.setIndex, panelCounts.visibleCount)
+                })(this.props, this.state, this.setIndex)
             )
         }
     })

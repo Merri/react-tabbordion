@@ -158,9 +158,7 @@
                     title: 'panel__title'
                 },
                 classSeparator: '--',
-                contentTag: 'div',
                 disabled: false,
-                tag: 'li',
                 visible: true
             }
         },
@@ -330,7 +328,7 @@
                 }
 
                 var children = React.createElement(
-                    this.props.contentTag,
+                    this.props.contentTag || 'div',
                     contentProps,
                     (function(props) {
                         return React.Children.map(props.children, function(child) {
@@ -367,7 +365,7 @@
             )
 
             return React.createElement(
-                this.props.tag,
+                this.props.tag || 'li',
                 elementProps,
                 React.DOM.input({
                     'aria-controls': children ? 'panel-' + id : null,
@@ -458,8 +456,7 @@
                 classSeparator: '--',
                 initialIndex: null,
                 mode: 'single',
-                name: '',
-                tag: 'ul'
+                name: ''
             }
         },
 
@@ -603,7 +600,7 @@
             }
 
             return React.createElement(
-                this.props.tag,
+                this.props.tag || 'ul',
                 elementProps,
                 (function(props, state, setIndex) {
                     var childProps,
@@ -644,7 +641,7 @@
                                 classModifiers: props.classModifiers,
                                 classNames: props.classNames,
                                 classSeparator: props.classSeparator,
-                                contentTag: props.contentTag || childProps.contentTag,
+                                contentTag: childProps.contentTag || props.contentTag,
                                 index: index,
                                 isBetween: isBetween,
                                 isFirst: isFirst,
@@ -653,7 +650,7 @@
                                 selectedChecked: state.checked.slice(0),
                                 selectedIndex: state.index,
                                 setIndex: setIndex,
-                                tag: props.panelTag || childProps.tag,
+                                tag: childProps.tag || props.panelTag,
                                 type: childProps.type || modeType
                             })
                         } else if (typeof child.type === 'object' && (child.props || child._store.props)) {

@@ -1,3 +1,10 @@
+## v0.2.3 - 2015-07-05
+
+- Allow Panel props to override ones set by Tabbordion [issue #2](https://github.com/Merri/react-tabbordion/issues/2)
+- Add support for shorthand BEM modifier syntax
+- Fix a bug where checked prop passed to Panel could be incorrect
+
+
 ## v0.2.2 - 2015-06-30
 
 - Fix crashes with undefined or null children

@@ -38,6 +38,11 @@
     transition: background-color 0.125s ease-in-out;
 }
 
+/* fix iOS touch not triggering a click from child elements */
+.accordion-title > * {
+    pointer-events: none;
+}
+
 .accordion-title--first {
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;

@@ -76,7 +76,13 @@ describe('Tabbordion', function() {
                     name: 'test4',
                     contentTag: 'article',
                     panelTag: 'section'
-                }, React.createElement(Panel, { title: title }, React.DOM.span({})))
+                }, React.createElement(Panel, {
+                    animateContent: false,
+                    classModifiers: {},
+                    classNames: {},
+                    classSeparator: '',
+                    title: title
+                }, React.DOM.span({})))
             )
 
             var element = React.findDOMNode(rendered).firstChild
@@ -157,6 +163,48 @@ describe('Tabbordion', function() {
             expect(React.findDOMNode(rendered).getAttribute('class')).to.equal(
                 'test test--checked-count-1 test--count-3'
             )
+        })
+
+        it('should be able to override props set by Tabbordion', function() {
+            var rendered = TestUtils.renderIntoDocument(
+                React.createElement(
+                    Tabbordion,
+                    {
+                        contentTag: 'article',
+                        initialIndex: 1,
+                        mode: 'single',
+                        name: 'TEST1',
+                        panelTag: 'dd',
+                        tag: 'dl'
+                    },
+                    React.createElement(Panel, {
+                        contentTag: 'section',
+                        checked: true,
+                        name: 'test1',
+                        title: title,
+                        type: 'checkbox',
+                        tag: 'dt'
+                    }, React.DOM.span({})),
+                    React.createElement(Panel, { title: title }, React.DOM.span({}))
+                )
+            )
+
+            var tabbordion = React.findDOMNode(rendered)
+            var firstPanel = tabbordion.firstChild
+            var secondPanel = firstPanel.nextSibling
+
+            checkChildrenTags(tabbordion.childNodes, ['DT', 'DD'])
+            checkChildrenTags(firstPanel.childNodes, ['INPUT', 'LABEL', 'SECTION'])
+            checkChildrenTags(secondPanel.childNodes, ['INPUT', 'LABEL', 'ARTICLE'])
+
+            expect(firstPanel.firstChild.checked).to.equal(true)
+            expect(secondPanel.firstChild.checked).to.equal(false)
+
+            expect(firstPanel.firstChild.getAttribute('name')).to.equal('test1')
+            expect(secondPanel.firstChild.getAttribute('name')).to.equal('TEST1')
+
+            expect(firstPanel.firstChild.getAttribute('type')).to.equal('checkbox')
+            expect(secondPanel.firstChild.getAttribute('type')).to.equal('radio')
         })
     })
 })

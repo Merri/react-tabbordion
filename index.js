@@ -473,7 +473,9 @@
         },
 
         componentWillReceiveProps: function(nextProps) {
-            this.setState(this.getNextState(nextProps, this.state.name, this.state.checked))
+            if (!this.stateLocked) {
+                this.setState(this.getNextState(nextProps, this.state.name, this.state.checked))
+            }
         },
 
         getNextState: function(props, name, checked) {
@@ -521,8 +523,13 @@
             }
         },
 
+        // this, my friend, is a hack (getNextState needs further thoughts; render can prevent state change)
+        stateLocked: false,
+
         setIndex: function(newIndex) {
             var newState = { checked: this.state.checked, index: this.state.index }
+
+            this.stateLocked = true
 
             switch (this.props.mode) {
                 // any panel can be open or closed (plausible accordion behavior)
@@ -567,9 +574,12 @@
             if (isFunction(this.props.onAfterChange)) {
                 this.setState(newState, function() {
                     this.props.onAfterChange({ checked: newState.checked.slice(0), index: newState.index })
+                    this.stateLocked = false
                 }.bind(this))
             } else {
-                this.setState(newState)
+                this.setState(newState, function() {
+                    this.stateLocked = false
+                }.bind(this))
             }
 
             if (isFunction(this.props.onChange)) {

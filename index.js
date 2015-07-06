@@ -493,7 +493,7 @@
                         }
                     }
 
-                    if (childProps.hasOwnProperty('visible')) {
+                    if (childProps.visible) {
                         visibleCount++
                     }
 

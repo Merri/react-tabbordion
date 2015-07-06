@@ -1,3 +1,9 @@
+## v0.2.4 - 2015-07-06
+
+- Fix an issue where render could block internal state from changing.
+- Other minor bug fixes.
+
+
 ## v0.2.3 - 2015-07-05
 
 - Allow Panel props to override ones set by Tabbordion [issue #2](https://github.com/Merri/react-tabbordion/issues/2)

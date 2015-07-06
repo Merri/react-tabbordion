@@ -65,7 +65,7 @@
                                 title: 'option-label --horizontal'
                             },
                             initialIndex: this.state.index,
-                            onAfterChange: this.setState.bind(this)
+                            onChange: this.setState.bind(this)
                         },
                         this.state.demoProps.map(function(props, index) {
                             return Panel({

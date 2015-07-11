@@ -1,3 +1,8 @@
+## v0.2.5 - 2015-07-11
+
+- Move React to devDependencies for now.
+
+
 ## v0.2.4 - 2015-07-06
 
 - Fix an issue where render could block internal state from changing.

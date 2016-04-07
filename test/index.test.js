@@ -1,12 +1,13 @@
 'use strict'
 
-var React = require('react/addons'),
+var React = require('react'),
+    ReactDOM = require('react-dom'),
     jsdom = require('mocha-jsdom'),
     expect = require('chai').expect,
     Tabbordion = require('../').Tabbordion,
     Panel = require('../').Panel
 
-var TestUtils = React.addons.TestUtils
+var TestUtils = require('react-addons-test-utils')
 
 function checkChildrenTags(childNodes, tags) {
     expect(childNodes.length).to.equal(tags.length)
@@ -24,7 +25,7 @@ describe('Tabbordion', function() {
             React.createElement(Tabbordion, {})
         )
 
-        expect(React.findDOMNode(rendered).getAttribute('class')).to.equal(null)
+        expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal(null)
     })
 
     it('should extend a class if className is passed as a prop', function() {
@@ -32,7 +33,7 @@ describe('Tabbordion', function() {
             React.createElement(Tabbordion, { className: 'test' })
         )
 
-        expect(React.findDOMNode(rendered).getAttribute('class')).to.equal(
+        expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal(
             'test test--checked-count-0 test--count-0'
         )
     })
@@ -42,7 +43,7 @@ describe('Tabbordion', function() {
             React.createElement(Tabbordion, { className: 'test test--test' })
         )
 
-        expect(React.findDOMNode(rendered).getAttribute('class')).to.equal(
+        expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal(
             'test test--checked-count-0 test--count-0 test--test'
         )
     })
@@ -52,7 +53,7 @@ describe('Tabbordion', function() {
             React.createElement(Tabbordion, { tag: 'span' })
         )
 
-        expect(React.findDOMNode(rendered).nodeName).to.equal('SPAN')
+        expect(ReactDOM.findDOMNode(rendered).nodeName).to.equal('SPAN')
     })
 
     describe('Panel', function() {
@@ -85,7 +86,7 @@ describe('Tabbordion', function() {
                 }, React.DOM.span({})))
             )
 
-            var element = React.findDOMNode(rendered).firstChild
+            var element = ReactDOM.findDOMNode(rendered).firstChild
 
             expect(element.getAttribute('class')).to.equal('test test|test1 test|test5 test|test6')
             expect(element.nodeName).to.equal('SECTION')
@@ -108,11 +109,11 @@ describe('Tabbordion', function() {
             )
 
             var input = TestUtils.findRenderedDOMComponentWithTag(rendered, 'input')
-            expect(React.findDOMNode(input).checked).to.equal(false)
+            expect(ReactDOM.findDOMNode(input).checked).to.equal(false)
 
             var label = TestUtils.findRenderedDOMComponentWithTag(rendered, 'label')
             TestUtils.Simulate.click(label)
-            expect(React.findDOMNode(input).checked).to.equal(true)
+            expect(ReactDOM.findDOMNode(input).checked).to.equal(true)
         })
 
         it('should toggle state in MULTIPLE mode when title is clicked', function() {
@@ -125,11 +126,11 @@ describe('Tabbordion', function() {
             )
 
             var input = TestUtils.findRenderedDOMComponentWithTag(rendered, 'input')
-            expect(React.findDOMNode(input).checked).to.equal(false)
+            expect(ReactDOM.findDOMNode(input).checked).to.equal(false)
 
             var label = TestUtils.findRenderedDOMComponentWithTag(rendered, 'label')
             TestUtils.Simulate.click(label)
-            expect(React.findDOMNode(input).checked).to.equal(true)
+            expect(ReactDOM.findDOMNode(input).checked).to.equal(true)
         })
 
         it('should NOT toggle state in SINGLE mode when title is clicked', function() {
@@ -142,11 +143,11 @@ describe('Tabbordion', function() {
             )
 
             var input = TestUtils.findRenderedDOMComponentWithTag(rendered, 'input')
-            expect(React.findDOMNode(input).checked).to.equal(true)
+            expect(ReactDOM.findDOMNode(input).checked).to.equal(true)
 
             var label = TestUtils.findRenderedDOMComponentWithTag(rendered, 'label')
             TestUtils.Simulate.click(label)
-            expect(React.findDOMNode(input).checked).to.equal(true)
+            expect(ReactDOM.findDOMNode(input).checked).to.equal(true)
         })
 
         it('\'s existance should affect count modifiers of parent Tabbordion', function() {
@@ -160,7 +161,7 @@ describe('Tabbordion', function() {
                 )
             )
 
-            expect(React.findDOMNode(rendered).getAttribute('class')).to.equal(
+            expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal(
                 'test test--checked-count-1 test--count-3'
             )
         })
@@ -189,7 +190,7 @@ describe('Tabbordion', function() {
                 )
             )
 
-            var tabbordion = React.findDOMNode(rendered)
+            var tabbordion = ReactDOM.findDOMNode(rendered)
             var firstPanel = tabbordion.firstChild
             var secondPanel = firstPanel.nextSibling
 
@@ -219,7 +220,7 @@ describe('Panel', function() {
             React.createElement(Panel, { title: title })
         )
 
-        checkChildrenTags(React.findDOMNode(rendered).childNodes, ['INPUT', 'LABEL'])
+        checkChildrenTags(ReactDOM.findDOMNode(rendered).childNodes, ['INPUT', 'LABEL'])
     })
 
     it('should render title prop inside label', function() {
@@ -227,7 +228,7 @@ describe('Panel', function() {
             React.createElement(Panel, { title: title })
         )
 
-        var childNodes = React.findDOMNode(rendered).childNodes
+        var childNodes = ReactDOM.findDOMNode(rendered).childNodes
 
         expect(childNodes[1].firstChild).to.equal(childNodes[1].lastChild)
         expect(childNodes[1].firstChild.nodeName).to.equal('SPAN')
@@ -239,7 +240,7 @@ describe('Panel', function() {
             React.createElement(Panel, { title: title }, React.DOM.span({}))
         )
 
-        var childNodes = React.findDOMNode(rendered).childNodes
+        var childNodes = ReactDOM.findDOMNode(rendered).childNodes
 
         checkChildrenTags(childNodes, ['INPUT', 'LABEL', 'DIV'])
 
@@ -253,7 +254,7 @@ describe('Panel', function() {
             React.createElement(Panel, { title: title })
         )
 
-        expect(React.findDOMNode(rendered).getAttribute('class')).to.equal(
+        expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal(
             'panel panel--unchecked panel--enabled panel--no-content'
         )
     })
@@ -263,7 +264,7 @@ describe('Panel', function() {
             React.createElement(Panel, { className: 'test', title: title })
         )
 
-        expect(React.findDOMNode(rendered).getAttribute('class')).to.equal(
+        expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal(
             'panel panel--unchecked panel--enabled panel--no-content test'
         )
     })
@@ -280,7 +281,7 @@ describe('Panel', function() {
             }, React.DOM.span({}))
         )
 
-        expect(React.findDOMNode(rendered).getAttribute('class')).to.equal(
+        expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal(
             'panel panel--checked panel--disabled panel--between panel--content'
         )
 
@@ -295,7 +296,7 @@ describe('Panel', function() {
             }, React.DOM.span({}))
         )
 
-        expect(React.findDOMNode(rendered).getAttribute('class')).to.equal(
+        expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal(
             'panel panel--checked panel--disabled panel--first panel--last panel--content'
         )
     })
@@ -308,9 +309,9 @@ describe('Panel', function() {
             }, React.DOM.span({}))
         )
 
-        expect(React.findDOMNode(rendered).getAttribute('class')).to.equal('panel')
+        expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal('panel')
 
-        var childNodes = React.findDOMNode(rendered).childNodes
+        var childNodes = ReactDOM.findDOMNode(rendered).childNodes
 
         expect(childNodes[0].getAttribute('class')).to.equal('panel__state')
         expect(childNodes[1].getAttribute('class')).to.equal('panel__title')
@@ -325,9 +326,9 @@ describe('Panel', function() {
             }, React.DOM.span({}))
         )
 
-        expect(React.findDOMNode(rendered).getAttribute('class')).to.equal('panel panel--test')
+        expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal('panel panel--test')
 
-        childNodes = React.findDOMNode(rendered).childNodes
+        childNodes = ReactDOM.findDOMNode(rendered).childNodes
 
         expect(childNodes[0].getAttribute('class')).to.equal('panel__state panel__state--test')
         expect(childNodes[1].getAttribute('class')).to.equal('panel__title panel__title--test')
@@ -339,7 +340,7 @@ describe('Panel', function() {
             React.createElement(Panel, { title: title }, React.DOM.span({}))
         )
 
-        var childNodes = React.findDOMNode(rendered).childNodes
+        var childNodes = ReactDOM.findDOMNode(rendered).childNodes
 
         expect(childNodes[0].getAttribute('class')).to.equal(
             'panel__state panel__state--unchecked panel__state--enabled panel__state--content'
@@ -362,7 +363,7 @@ describe('Panel', function() {
             }, React.DOM.span({}))
         )
 
-        var childNodes = React.findDOMNode(rendered).childNodes
+        var childNodes = ReactDOM.findDOMNode(rendered).childNodes
 
         expect(childNodes[0].getAttribute('class')).to.equal(null)
         expect(childNodes[1].getAttribute('class')).to.equal(null)
@@ -382,7 +383,7 @@ describe('Panel', function() {
             }, React.DOM.span({}))
         )
 
-        var childNodes = React.findDOMNode(rendered).childNodes
+        var childNodes = ReactDOM.findDOMNode(rendered).childNodes
 
         expect(childNodes[0].getAttribute('class')).to.equal('test1')
         expect(childNodes[1].getAttribute('class')).to.equal('test2')
@@ -405,7 +406,7 @@ describe('Panel', function() {
             }, React.DOM.span({}))
         )
 
-        var childNodes = React.findDOMNode(rendered).childNodes
+        var childNodes = ReactDOM.findDOMNode(rendered).childNodes
 
         expect(childNodes[0].getAttribute('class')).to.equal('test1 test1TESTmodifier')
         expect(childNodes[1].getAttribute('class')).to.equal('test2 test2TESTmodifier')
@@ -421,7 +422,7 @@ describe('Panel', function() {
             }, React.DOM.span({}))
         )
 
-        var element = React.findDOMNode(rendered)
+        var element = ReactDOM.findDOMNode(rendered)
 
         expect(element.childNodes[0].getAttribute('name')).to.equal('test')
         expect(element.childNodes[0].getAttribute('value')).to.equal('0')
@@ -440,7 +441,7 @@ describe('Panel', function() {
             }, React.DOM.span({}))
         )
 
-        var element = React.findDOMNode(rendered)
+        var element = ReactDOM.findDOMNode(rendered)
 
         expect(element.getAttribute('aria-expanded')).to.equal('false')
         expect(element.getAttribute('aria-selected')).to.equal('false')
@@ -464,7 +465,7 @@ describe('Panel', function() {
             }, React.DOM.span({}))
         )
 
-        var element = React.findDOMNode(rendered)
+        var element = ReactDOM.findDOMNode(rendered)
 
         expect(element.getAttribute('class')).to.equal('panel')
         expect(element.getAttribute('style')).to.equal('display:none;')
@@ -483,7 +484,7 @@ describe('Panel', function() {
             })
         )
 
-        var element = React.findDOMNode(rendered)
+        var element = ReactDOM.findDOMNode(rendered)
 
         expect(element.getAttribute('class')).to.equal('test test--test1 TEST test--TEST1')
     })

@@ -305,11 +305,11 @@
 
                 var contentProps = {
                     'aria-labelledby': id,
-                    className: classWithModifiers(classNames.content, animatedModifiers, separator),
-                    id: 'panel-' + id,
-                    ref: 'content',
-                    role: 'tabpanel',
-                    style: { marginTop: '' }
+                    'className': classWithModifiers(classNames.content, animatedModifiers, separator),
+                    'id': 'panel-' + id,
+                    'ref': 'content',
+                    'role': 'tabpanel',
+                    'style': { marginTop: '' }
                 }
 
                 var animatorProps = {
@@ -370,17 +370,17 @@
                 elementProps,
                 React.DOM.input({
                     'aria-controls': children ? 'panel-' + id : null,
-                    checked: this.props.checked,
-                    className: classWithModifiers(classNames.state, modifiers, separator),
+                    'checked': this.props.checked,
+                    'className': classWithModifiers(classNames.state, modifiers, separator),
                     'data-state': 'tabbordion',
-                    disabled: !this.props.visible || this.props.disabled,
-                    id: id,
-                    name: this.props.name,
-                    onChange: this.handleInputChange,
-                    ref: 'input',
-                    role: 'tab',
-                    type: this.props.type,
-                    value: value
+                    'disabled': !this.props.visible || this.props.disabled,
+                    'id': id,
+                    'name': this.props.name,
+                    'onChange': this.handleInputChange,
+                    'ref': 'input',
+                    'role': 'tab',
+                    'type': this.props.type,
+                    'value': value
                 }),
                 React.DOM.label(
                     {

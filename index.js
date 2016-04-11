@@ -257,7 +257,8 @@
 
             var elementProps = {
                 'aria-expanded': this.props.children ? ariaSelected : null,
-                'aria-selected': ariaSelected
+                'aria-selected': ariaSelected,
+                'role': 'tab'
             }
 
             for (var key in this.props) {
@@ -378,7 +379,6 @@
                     'name': this.props.name,
                     'onChange': this.handleInputChange,
                     'ref': 'input',
-                    'role': 'tab',
                     'type': this.props.type,
                     'value': value
                 }),

@@ -1,3 +1,10 @@
+## v0.3.2 - 2016-04-11
+- Fix linting.
+- Update dependencies to fix builds.
+- Remind yourself of not releasing when you are tired.
+- Happened anyway.
+
+
 ## v0.3.0 - 2016-04-11
 - Finally an update to React 0.14
 

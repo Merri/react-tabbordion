@@ -1,3 +1,7 @@
+## v0.4.1 - 2016-04-11
+- Fix ARIA role="tab" in the wrong element.
+
+
 ## v0.4.0 - 2016-04-11
 - Upgrade testing to Node 4.4 LTS only.
 - Drop support for testing on Node 0.12 and earlier, because complicated.

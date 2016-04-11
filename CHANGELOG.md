@@ -1,7 +1,10 @@
+## v0.3.0 - 2016-04-11
+- Finally an update to React 0.14
+
+
 ## v0.2.5 - 2015-07-11
 
 - Move React to devDependencies for now.
-
 
 ## v0.2.4 - 2015-07-06
 

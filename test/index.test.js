@@ -445,9 +445,9 @@ describe('Panel', function() {
 
         expect(element.getAttribute('aria-expanded')).to.equal('false')
         expect(element.getAttribute('aria-selected')).to.equal('false')
+        expect(element.getAttribute('role')).to.equal('tab')
 
         expect(element.childNodes[0].getAttribute('aria-controls')).to.equal('panel-test-0')
-        expect(element.childNodes[0].getAttribute('role')).to.equal('tab')
         expect(element.childNodes[0].getAttribute('data-state')).to.equal('tabbordion')
         expect(element.childNodes[2].getAttribute('aria-labelledby')).to.equal('test-0')
         expect(element.childNodes[2].getAttribute('role')).to.equal('tabpanel')

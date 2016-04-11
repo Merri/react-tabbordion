@@ -3,10 +3,11 @@
 [![Build Status](https://travis-ci.org/Merri/react-tabbordion.svg)](https://travis-ci.org/Merri/react-tabbordion)
 
 Provides base for handling state and styles for technically similar components such as tabs, accordions, option lists,
-multiselect lists and so on.
+multiselect lists and so on. This is not a pure component, but is ideal component for cases where you quickly need
+state and don't care about retaining it's state in cases such as page reload.
 
-Solves most CSS issues in elegant BEM'ish conventions. You have total control over style: only one globally required
-rule!
+Handles CSS classes using BEM convention; you write the styles (you're welcome to clone the sample styles), the only
+required style is:
 
 ```css
 [data-state="tabbordion"] {
@@ -19,8 +20,8 @@ rule!
 }
 ```
 
-This hides native HTML input elements so that they remain accessible. While we are at accessibility the component also
-includes ARIA attributes. You can also add CSS-only (= JS disabled) support by using `:checked` in your stylesheets.
+This hides native HTML input elements so that they remain accessible. The component also includes ARIA attributes. You
+can also add CSS-only (= JS disabled) support by using `:checked` in your stylesheets.
 
 
 ## Demo and Installation
@@ -56,8 +57,8 @@ var classNames = {
 
 ```html
 <ul role="tablist" class="tabs tabs--active-count-1 tabs--count-2">
-  <li aria-expanded="true" aria-selected="true" class="tabs-panel tabs-panel--checked tabs-panel--content tabs-panel--first">
-    <input aria-controls="panel-tabs-0" checked data-state="tabbordion" id="tabs-0" name="tabs" role="tab" value="0" type="radio" />
+  <li aria-expanded="true" aria-selected="true" class="tabs-panel tabs-panel--checked tabs-panel--content tabs-panel--first" role="tab">
+    <input aria-controls="panel-tabs-0" checked data-state="tabbordion" id="tabs-0" name="tabs" value="0" type="radio" />
     <label class="tabs-title tabs-title--checked tabs-title--content tabs-title--first" id="label-tabs-0" for="tabs-0">
       <span>My title</span>
     </label>
@@ -66,8 +67,8 @@ var classNames = {
       <p>Content</p>
     </div>
   </li>
-  <li aria-expanded="false" aria-selected="false" class="tabs-panel tabs-panel--unchecked tabs-panel--content tabs-panel--last">
-    <input aria-controls="panel-tabs-1" data-state="tabbordion" id="tabs-1" name="tabs" role="tab" value="1" type="radio" />
+  <li aria-expanded="false" aria-selected="false" class="tabs-panel tabs-panel--unchecked tabs-panel--content tabs-panel--last" role="tab">
+    <input aria-controls="panel-tabs-1" data-state="tabbordion" id="tabs-1" name="tabs" value="1" type="radio" />
     <label class="tabs-title tabs-title--unchecked tabs-title--content tabs-title--last" id="label-tabs-1" for="tabs-1">
       <span>Another title</span>
     </label>
@@ -240,7 +241,7 @@ npm install
 npm test
 ```
 
-**Note!** This component uses jsdom 3.1.7 in it's tests. This means you may need to install stuff, especially on Windows. The following is copied from [node-jsdom's readme](https://github.com/darrylwest/node-jsdom):
+**Note!** This component uses jsdom in it's tests. This means you may need to install stuff, especially on Windows. The following is copied from [node-jsdom's readme](https://github.com/darrylwest/node-jsdom):
 
 ### Contextify
 

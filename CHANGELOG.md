@@ -1,3 +1,7 @@
+## v0.3.3 - 2016-04-11
+- Update outdated Travis config.
+
+
 ## v0.3.2 - 2016-04-11
 - Fix linting.
 - Update dependencies to fix builds.
@@ -12,6 +16,7 @@
 ## v0.2.5 - 2015-07-11
 
 - Move React to devDependencies for now.
+
 
 ## v0.2.4 - 2015-07-06
 

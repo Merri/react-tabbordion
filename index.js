@@ -2,6 +2,7 @@
     'use strict'
 
     var React = isCommonJs ? require('react') : window.React
+    var ReactDOM = isCommonJs ? require('react-dom') : window.ReactDOM
 
     var tabbordionUuid = (function() {
         var index = 0
@@ -188,8 +189,8 @@
 
         updateHeight: function() {
             if (this.props.animateContent && this.refs.content) {
-                var animator = React.findDOMNode(this.refs.animator),
-                    content = React.findDOMNode(this.refs.content),
+                var animator = ReactDOM.findDOMNode(this.refs.animator),
+                    content = ReactDOM.findDOMNode(this.refs.content),
                     height = null
 
                 switch (this.props.animateContent) {
@@ -247,7 +248,7 @@
 
         handleLabelClick: function(event) {
             event.preventDefault()
-            var input = React.findDOMNode(this.refs.input)
+            var input = ReactDOM.findDOMNode(this.refs.input)
             input.click()
         },
 

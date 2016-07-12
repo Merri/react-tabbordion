@@ -4,7 +4,7 @@
 
 Provides base for handling state and styles for technically similar components such as tabs, accordions, option lists,
 multiselect lists and so on. This is not a pure component, but is ideal component for cases where you quickly need
-state and don't care about retaining it's state in cases such as page reload.
+state and don't care about retaining it in cases such as when hydrating state from server.
 
 Handles CSS classes using BEM convention; you write the styles (you're welcome to clone the sample styles), the only
 required style is:

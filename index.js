@@ -489,8 +489,8 @@
                 if (child.type && child.type === Panel) {
                     childProps = child.props || child._store.props || {}
 
-                    if (childProps.hasOwnProperty('checked')) {
-                        checked[count] = !!childProps.checked
+                    if (typeof childProps.checked === 'boolean') {
+                        checked[count] = childProps.checked
                         if (index === null && checked[count]) {
                             index = count
                         }

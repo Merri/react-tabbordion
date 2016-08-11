@@ -301,7 +301,7 @@
                 }
             }
 
-            if (this.props.children) {
+            if (React.Children.count(this.props.children)) {
                 var animatedModifiers = modifiers.concat(this.props.animateContent)
 
                 var contentProps = {

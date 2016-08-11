@@ -1,3 +1,10 @@
+## v0.4.3 - 2016-08-11
+- Remember that you have a changelog
+- Now React 15 friendly
+- Fix: empty array no longer is counted as "having content"
+- Fix: passing `undefined` as value to checked property is no longer understood as explicit `false`
+- Fix: no longer pass extra Tabbordion related props to non-component children of Panel
+
 ## v0.4.1 - 2016-04-11
 - Fix ARIA role="tab" in the wrong element.
 

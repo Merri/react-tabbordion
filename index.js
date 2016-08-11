@@ -334,7 +334,7 @@
                     contentProps,
                     (function(props) {
                         return React.Children.map(props.children, function(child) {
-                            if (child && (child.props || child._store.props) && typeof child.type !== 'string') {
+                            if (child && typeof child.type === 'object' && (child.props || child._store.props)) {
                                 return React.cloneElement(child, {
                                     isPanelChecked: props.checked,
                                     isPanelVisible: props.visible,

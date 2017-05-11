@@ -1,3 +1,13 @@
+## v0.5.1 - 2017-05-11
+- I have a changelog it seems
+- Require `.isPanel` and `.isPanelChild` in components that depend on Tabbordion or Panel respectively.
+
+## v0.5.0 - 2017-05-11
+- Update to React 15.5
+- Update to ES6 class syntax
+- Update linting
+- Fix minor bug when checking for `child.type`
+
 ## v0.4.3 - 2016-08-11
 - Remember that you have a changelog
 - Now React 15 friendly

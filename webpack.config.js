@@ -4,12 +4,12 @@ var webpack = require('webpack')
 var config = {
     devtool: process.env.NODE_ENV === 'production' ? false : 'eval',
 
-    entry: ['./index.js'],
+    entry: ['./src/index.js'],
 
     output: {
-        path: path.join(__dirname, 'dist'),
-        filename: 'react-tabbordion.min.js',
-        publicPath: '/dist'
+        path: path.join(__dirname, ''),
+        filename: 'index.js',
+        publicPath: '/'
     },
 
     externals: {

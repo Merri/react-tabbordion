@@ -486,7 +486,7 @@
                 visibleCount = 0
 
             React.Children.map(props.children, function(child) {
-                if (child.type && child.type === Panel) {
+                if (child && child.type === Panel) {
                     childProps = child.props || child._store.props || {}
 
                     if (typeof childProps.checked === 'boolean') {

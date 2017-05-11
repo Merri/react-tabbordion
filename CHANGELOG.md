@@ -1,3 +1,7 @@
+## v0.5.5 - 2017-05-11
+- Fix incorrect main filename in package.json
+
+
 ## v0.5.4 - 2017-05-11
 - Suddenly remember why I didn't use ES2015 syntax in earlier releases
 - Fixes import

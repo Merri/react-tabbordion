@@ -1,6 +1,6 @@
 {
   "name": "react-tabbordion",
-  "version": "0.4.3",
+  "version": "0.5.0",
   "description": "React Tabs, Accordion, Panel, Checkbox list, Radio list Component",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,7 @@
     "build": "NODE_ENV=production webpack",
     "build_windows": "set NODE_ENV=production&&webpack",
     "watch": "webpack --watch",
-    "test": "mocha --reporter spec"
+    "test": "mocha --compilers js:babel-core/register --reporter spec"
   },
   "repository": {
     "type": "git",
@@ -35,16 +35,15 @@
     "babel-core": "~5.8.0",
     "babel-loader": "~5.4.0",
     "chai": "~2.3.0",
-    "eslint": "~1.10.0",
-    "eslint-config-vaffel": "~4.0.0",
-    "eslint-plugin-react": "~2.7.0",
+    "eslint": "~3.19.0",
+    "eslint-plugin-react": "~7.0.0",
     "jsdom": "~7.0.0",
     "mocha": "~2.4.5",
     "mocha-jsdom": "~1.1.0",
     "node-libs-browser": "~0.5.0",
-    "react": "~0.14.0",
-    "react-dom": "~0.14.0",
-    "react-addons-test-utils": "~0.14.0",
+    "prop-types": "^15.5.9",
+    "react": "~15.5.0",
+    "react-dom": "~15.5.0",
     "webpack": "~1.12.0"
   }
 }

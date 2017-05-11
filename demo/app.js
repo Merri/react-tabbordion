@@ -4,7 +4,7 @@
 
     var Demo = React.createClass({
         displayName: 'Demo',
-        
+
         getInitialState: function() {
             var INITIAL = 0
 
@@ -103,5 +103,5 @@
         }
     })
 
-    React.render(React.createElement(Demo), document.getElementById('app'))
+    ReactDOM.render(React.createElement(Demo), document.getElementById('app'))
 })();

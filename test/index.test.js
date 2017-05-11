@@ -1,13 +1,14 @@
+/* global describe,it */
 'use strict'
 
-var React = require('react'),
-    ReactDOM = require('react-dom'),
-    jsdom = require('mocha-jsdom'),
-    expect = require('chai').expect,
-    Tabbordion = require('../').Tabbordion,
-    Panel = require('../').Panel
+var React = require('react')
+var ReactDOM = require('react-dom')
+var jsdom = require('mocha-jsdom')
+var expect = require('chai').expect
+var Tabbordion = require('../').Tabbordion
+var Panel = require('../').Panel
 
-var TestUtils = require('react-addons-test-utils')
+var TestUtils = require('react-dom/test-utils')
 
 function checkChildrenTags(childNodes, tags) {
     expect(childNodes.length).to.equal(tags.length)
@@ -94,7 +95,7 @@ describe('Tabbordion', function() {
                 'test2 test2|test1 test2|test5 test2|test6 test2|height'
             )
             expect(element.childNodes[0].getAttribute('name')).to.equal('test4')
-            expect(element.childNodes[0].getAttribute('checked')).to.equal('')
+            expect(element.childNodes[0].getAttribute('checked')).to.be.null
             expect(element.childNodes[0].getAttribute('type')).to.equal('radio')
             expect(element.childNodes[2].firstChild.nodeName).to.equal('ARTICLE')
         })
@@ -468,7 +469,7 @@ describe('Panel', function() {
         var element = ReactDOM.findDOMNode(rendered)
 
         expect(element.getAttribute('class')).to.equal('panel')
-        expect(element.getAttribute('style')).to.equal('display:none;')
+        expect(element.getAttribute('style')).to.equal('display: none;')
         expect(element.childNodes[0].getAttribute('disabled')).to.equal('')
     })
 

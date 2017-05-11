@@ -1,18 +1,17 @@
 (function(isCommonJs) {
-    'use strict'
+    const React = isCommonJs ? require('react') : window.React
+    const ReactDOM = isCommonJs ? require('react-dom') : window.ReactDOM
+    const PropTypes = isCommonJs ? require('prop-types') : window.PropTypes
 
-    var React = isCommonJs ? require('react') : window.React
-    var ReactDOM = isCommonJs ? require('react-dom') : window.ReactDOM
-
-    var tabbordionUuid = (function() {
-        var index = 0
+    const tabbordionUuid = (function() {
+        let index = 0
 
         return function() {
             return 'tabbordion-' + index++
         }
     })()
 
-    var isFunction = (function() {
+    const isFunction = (function() {
         function typeOfFn(fn) {
             return typeof fn === 'function'
         }
@@ -30,7 +29,7 @@
     })()
 
     function classWithModifiers(className, modifiers, separator) {
-        var BEM, classNames = '', i
+        let classNames = ''
 
         if (className == null) {
             return null
@@ -48,15 +47,15 @@
             separator = '--'
         }
 
-        i = className.indexOf(' ')
+        let i = className.indexOf(' ')
 
         if (i >= 0) {
             classNames = className.slice(i)
             className = className.slice(0, i)
 
             if (separator.length > 0) {
-                var prefixedClassName = ' ' + className + separator,
-                    prefixedSeparator = ' ' + separator
+                let prefixedClassName = ' ' + className + separator
+                let prefixedSeparator = ' ' + separator
 
                 for (
                     i = classNames.indexOf(prefixedSeparator);
@@ -68,7 +67,7 @@
             }
         }
 
-        BEM = className
+        let BEM = className
 
         for (i = 0; i < modifiers.length; i++) {
             if ((typeof modifiers[i] === 'string') && (modifiers[i].length > 0)) {
@@ -80,124 +79,60 @@
     }
 
     function getElementHeight(element) {
-        var bounds = element.getBoundingClientRect(),
-            elementHeightInPixels = Math.ceil(bounds.bottom - bounds.top)
+        let bounds = element.getBoundingClientRect()
+        let elementHeightInPixels = Math.ceil(bounds.bottom - bounds.top)
 
         return elementHeightInPixels
     }
 
-    var Panel = React.createClass({
-        displayName: 'Panel',
+    class Panel extends React.Component {
+        constructor(props) {
+            super(props)
 
-        propTypes: {
-            animateContent: React.PropTypes.oneOf([
-                false,
-                'height',
-                'marginTop'
-            ]),
-            checked: React.PropTypes.bool,
-            children: React.PropTypes.oneOfType([
-                React.PropTypes.arrayOf(React.PropTypes.node),
-                React.PropTypes.node
-            ]),
-            classModifiers: React.PropTypes.shape({
-                animated: React.PropTypes.string,
-                checked: React.PropTypes.string,
-                content: React.PropTypes.string,
-                disabled: React.PropTypes.string,
-                enabled: React.PropTypes.string,
-                noContent: React.PropTypes.string,
-                unchecked: React.PropTypes.string,
-                visibleBetween: React.PropTypes.string,
-                visibleFirst: React.PropTypes.string,
-                visibleLast: React.PropTypes.string
-            }),
-            classNames: React.PropTypes.shape({
-                animator: React.PropTypes.string,
-                content: React.PropTypes.string,
-                panel: React.PropTypes.string,
-                state: React.PropTypes.string,
-                title: React.PropTypes.string
-            }),
-            classSeparator: React.PropTypes.string,
-            contentTag: React.PropTypes.string,
-            disabled: React.PropTypes.bool,
-            index: React.PropTypes.number,
-            isBetween: React.PropTypes.bool,
-            isFirst: React.PropTypes.bool,
-            isLast: React.PropTypes.bool,
-            name: React.PropTypes.string,
-            selectedChecked: React.PropTypes.array,
-            selectedIndex: React.PropTypes.number,
-            setIndex: React.PropTypes.func,
-            tag: React.PropTypes.string,
-            title: React.PropTypes.node.isRequired,
-            type: React.PropTypes.oneOf(['checkbox', 'radio']),
-            visible: React.PropTypes.bool
-        },
-
-        getDefaultProps: function() {
-            return {
-                animateContent: false,
-                classModifiers: {
-                    animated: 'animated',
-                    checked: 'checked',
-                    content: 'content',
-                    disabled: 'disabled',
-                    enabled: 'enabled',
-                    noContent: 'no-content',
-                    unchecked: 'unchecked',
-                    visibleBetween: 'between',
-                    visibleFirst: 'first',
-                    visibleLast: 'last'
-                },
-                classNames: {
-                    animator: 'panel__animator',
-                    content: 'panel__content',
-                    panel: 'panel',
-                    state: 'panel__state',
-                    title: 'panel__title'
-                },
-                classSeparator: '--',
-                disabled: false,
-                visible: true
-            }
-        },
-
-        getInitialState: function() {
-            return {
+            this.state = {
                 contentHeight: null
             }
-        },
 
-        componentDidMount: function() {
+            this.tag = props.tag || 'li'
+
+            this.handleInputChange = this.handleInputChange.bind(this)
+            this.handleLabelClick = this.handleLabelClick.bind(this)
+            this.updateHeight = this.updateHeight.bind(this)
+        }
+
+        componentDidMount() {
             this.updateHeight()
+
             if (window.addEventListener) {
-                addEventListener('resize', this.updateHeight)
+                window.addEventListener('resize', this.updateHeight, false)
             }
-        },
+        }
 
-        componentDidUpdate: function() {
+        componentDidUpdate() {
             this.updateHeight()
-        },
+        }
 
-        componentWillUnmount: function() {
+        componentWillReceiveProps(nextProps) {
+            this.tag = nextProps.tag || 'li'
+        }
+
+        componentWillUnmount() {
             if (window.removeEventListener) {
-                removeEventListener('resize', this.updateHeight)
+                window.removeEventListener('resize', this.updateHeight, false)
             }
-        },
+        }
 
-        updateHeight: function() {
+        updateHeight() {
             if (this.props.animateContent && this.refs.content) {
-                var animator = ReactDOM.findDOMNode(this.refs.animator),
-                    content = ReactDOM.findDOMNode(this.refs.content),
-                    height = null
+                const animator = ReactDOM.findDOMNode(this.refs.animator)
+                const content = ReactDOM.findDOMNode(this.refs.content)
+                let height = null
 
                 switch (this.props.animateContent) {
                     case 'height':
                         height = this.props.checked ? getElementHeight(content) : 0
 
-                        var cssHeight = height + 'px'
+                        const cssHeight = height + 'px'
 
                         if (animator.style.height === cssHeight) {
                             return
@@ -219,7 +154,7 @@
                             return
                         }
 
-                        var marginTop = -height + 'px'
+                        const marginTop = -height + 'px'
 
                         if (content.style.marginTop === marginTop) {
                             return
@@ -240,28 +175,28 @@
                     this.state.height = height
                 }
             }
-        },
+        }
 
-        handleInputChange: function() {
+        handleInputChange() {
             this.props.setIndex(this.props.index)
-        },
+        }
 
-        handleLabelClick: function(event) {
+        handleLabelClick(event) {
             event.preventDefault()
-            var input = ReactDOM.findDOMNode(this.refs.input)
-            input.click()
-        },
+            const input = ReactDOM.findDOMNode(this.refs.input)
+            if (input) input.click()
+        }
 
-        render: function() {
-            var ariaSelected = this.props.checked ? 'true' : 'false'
+        render() {
+            const ariaSelected = this.props.checked ? 'true' : 'false'
 
-            var elementProps = {
+            const elementProps = {
                 'aria-expanded': this.props.children ? ariaSelected : null,
                 'aria-selected': ariaSelected,
                 'role': 'tab'
             }
 
-            for (var key in this.props) {
+            for (let key in this.props) {
                 if (this.props.hasOwnProperty(key) && !Panel.propTypes.hasOwnProperty(key)) {
                     elementProps[key] = this.props[key]
                 }
@@ -272,13 +207,13 @@
                 elementProps.style.display = 'none'
             }
 
-            var classNames = this.props.classNames,
-                separator = this.props.classSeparator,
-                id = this.props.name + '-' + this.props.index,
-                value = '' + this.props.index
+            const classNames = this.props.classNames
+            const separator = this.props.classSeparator
+            const id = this.props.name + '-' + this.props.index
+            const value = '' + this.props.index
 
-            var classModifiers = this.props.classModifiers,
-                modifiers = []
+            const classModifiers = this.props.classModifiers
+            const modifiers = []
 
             if (this.props.animateContent) {
                 modifiers.push(classModifiers.animated)
@@ -302,9 +237,9 @@
             }
 
             if (React.Children.count(this.props.children)) {
-                var animatedModifiers = modifiers.concat(this.props.animateContent)
+                const animatedModifiers = modifiers.concat(this.props.animateContent)
 
-                var contentProps = {
+                const contentProps = {
                     'aria-labelledby': id,
                     'className': classWithModifiers(classNames.content, animatedModifiers, separator),
                     'id': 'panel-' + id,
@@ -313,7 +248,7 @@
                     'style': { marginTop: '' }
                 }
 
-                var animatorProps = {
+                const animatorProps = {
                     className: classWithModifiers(classNames.animator, animatedModifiers, separator),
                     ref: 'animator',
                     style: { height: '', overflow: 'hidden' }
@@ -366,169 +301,173 @@
                 separator
             )
 
-            return React.createElement(
-                this.props.tag || 'li',
-                elementProps,
-                React.DOM.input({
-                    'aria-controls': children ? 'panel-' + id : null,
-                    'checked': this.props.checked,
-                    'className': classWithModifiers(classNames.state, modifiers, separator),
-                    'data-state': 'tabbordion',
-                    'disabled': !this.props.visible || this.props.disabled,
-                    'id': id,
-                    'name': this.props.name,
-                    'onChange': this.handleInputChange,
-                    'ref': 'input',
-                    'type': this.props.type,
-                    'value': value
-                }),
-                React.DOM.label(
-                    {
-                        className: classWithModifiers(classNames.title, modifiers, separator),
-                        id: 'label-' + id,
-                        htmlFor: id,
-                        onClick: this.handleLabelClick
-                    },
-                    this.props.title
-                ),
-                children
+            return (
+                <this.tag {...elementProps}>
+                    <input
+                        aria-controls={children ? 'panel-' + id : null}
+                        checked={this.props.checked}
+                        className={classWithModifiers(classNames.state, modifiers, separator)}
+                        data-state="tabbordion"
+                        disabled={!this.props.visible || this.props.disabled}
+                        id={id}
+                        name={this.props.name}
+                        onChange={this.handleInputChange}
+                        ref="input"
+                        type={this.props.type}
+                        value={value}
+                    />
+                    <label
+                        className={classWithModifiers(classNames.title, modifiers, separator)}
+                        id={'label-' + id}
+                        htmlFor={id}
+                        onClick={this.handleLabelClick}
+                    >
+                        {this.props.title}
+                    </label>
+                    {children}
+                </this.tag>
             )
         }
-    })
+    }
 
-    var Tabbordion = React.createClass({
-        displayName: 'Tabbordion',
-
-        propTypes: {
-            animateContent: React.PropTypes.oneOf([false, 'height', 'marginTop']),
-            classModifiers: React.PropTypes.shape({
-                animated: React.PropTypes.string,
-                checked: React.PropTypes.string,
-                content: React.PropTypes.string,
-                disabled: React.PropTypes.string,
-                enabled: React.PropTypes.string,
-                noContent: React.PropTypes.string,
-                unchecked: React.PropTypes.string,
-                visibleBetween: React.PropTypes.string,
-                visibleFirst: React.PropTypes.string,
-                visibleLast: React.PropTypes.string
-            }),
-            classNames: React.PropTypes.shape({
-                animator: React.PropTypes.string,
-                content: React.PropTypes.string,
-                panel: React.PropTypes.string,
-                state: React.PropTypes.string,
-                title: React.PropTypes.string
-            }),
-            classSeparator: React.PropTypes.string,
-            contentTag: React.PropTypes.string,
-            initialIndex: React.PropTypes.number,
-            mode: React.PropTypes.oneOf(['multiple', 'single', 'toggle']),
-            name: React.PropTypes.string,
-            onAfterChange: React.PropTypes.func,
-            onBeforeChange: React.PropTypes.func,
-            onChange: React.PropTypes.func,
-            panelTag: React.PropTypes.string,
-            tag: React.PropTypes.string
+    Panel.defaultProps = {
+        animateContent: false,
+        classModifiers: {
+            animated: 'animated',
+            checked: 'checked',
+            content: 'content',
+            disabled: 'disabled',
+            enabled: 'enabled',
+            noContent: 'no-content',
+            unchecked: 'unchecked',
+            visibleBetween: 'between',
+            visibleFirst: 'first',
+            visibleLast: 'last'
         },
+        classNames: {
+            animator: 'panel__animator',
+            content: 'panel__content',
+            panel: 'panel',
+            state: 'panel__state',
+            title: 'panel__title'
+        },
+        classSeparator: '--',
+        disabled: false,
+        visible: true
+    }
 
-        getDefaultProps: function() {
-            return {
-                animateContent: false,
-                classModifiers: {
-                    animated: 'animated',
-                    checked: 'checked',
-                    content: 'content',
-                    disabled: 'disabled',
-                    enabled: 'enabled',
-                    noContent: 'no-content',
-                    unchecked: 'unchecked',
-                    visibleBetween: 'between',
-                    visibleFirst: 'first',
-                    visibleLast: 'last'
-                },
-                classNames: {
-                    animator: 'panel__animator',
-                    content: 'panel__content',
-                    panel: 'panel',
-                    state: 'panel__state',
-                    title: 'panel__title'
-                },
-                classSeparator: '--',
-                initialIndex: null,
-                mode: 'single',
-                name: ''
+    Panel.propTypes = {
+        animateContent: PropTypes.oneOf([
+            false,
+            'height',
+            'marginTop'
+        ]),
+        checked: PropTypes.bool,
+        children: PropTypes.oneOfType([
+            PropTypes.arrayOf(PropTypes.node),
+            PropTypes.node
+        ]),
+        classModifiers: PropTypes.shape({
+            animated: PropTypes.string,
+            checked: PropTypes.string,
+            content: PropTypes.string,
+            disabled: PropTypes.string,
+            enabled: PropTypes.string,
+            noContent: PropTypes.string,
+            unchecked: PropTypes.string,
+            visibleBetween: PropTypes.string,
+            visibleFirst: PropTypes.string,
+            visibleLast: PropTypes.string
+        }),
+        classNames: PropTypes.shape({
+            animator: PropTypes.string,
+            content: PropTypes.string,
+            panel: PropTypes.string,
+            state: PropTypes.string,
+            title: PropTypes.string
+        }),
+        classSeparator: PropTypes.string,
+        contentTag: PropTypes.string,
+        disabled: PropTypes.bool,
+        index: PropTypes.number,
+        isBetween: PropTypes.bool,
+        isFirst: PropTypes.bool,
+        isLast: PropTypes.bool,
+        name: PropTypes.string,
+        selectedChecked: PropTypes.array,
+        selectedIndex: PropTypes.number,
+        setIndex: PropTypes.func,
+        tag: PropTypes.string,
+        title: PropTypes.node.isRequired,
+        type: PropTypes.oneOf(['checkbox', 'radio']),
+        visible: PropTypes.bool
+    }
+
+    function getNextState(props, name, checked) {
+        let count = 0
+        let index = null
+        let visibleCount = 0
+
+        React.Children.forEach(props.children, function(child) {
+            if (child && child.type === Panel) {
+                const childProps = child.props || child._store.props || {}
+
+                if (typeof childProps.checked === 'boolean') {
+                    checked[count] = childProps.checked
+                    if (index === null && checked[count]) {
+                        index = count
+                    }
+                }
+
+                if (childProps.visible) {
+                    visibleCount++
+                }
+
+                count++
             }
-        },
+        })
 
-        getInitialState: function() {
-            var index = this.props.initialIndex === ~~this.props.initialIndex ? this.props.initialIndex : null,
-                nextState = this.getNextState(this.props, tabbordionUuid(), [])
+        checked.length = count
 
-            if (nextState.index === null && index !== null && index >= 0 && index < nextState.count) {
-                nextState.checked[index] = true
-                nextState.index = index
+        for (let i = 0; i < count; i++) {
+            if (typeof checked[i] !== 'boolean') {
+                checked[i] = !!checked[i]
+            }
+            if (index === null && checked[i]) {
+                index = i
+            }
+        }
+
+        return { checked, count, index, name, visibleCount }
+    }
+
+    class Tabbordion extends React.Component {
+        constructor(props) {
+            super(props)
+
+            // this, my friend, is a hack (getNextState needs further thoughts; render can prevent state change)
+            this.stateLocked = false
+
+            this.state = getNextState(props, tabbordionUuid(), [])
+
+            const index = props.initialIndex === ~~props.initialIndex ? props.initialIndex : null
+            // handle initial index
+            if (this.state.index === null && index !== null && index >= 0 && index < this.state.count) {
+                this.state.checked[index] = true
+                this.state.index = index
             }
 
-            return nextState
-        },
+            this.setIndex = this.setIndex.bind(this)
+        }
 
-        componentWillReceiveProps: function(nextProps) {
+        componentWillReceiveProps(nextProps) {
             if (!this.stateLocked) {
-                this.setState(this.getNextState(nextProps, this.state.name, this.state.checked))
+                this.setState(getNextState(nextProps, this.state.name, this.state.checked))
             }
-        },
+        }
 
-        getNextState: function(props, name, checked) {
-            var childProps,
-                count = 0,
-                index = null,
-                visibleCount = 0
-
-            React.Children.map(props.children, function(child) {
-                if (child && child.type === Panel) {
-                    childProps = child.props || child._store.props || {}
-
-                    if (typeof childProps.checked === 'boolean') {
-                        checked[count] = childProps.checked
-                        if (index === null && checked[count]) {
-                            index = count
-                        }
-                    }
-
-                    if (childProps.visible) {
-                        visibleCount++
-                    }
-
-                    count++
-                }
-            })
-
-            checked.length = count
-
-            for (var i = 0; i < count; i++) {
-                if (typeof checked[i] !== 'boolean') {
-                    checked[i] = !!checked[i]
-                }
-                if (index === null && checked[i]) {
-                    index = i
-                }
-            }
-
-            return {
-                checked: checked,
-                count: count,
-                index: index,
-                name: name,
-                visibleCount: visibleCount
-            }
-        },
-
-        // this, my friend, is a hack (getNextState needs further thoughts; render can prevent state change)
-        stateLocked: false,
-
-        setIndex: function(newIndex) {
-            var newState = { checked: this.state.checked, index: this.state.index }
+        setIndex(newIndex) {
+            let newState = { checked: this.state.checked, index: this.state.index }
 
             this.stateLocked = true
 
@@ -537,27 +476,25 @@
                 case 'multiple':
                     newState.index = newIndex
                     newState.checked[newIndex] = !newState.checked[newIndex]
-                    break;
+                    break
                 // one panel is always open (normal tabs behavior)
                 case 'single':
                     newState.index = newIndex
-                    newState.checked = newState.checked.map(function(checked, index) {
-                        return index === newIndex
-                    })
-                    break;
+                    newState.checked = newState.checked.map((checked, index) => index === newIndex)
+                    break
                 // only one panel may be open at one time (normal accordion behavior)
                 case 'toggle':
                     newState.index = newState.index !== newIndex ? newIndex : null
-                    newState.checked = newState.checked.map(function(checked, index) {
-                        return index === newIndex && newIndex === newState.index
-                    })
-                    break;
+                    newState.checked = newState.checked.map(
+                        (checked, index) => index === newIndex && newIndex === newState.index
+                    )
+                    break
                 default:
                     throw new Error('unknown mode: ' + this.props.mode)
             }
 
             if (isFunction(this.props.onBeforeChange)) {
-                var stateOverride = this.props.onBeforeChange(
+                const stateOverride = this.props.onBeforeChange(
                     { checked: newState.checked.slice(0), index: newState.index },
                     { checked: this.state.checked.slice(0), index: this.state.index }
                 )
@@ -573,25 +510,25 @@
             }
 
             if (isFunction(this.props.onAfterChange)) {
-                this.setState(newState, function() {
+                this.setState(newState, () => {
                     this.props.onAfterChange({ checked: newState.checked.slice(0), index: newState.index })
                     this.stateLocked = false
-                }.bind(this))
+                })
             } else {
-                this.setState(newState, function() {
+                this.setState(newState, () => {
                     this.stateLocked = false
-                }.bind(this))
+                })
             }
 
             if (isFunction(this.props.onChange)) {
                 this.props.onChange({ checked: newState.checked.slice(0), index: newState.index })
             }
-        },
+        }
 
-        render: function() {
-            var elementProps = { role: 'tablist' }
+        render() {
+            const elementProps = { role: 'tablist' }
 
-            for (var key in this.props) {
+            for (let key in this.props) {
                 if (this.props.hasOwnProperty(key) && !Tabbordion.propTypes.hasOwnProperty(key)) {
                     elementProps[key] = this.props[key]
                 }
@@ -610,75 +547,135 @@
                 )
             }
 
-            return React.createElement(
-                this.props.tag || 'ul',
-                elementProps,
-                (function(props, state, setIndex) {
-                    var childProps,
-                        index,
-                        modeType = props.mode === 'multiple' ? 'checkbox' : 'radio',
-                        name = props.name.length ? props.name : state.name,
-                        panelCounter = 0,
-                        visibleCounter = 0
+            return (
+                <this.props.tag {...elementProps}>
+                    {(function(props, state, setIndex) {
+                        const modeType = props.mode === 'multiple' ? 'checkbox' : 'radio'
+                        const name = props.name.length ? props.name : state.name
 
-                    return React.Children.map(props.children, function(child) {
-                        var isBetween = false, isFirst = false, isLast = false
+                        let panelCounter = 0
+                        let visibleCounter = 0
 
-                        if (!child) {
-                            return child
-                        }
+                        return React.Children.map(props.children, function(child) {
+                            let isBetween = false, isFirst = false, isLast = false
 
-                        if (child.type === Panel) {
-                            childProps = child.props || child._store.props || {}
-                            index = panelCounter++
-
-                            if (childProps.visible) {
-                                visibleCounter++
-
-                                if (visibleCounter === 1) {
-                                    isFirst = true
-                                }
-
-                                if (visibleCounter === state.visibleCount) {
-                                    isLast = true
-                                }
-
-                                isBetween = !isFirst && !isLast
+                            if (!child) {
+                                return child
                             }
 
-                            child = React.cloneElement(child, {
-                                animateContent: props.animateContent,
-                                checked: state.checked[index],
-                                classModifiers: props.classModifiers,
-                                classNames: props.classNames,
-                                classSeparator: props.classSeparator,
-                                contentTag: childProps.contentTag || props.contentTag,
-                                index: index,
-                                isBetween: isBetween,
-                                isFirst: isFirst,
-                                isLast: isLast,
-                                name: childProps.name || name,
-                                selectedChecked: state.checked.slice(0),
-                                selectedIndex: state.index,
-                                setIndex: setIndex,
-                                tag: childProps.tag || props.panelTag,
-                                type: childProps.type || modeType
-                            })
-                        } else if (typeof child.type === 'object' && (child.props || child._store.props)) {
-                            child = React.cloneElement(child, {
-                                panelName: name,
-                                panelSelectedChecked: state.checked.slice(0),
-                                panelSelectedIndex: state.index,
-                                panelSetIndex: setIndex
-                            })
-                        }
+                            if (child.type === Panel) {
+                                const childProps = child.props || child._store.props || {}
+                                const index = panelCounter++
 
-                        return child
-                    })
-                })(this.props, this.state, this.setIndex)
+                                if (childProps.visible) {
+                                    visibleCounter++
+
+                                    if (visibleCounter === 1) {
+                                        isFirst = true
+                                    }
+
+                                    if (visibleCounter === state.visibleCount) {
+                                        isLast = true
+                                    }
+
+                                    isBetween = !isFirst && !isLast
+                                }
+
+                                child = React.cloneElement(child, {
+                                    animateContent: props.animateContent,
+                                    checked: state.checked[index],
+                                    classModifiers: props.classModifiers,
+                                    classNames: props.classNames,
+                                    classSeparator: props.classSeparator,
+                                    contentTag: childProps.contentTag || props.contentTag,
+                                    index: index,
+                                    isBetween: isBetween,
+                                    isFirst: isFirst,
+                                    isLast: isLast,
+                                    name: childProps.name || name,
+                                    selectedChecked: state.checked.slice(0),
+                                    selectedIndex: state.index,
+                                    setIndex: setIndex,
+                                    tag: childProps.tag || props.panelTag,
+                                    type: childProps.type || modeType
+                                })
+                            } else if (typeof child.type === 'object' && (child.props || child._store.props)) {
+                                child = React.cloneElement(child, {
+                                    panelName: name,
+                                    panelSelectedChecked: state.checked.slice(0),
+                                    panelSelectedIndex: state.index,
+                                    panelSetIndex: setIndex
+                                })
+                            }
+
+                            return child
+                        })
+                    })(this.props, this.state, this.setIndex)}
+                </this.props.tag>
             )
         }
-    })
+    }
+
+    Tabbordion.defaultProps = {
+        animateContent: false,
+        classModifiers: {
+            animated: 'animated',
+            checked: 'checked',
+            content: 'content',
+            disabled: 'disabled',
+            enabled: 'enabled',
+            noContent: 'no-content',
+            unchecked: 'unchecked',
+            visibleBetween: 'between',
+            visibleFirst: 'first',
+            visibleLast: 'last'
+        },
+        classNames: {
+            animator: 'panel__animator',
+            content: 'panel__content',
+            panel: 'panel',
+            state: 'panel__state',
+            title: 'panel__title'
+        },
+        classSeparator: '--',
+        initialIndex: null,
+        mode: 'single',
+        name: '',
+        tag: 'ul'
+    }
+
+    Tabbordion.propTypes = {
+        animateContent: PropTypes.oneOf([false, 'height', 'marginTop']),
+        classModifiers: PropTypes.shape({
+            animated: PropTypes.string,
+            checked: PropTypes.string,
+            content: PropTypes.string,
+            disabled: PropTypes.string,
+            enabled: PropTypes.string,
+            noContent: PropTypes.string,
+            unchecked: PropTypes.string,
+            visibleBetween: PropTypes.string,
+            visibleFirst: PropTypes.string,
+            visibleLast: PropTypes.string
+        }),
+        classNames: PropTypes.shape({
+            animator: PropTypes.string,
+            content: PropTypes.string,
+            panel: PropTypes.string,
+            state: PropTypes.string,
+            title: PropTypes.string
+        }),
+        classSeparator: PropTypes.string,
+        contentTag: PropTypes.string,
+        initialIndex: PropTypes.number,
+        mode: PropTypes.oneOf(['multiple', 'single', 'toggle']),
+        name: PropTypes.string,
+        onAfterChange: PropTypes.func,
+        onBeforeChange: PropTypes.func,
+        onChange: PropTypes.func,
+        panelTag: PropTypes.string,
+        tag: PropTypes.string
+    }
 
     if (isCommonJs) {
         module.exports = {

@@ -11,12 +11,12 @@ required style is:
 
 ```css
 [data-state="tabbordion"] {
-    clip: rect(0 0 0 0);
-    height: 1px;
-    position: absolute;
-    position: fixed;
-    width: 1px;
-    z-index: -1;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  position: absolute;
+  position: fixed;
+  width: 1px;
+  z-index: -1;
 }
 ```
 
@@ -34,8 +34,8 @@ npm install --save react-tabbordion
 
 ### Usage example and sample output
 
-```js
-var classNames = {
+```jsx
+const classNames = {
   content: 'tabs-content',
   panel: 'tabs-panel',
   title: 'tabs-title'
@@ -175,7 +175,7 @@ The function may return a modified object in the same format and this new state 
 Tabbordion does not make use of classModifiers, classNames, name, contentTag or panelTag. These are passed directly to
 child Panels.
 
-The following props are provided for each direct child of a Tabbordion that is **not a Panel**:
+The following props are provided for each direct child of a Tabbordion that has `YourComponent.isPanel = true`:
 
 - panelName
 - panelSelectedChecked
@@ -183,6 +183,10 @@ The following props are provided for each direct child of a Tabbordion that is *
 - setPanelIndex
 
 You can use this information to make customized components that depend on Tabbordion.
+
+**NOTE:** Before version 0.5.0 these props were passed to each component that was **not a Panel**.
+
+This feature may later be changed to be based on class inheritance (`class YourComponent extends Panel`).
 
 
 ## Panel

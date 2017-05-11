@@ -1,6 +1,6 @@
 {
   "name": "react-tabbordion",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "React Tabs, Accordion, Panel, Checkbox list, Radio list Component",
   "main": "dist/module/index.js",
   "scripts": {
@@ -10,7 +10,7 @@
     "build-umd": "webpack --config webpack.config.js",
     "clean-dist": "rimraf dist",
     "lint": "eslint .",
-    "prepublish": "npm prune && npm test",
+    "prepublish": "npm prune && npm run build && npm test",
     "test": "mocha --compilers js:babel-core/register --reporter spec"
   },
   "repository": {

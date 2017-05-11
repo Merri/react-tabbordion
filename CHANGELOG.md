@@ -1,3 +1,7 @@
+## v0.5.6 - 2017-05-11
+- Fix missing dist in npm
+
+
 ## v0.5.5 - 2017-05-11
 - Fix incorrect main filename in package.json
 

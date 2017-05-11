@@ -2,12 +2,17 @@
 [![Version](http://img.shields.io/npm/v/react-tabbordion.svg)](https://www.npmjs.org/package/react-tabbordion)
 [![Build Status](https://travis-ci.org/Merri/react-tabbordion.svg)](https://travis-ci.org/Merri/react-tabbordion)
 
-Provides base for handling state and styles for technically similar components such as tabs, accordions, option lists,
-multiselect lists and so on. This is not a pure component, but is ideal component for cases where you quickly need
-state and don't care about retaining it in cases such as when hydrating state from server.
+You need a stateful component? A component to simply drop in and get HTML elements to style as tabs, accordions,
+option lists, multiselect lists? And you don't need to care about cases such as hydrating state from server?
 
-Handles CSS classes using BEM convention; you write the styles (you're welcome to clone the sample styles), the only
-required style is:
+This is a component for you!
+
+1. Universal rendering: works on both browser and server, content accessible by search engines
+2. Powerful CSS: BEM with lots of modifiers for styling, fully customizable class names
+3. WAI ARIA: accessible for those who can't see what they're doing (sorry, couldn't resist the pun)
+4. Manages the state: be it "always one selected", "one/allow unselect" or "multiselect", your needs are covered
+
+The only required style is:
 
 ```css
 [data-state="tabbordion"] {
@@ -20,8 +25,9 @@ required style is:
 }
 ```
 
-This hides native HTML input elements so that they remain accessible. The component also includes ARIA attributes. You
-can also add CSS-only (= JS disabled) support by using `:checked` in your stylesheets.
+This will hide the stateful input elements so that they remain accessible via keyboard on all browsers.
+
+You're welcome to steal the demo styles.
 
 
 ## Demo and Installation
@@ -80,8 +86,17 @@ const classNames = {
 </ul>
 ```
 
+### Why is the above awesome?
 
-## Tabbordion
+1. Lots of CSS BEM convention modifiers you can use to customize your styling!
+2. Nice HTML structure that works for both tabs and accordions (see the demo styles on how to do the tabs).
+3. Stateful HTML elements allow for native keyboard accessibility and optional CSS-only styling (works even JS disabled).
+4. You don't need to care about accessibility / WAI ARIA, the component does it all for you.
+
+The component can do even more nice things such as support for vertical transitions of panel contents.
+
+
+## `Tabbordion`
 This is the main controller component. It handles state and passes properties to all children.
 
 Property          | Type          | Description
@@ -186,10 +201,12 @@ You can use this information to make customized components that depend on Tabbor
 
 **NOTE:** Before version 0.5.1 these props were passed to each component that was **not a Panel**.
 
+<small>
 This feature may later be changed to be based on class inheritance (`class YourComponent extends Panel`).
+</small>
 
 
-## Panel
+## `Panel`
 
 This component generates native HTML radio or checkbox inputs and labels, and content wrapper element if needed.
 
@@ -237,8 +254,9 @@ You can use this information to make customized components that depend on Tabbor
 
 **NOTE:** Before version 0.5.1 these props were passed to each direct child of a Panel.
 
+<small>
 This feature may later be changed to be based on class inheritance (`class YourComponent extends PanelChild`).
-
+</small>
 
 ## Developing
 
@@ -246,6 +264,7 @@ This feature may later be changed to be based on class inheritance (`class YourC
 git clone git@github.com:merri/react-tabbordion.git
 cd react-tabbordion
 npm install
+npm run build
 npm test
 ```
 

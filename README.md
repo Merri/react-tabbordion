@@ -184,7 +184,7 @@ The following props are provided for each direct child of a Tabbordion that has 
 
 You can use this information to make customized components that depend on Tabbordion.
 
-**NOTE:** Before version 0.5.0 these props were passed to each component that was **not a Panel**.
+**NOTE:** Before version 0.5.1 these props were passed to each component that was **not a Panel**.
 
 This feature may later be changed to be based on class inheritance (`class YourComponent extends Panel`).
 
@@ -223,7 +223,7 @@ visible           | bool          | Defaults to true. Should the Panel be visibl
 
 As you can see most of Panel's props are set by a parent Tabbordion.
 
-The following props are provided for each direct child of a Panel:
+The following props are provided for each direct child of a Panel that has `YourComponent.isPanelChild = true`:
 
 - isPanelChecked
 - isPanelVisible
@@ -234,6 +234,10 @@ The following props are provided for each direct child of a Panel:
 - setPanelIndex
 
 You can use this information to make customized components that depend on Tabbordion's Panel.
+
+**NOTE:** Before version 0.5.1 these props were passed to each direct child of a Panel.
+
+This feature may later be changed to be based on class inheritance (`class YourComponent extends PanelChild`).
 
 
 ## Developing

@@ -1,6 +1,6 @@
 ;(function() {
-    var Tabbordion = React.createFactory(window.Tabbordion),
-        Panel = React.createFactory(window.Panel)
+    var Tabbordion = React.createFactory(window.Tabbordion.Tabbordion),
+        Panel = React.createFactory(window.Tabbordion.Panel)
 
     var Demo = React.createClass({
         displayName: 'Demo',

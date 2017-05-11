@@ -1,39 +1,50 @@
-var path = require('path')
 var webpack = require('webpack')
 
-var config = {
-    devtool: process.env.NODE_ENV === 'production' ? false : 'eval',
-
-    entry: ['./src/index.js'],
-
+module.exports = {
+    devtool: 'source-map',
+    entry: './src/index.jsx',
     output: {
-        path: path.join(__dirname, ''),
-        filename: 'index.js',
-        publicPath: '/'
+        path: __dirname + '/dist/umd/',
+        filename: 'react-tabbordion.js',
+        publicPath: '/build/',
+        library: 'Tabbordion',
+        libraryTarget: 'umd'
     },
-
-    externals: {
-        'react': 'React',
-        'react-dom': 'ReactDOM'
-    },
-
     module: {
-        rules: [
-            {
-                test: /\.js$/,
+        loaders: [
+            { test: /\.jsx?$/,
                 loader: 'babel-loader',
-                exclude: /node_modules/
+                exclude: [
+                    '/demo/',
+                    '/dist/',
+                    '/node_modules/',
+                    '/style/',
+                    '/test/',
+                ],
+                query: {
+                    presets: ['es2015', 'stage-0', 'react']
+                }
             }
         ]
     },
-
     plugins: [
-        new webpack.NoEmitOnErrorsPlugin()
-    ]
+        new webpack.optimize.OccurrenceOrderPlugin,
+        new webpack.optimize.UglifyJsPlugin
+    ],
+    externals: [
+        {
+            react: {
+                root: 'React',
+                commonjs2: 'react',
+                commonjs: 'react',
+                amd: 'react'
+            },
+            'react-dom': {
+                root: 'ReactDOM',
+                commonjs2: 'react-dom',
+                commonjs: 'react-dom',
+                amd: 'react-dom'
+            }
+        }
+    ],
 }
-
-if (process.env.NODE_ENV === 'production') {
-    config.plugins.push(new webpack.optimize.UglifyJsPlugin())
-}
-
-module.exports = config

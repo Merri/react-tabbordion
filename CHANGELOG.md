@@ -1,3 +1,8 @@
+## v0.5.3 - 2017-05-11
+- Move dist version to root, move source version to src
+- Fixes imports where being used
+
+
 ## v0.5.2 - 2017-05-11
 - Update all npm packages to latest except jsdom
 - Babel 6

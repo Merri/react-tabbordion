@@ -5,8 +5,8 @@ var React = require('react')
 var ReactDOM = require('react-dom')
 var jsdom = require('mocha-jsdom')
 var expect = require('chai').expect
-var Tabbordion = require('../').Tabbordion
-var Panel = require('../').Panel
+var Tabbordion = require('../src/').Tabbordion
+var Panel = require('../src/').Panel
 
 var TestUtils = require('react-dom/test-utils')
 

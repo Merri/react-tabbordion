@@ -2,87 +2,9 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 
-const tabbordionUuid = (function() {
-    let index = 0
-
-    return function() {
-        return 'tabbordion-' + index++
-    }
-})()
-
-const isFunction = (function() {
-    function typeOfFn(fn) {
-        return typeof fn === 'function'
-    }
-
-    function objectFn(fn) {
-        return Object.prototype.toString.call(fn) === '[object Function]'
-    }
-
-    // typeof is fastest way to check if a function but older IEs don't support it for that and Chrome had a bug
-    if (typeof typeOfFn === 'function' && typeof /./ !== 'function') {
-        return typeOfFn
-    }
-
-    return objectFn
-})()
-
-function classWithModifiers(className, modifiers, separator) {
-    let classNames = ''
-
-    if (className == null) {
-        return null
-    }
-
-    if (typeof className !== 'string') {
-        className = String(className)
-    }
-
-    if (!Array.isArray(modifiers)) {
-        return className
-    }
-
-    if (typeof separator !== 'string') {
-        separator = '--'
-    }
-
-    let i = className.indexOf(' ')
-
-    if (i >= 0) {
-        classNames = className.slice(i)
-        className = className.slice(0, i)
-
-        if (separator.length > 0) {
-            let prefixedClassName = ' ' + className + separator
-            let prefixedSeparator = ' ' + separator
-
-            for (
-                i = classNames.indexOf(prefixedSeparator);
-                i >= 0;
-                i = classNames.indexOf(prefixedSeparator, i + className.length)
-            ) {
-                classNames = classNames.replace(prefixedSeparator, prefixedClassName)
-            }
-        }
-    }
-
-    let BEM = className
-
-    for (i = 0; i < modifiers.length; i++) {
-        if ((typeof modifiers[i] === 'string') && (modifiers[i].length > 0)) {
-            BEM += ' ' + className + separator + modifiers[i]
-        }
-    }
-
-    return BEM + classNames
-}
-
-function getElementHeight(element) {
-    let bounds = element.getBoundingClientRect()
-    let elementHeightInPixels = Math.ceil(bounds.bottom - bounds.top)
-
-    return elementHeightInPixels
-}
+import { bemClassName } from './lib/bem'
+import { getElementHeight } from './lib/dom'
+import { tabbordionUuid } from './lib/shared'
 
 // backwards compatibility export
 export class Panel extends React.Component {
@@ -241,7 +163,7 @@ export class Panel extends React.Component {
 
             const contentProps = {
                 'aria-labelledby': id,
-                'className': classWithModifiers(classNames.content, animatedModifiers, separator),
+                'className': bemClassName(classNames.content, animatedModifiers, separator),
                 'id': 'panel-' + id,
                 'ref': 'content',
                 'role': 'tabpanel',
@@ -249,7 +171,7 @@ export class Panel extends React.Component {
             }
 
             const animatorProps = {
-                className: classWithModifiers(classNames.animator, animatedModifiers, separator),
+                className: bemClassName(classNames.animator, animatedModifiers, separator),
                 ref: 'animator',
                 style: { height: '', overflow: 'hidden' }
             }
@@ -295,7 +217,7 @@ export class Panel extends React.Component {
             modifiers.push(classModifiers.noContent)
         }
 
-        elementProps.className = classWithModifiers(
+        elementProps.className = bemClassName(
             classNames.panel + (elementProps.className ? ' ' + elementProps.className : ''),
             modifiers,
             separator
@@ -306,7 +228,7 @@ export class Panel extends React.Component {
                 <input
                     aria-controls={children ? 'panel-' + id : null}
                     checked={this.props.checked}
-                    className={classWithModifiers(classNames.state, modifiers, separator)}
+                    className={bemClassName(classNames.state, modifiers, separator)}
                     data-state="tabbordion"
                     disabled={!this.props.visible || this.props.disabled}
                     id={id}
@@ -317,7 +239,7 @@ export class Panel extends React.Component {
                     value={value}
                 />
                 <label
-                    className={classWithModifiers(classNames.title, modifiers, separator)}
+                    className={bemClassName(classNames.title, modifiers, separator)}
                     id={'label-' + id}
                     htmlFor={id}
                     onClick={this.handleLabelClick}
@@ -494,7 +416,7 @@ export class Tabbordion extends React.Component {
                 throw new Error('unknown mode: ' + this.props.mode)
         }
 
-        if (isFunction(this.props.onBeforeChange)) {
+        if (this.props.onBeforeChange) {
             const stateOverride = this.props.onBeforeChange(
                 { checked: newState.checked.slice(0), index: newState.index },
                 { checked: this.state.checked.slice(0), index: this.state.index }
@@ -510,7 +432,7 @@ export class Tabbordion extends React.Component {
             }
         }
 
-        if (isFunction(this.props.onAfterChange)) {
+        if (this.props.onAfterChange) {
             this.setState(newState, () => {
                 this.props.onAfterChange({ checked: newState.checked.slice(0), index: newState.index })
                 this.stateLocked = false
@@ -521,7 +443,7 @@ export class Tabbordion extends React.Component {
             })
         }
 
-        if (isFunction(this.props.onChange)) {
+        if (this.props.onChange) {
             this.props.onChange({ checked: newState.checked.slice(0), index: newState.index })
         }
     }
@@ -536,7 +458,7 @@ export class Tabbordion extends React.Component {
         }
 
         if (elementProps.className) {
-            elementProps.className = classWithModifiers(
+            elementProps.className = bemClassName(
                 elementProps.className,
                 [
                     'checked-count-' + this.state.checked.reduce(function(count, checked) {

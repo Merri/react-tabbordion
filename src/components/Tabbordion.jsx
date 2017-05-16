@@ -2,7 +2,6 @@ import React, { Children, PureComponent } from 'react'
 import PropTypes from 'prop-types'
 
 import { getArray, getChecked, getDisabled, getIndex, isShallowlyDifferentArray } from '../lib/state'
-import TabPanel from './TabPanel'
 
 let tabbordionInstances = 0
 let tabbordionUniqId = 0
@@ -236,7 +235,7 @@ class Tabbordion extends PureComponent {
         // use destructuring to pick out props we don't need to pass to the rendered component
         const {
             children,
-            component: Component,
+            component: Component, // eslint-disable-line
             bemModifiers, // eslint-disable-line
             bemSeparator, // eslint-disable-line
             blockElements, // eslint-disable-line

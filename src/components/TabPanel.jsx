@@ -5,7 +5,6 @@ import PropTypes from 'prop-types'
 import { bemClassName } from '../lib/bem'
 import { getArray } from '../lib/state'
 import { tabbordionBlockElementTypes, tabbordionModifierTypes } from './Tabbordion'
-import TabContent from './TabContent'
 
 // we only use raf for a minor accessibility feature so it is possible to get away with this little "polyfilling"
 const raf = (
@@ -130,12 +129,6 @@ class TabPanel extends PureComponent {
 
     getChildContext() {
         return {
-            bemModifiers: this.cachedProps.bemModifiers,
-            bemSeparator: this.cachedProps.bemSeparator,
-            blockElements: this.cachedProps.blockElements,
-            checkedPanels: this.cachedProps.checkedPanels,
-            disabledPanels: this.cachedProps.disabledPanels,
-            onChangePanel: this.cachedProps.onChangePanel,
             onClickPanelLabel: this.onClickLabel,
             panelChecked: this.cachedProps.checked,
             panelContentId: this.cachedProps.contentId,
@@ -181,7 +174,7 @@ class TabPanel extends PureComponent {
             checkedPanels, // eslint-disable-line
             children,
             className,
-            component: Component,
+            component: Component, // eslint-disable-line
             contentId,
             disabled,
             disabledPanels, // eslint-disable-line
@@ -228,12 +221,6 @@ class TabPanel extends PureComponent {
 }
 
 TabPanel.childContextTypes = {
-    bemModifiers: PropTypes.shape(tabbordionModifierTypes),
-    bemSeparator: PropTypes.string,
-    blockElements: PropTypes.shape(tabbordionBlockElementTypes),
-    checkedPanels: PropTypes.array,
-    disabledPanels: PropTypes.array,
-    onChangePanel: PropTypes.func,
     onClickPanelLabel: PropTypes.func,
     panelChecked: PropTypes.bool,
     panelContentId: PropTypes.string,

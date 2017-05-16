@@ -1,12 +1,15 @@
 /*
  * Generates BEM convention style class names and decorates with given modifiers.
- * @param {string} blockElement Space separated list of classes representing block and element level items of BEM.
- *                              May also include classes beginning with a separator which will be extended.
+ * @param {object} blockElements Index of space separated classes representing block and element level items of BEM.
+ *                               May also include classes beginning with a separator which will be extended.
+ * @param {string} key Item to pick from blockElements.
  * @param {array} modifiers List of modifiers to use.
  * @param {string} separator Separator to use between block-element and a modifier.
  * @return {string} className where the first item in space separated list is extended with given modifiers.
  */
-export function bemClassName(blockElement, modifiers, separator = '--') {
+export function bemClassName(blockElements, key, modifiers, separator = '--') {
+    let blockElement = blockElements && blockElements[key] || null
+
     // we prefer strings here
     if (blockElement == null) {
         return null

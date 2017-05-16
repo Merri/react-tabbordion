@@ -72,6 +72,8 @@ class Tabbordion extends PureComponent {
         const usedIndexes = []
         const invalidIndexes = []
 
+        const allowMultiChecked = props.mode === 'multiple'
+
         Children.forEach(props.children, child => {
             if (child && child.type.contextTypes && child.type.contextTypes.tabbordionId) {
                 const props = child.props || (child._store && child._store.props) || {}
@@ -117,7 +119,10 @@ class Tabbordion extends PureComponent {
         const nextPanels = panelProps.map((props, index) => {
             const panel = panels.find(panel => panel.index === props.index) || { checked, disabled, visible }
 
-            const checked = props.checked != null ? props.checked : !!panel.checked
+            const checked = (
+                props.checked != null ? props.checked : !!panel.checked
+            ) && (allowMultiChecked || checkedCount === 0)
+
             const disabled = props.disabled != null ? props.disabled : !!panel.disabled
             const visible = props.visible != null ? props.visible : (panel.visible === false ? false : true)
 

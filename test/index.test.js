@@ -58,7 +58,7 @@ describe('Tabbordion', function() {
     })
 
     describe('Panel', function() {
-        var title = React.DOM.span({}, 'Test title')
+        var title = React.createElement('span', {}, 'Test title')
 
         it('should inherit properties from parent Tabbordion', function() {
             var rendered = TestUtils.renderIntoDocument(
@@ -84,7 +84,7 @@ describe('Tabbordion', function() {
                     classNames: {},
                     classSeparator: '',
                     title: title
-                }, React.DOM.span({})))
+                }, React.createElement('span', {})))
             )
 
             var element = ReactDOM.findDOMNode(rendered).firstChild
@@ -186,8 +186,8 @@ describe('Tabbordion', function() {
                         title: title,
                         type: 'checkbox',
                         tag: 'dt'
-                    }, React.DOM.span({})),
-                    React.createElement(Panel, { title: title }, React.DOM.span({}))
+                    }, React.createElement('span', {})),
+                    React.createElement(Panel, { title: title }, React.createElement('span', {}))
                 )
             )
 
@@ -214,7 +214,7 @@ describe('Tabbordion', function() {
 describe('Panel', function() {
     jsdom()
 
-    var title = React.DOM.span({}, 'Test title')
+    var title = React.createElement('span', {}, 'Test title')
 
     it('should contain two child elements if no children passed', function() {
         var rendered = TestUtils.renderIntoDocument(
@@ -238,7 +238,7 @@ describe('Panel', function() {
 
     it('should contain three child elements if children passed', function() {
         var rendered = TestUtils.renderIntoDocument(
-            React.createElement(Panel, { title: title }, React.DOM.span({}))
+            React.createElement(Panel, { title: title }, React.createElement('span', {}))
         )
 
         var childNodes = ReactDOM.findDOMNode(rendered).childNodes
@@ -279,7 +279,7 @@ describe('Panel', function() {
                 isFirst: true,
                 isLast: true,
                 title: title
-            }, React.DOM.span({}))
+            }, React.createElement('span', {}))
         )
 
         expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal(
@@ -294,7 +294,7 @@ describe('Panel', function() {
                 isFirst: true,
                 isLast: true,
                 title: title
-            }, React.DOM.span({}))
+            }, React.createElement('span', {}))
         )
 
         expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal(
@@ -307,7 +307,7 @@ describe('Panel', function() {
             React.createElement(Panel, {
                 classModifiers: {},
                 title: title
-            }, React.DOM.span({}))
+            }, React.createElement('span', {}))
         )
 
         expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal('panel')
@@ -324,7 +324,7 @@ describe('Panel', function() {
                     unchecked: 'test'
                 },
                 title: title
-            }, React.DOM.span({}))
+            }, React.createElement('span', {}))
         )
 
         expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal('panel panel--test')
@@ -338,7 +338,7 @@ describe('Panel', function() {
 
     it('should apply default classes and modifiers from classNames and classModifiers props to children', function() {
         var rendered = TestUtils.renderIntoDocument(
-            React.createElement(Panel, { title: title }, React.DOM.span({}))
+            React.createElement(Panel, { title: title }, React.createElement('span', {}))
         )
 
         var childNodes = ReactDOM.findDOMNode(rendered).childNodes
@@ -361,7 +361,7 @@ describe('Panel', function() {
             React.createElement(Panel, {
                 classNames: {},
                 title: title
-            }, React.DOM.span({}))
+            }, React.createElement('span', {}))
         )
 
         var childNodes = ReactDOM.findDOMNode(rendered).childNodes
@@ -381,7 +381,7 @@ describe('Panel', function() {
                     content: 'test3'
                 },
                 title: title
-            }, React.DOM.span({}))
+            }, React.createElement('span', {}))
         )
 
         var childNodes = ReactDOM.findDOMNode(rendered).childNodes
@@ -404,7 +404,7 @@ describe('Panel', function() {
                 },
                 classSeparator: 'TEST',
                 title: title
-            }, React.DOM.span({}))
+            }, React.createElement('span', {}))
         )
 
         var childNodes = ReactDOM.findDOMNode(rendered).childNodes
@@ -420,7 +420,7 @@ describe('Panel', function() {
                 index: 0,
                 name: 'test',
                 title: title
-            }, React.DOM.span({}))
+            }, React.createElement('span', {}))
         )
 
         var element = ReactDOM.findDOMNode(rendered)
@@ -439,7 +439,7 @@ describe('Panel', function() {
                 index: 0,
                 name: 'test',
                 title: title
-            }, React.DOM.span({}))
+            }, React.createElement('span', {}))
         )
 
         var element = ReactDOM.findDOMNode(rendered)
@@ -463,7 +463,7 @@ describe('Panel', function() {
                 isLast: true,
                 title: title,
                 visible: false
-            }, React.DOM.span({}))
+            }, React.createElement('span', {}))
         )
 
         var element = ReactDOM.findDOMNode(rendered)

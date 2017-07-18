@@ -287,7 +287,7 @@ export class Panel extends React.Component {
             )
 
             if (this.props.animateContent) {
-                children = React.DOM.div(animatorProps, children)
+                children = React.createElement('div', animatorProps, children)
             }
 
             modifiers.push(classModifiers.content)

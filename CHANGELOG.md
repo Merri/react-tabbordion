@@ -1,3 +1,8 @@
+## v0.5.7 - 2017-07-18
+- Fix `React.DOM.div` deprecated warning
+- Update npm dependencies
+
+
 ## v0.5.6 - 2017-05-11
 - Fix missing dist in npm
 

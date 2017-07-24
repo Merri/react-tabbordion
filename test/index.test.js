@@ -2,13 +2,13 @@
 'use strict'
 
 var React = require('react')
-var ReactDOM = require('react-dom')
-var jsdom = require('mocha-jsdom')
+var shallow = require('enzyme').shallow
+// var sinon = require('sinon')
 var expect = require('chai').expect
-var Tabbordion = require('../dist/module/').Tabbordion
-var Panel = require('../dist/module/').Panel
 
-var TestUtils = require('react-dom/test-utils')
+var Tabbordion = require('../dist/module/').Tabbordion
+/*
+var Panel = require('../dist/module/').Panel
 
 function checkChildrenTags(childNodes, tags) {
     expect(childNodes.length).to.equal(tags.length)
@@ -17,51 +17,38 @@ function checkChildrenTags(childNodes, tags) {
         expect(childNodes[index].nodeName).to.equal(tags[index])
     }
 }
-
+*/
 describe('Tabbordion', function() {
-    jsdom()
-
-    it('should not set a class if no className is passed as prop', function() {
-        var rendered = TestUtils.renderIntoDocument(
-            React.createElement(Tabbordion, {})
-        )
-
-        expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal(null)
-    })
-
     it('should extend a class if className is passed as a prop', function() {
-        var rendered = TestUtils.renderIntoDocument(
+        var rendered = shallow(
             React.createElement(Tabbordion, { className: 'test' })
         )
 
-        expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal(
-            'test test--checked-count-0 test--count-0'
-        )
+        expect(rendered.hasClass('test')).to.equal(true)
     })
 
     it('should retain additional class identifiers if space separated className is passed as a prop', function() {
-        var rendered = TestUtils.renderIntoDocument(
+        var rendered = shallow(
             React.createElement(Tabbordion, { className: 'test test--test' })
         )
 
-        expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal(
-            'test test--checked-count-0 test--count-0 test--test'
-        )
+        expect(rendered.hasClass('test')).to.equal(true)
+        expect(rendered.hasClass('test--test')).to.equal(true)
     })
 
-    it('should use tag passed as a prop', function() {
-        var rendered = TestUtils.renderIntoDocument(
-            React.createElement(Tabbordion, { tag: 'span' })
+    it('should render using given component', function() {
+        var rendered = shallow(
+            React.createElement(Tabbordion, { component: 'span' })
         )
 
-        expect(ReactDOM.findDOMNode(rendered).nodeName).to.equal('SPAN')
+        expect(rendered.matchesElement(React.createElement('span'))).to.equal(true)
     })
-
+/*
     describe('Panel', function() {
         var title = React.createElement('span', {}, 'Test title')
 
         it('should inherit properties from parent Tabbordion', function() {
-            var rendered = TestUtils.renderIntoDocument(
+            var rendered = shallow(
                 React.createElement(Tabbordion, {
                     animateContent: 'height',
                     classModifiers: {
@@ -87,7 +74,7 @@ describe('Tabbordion', function() {
                 }, React.createElement('span', {})))
             )
 
-            var element = ReactDOM.findDOMNode(rendered).firstChild
+            var element = findNode(rendered).firstChild
 
             expect(element.getAttribute('class')).to.equal('test test|test1 test|test5 test|test6')
             expect(element.nodeName).to.equal('SECTION')
@@ -101,7 +88,7 @@ describe('Tabbordion', function() {
         })
 
         it('should toggle state in TOGGLE mode when title is clicked', function() {
-            var rendered = TestUtils.renderIntoDocument(
+            var rendered = shallow(
                 React.createElement(
                     Tabbordion,
                     { mode: 'toggle' },
@@ -110,15 +97,15 @@ describe('Tabbordion', function() {
             )
 
             var input = TestUtils.findRenderedDOMComponentWithTag(rendered, 'input')
-            expect(ReactDOM.findDOMNode(input).checked).to.equal(false)
+            expect(findNode(input).checked).to.equal(false)
 
             var label = TestUtils.findRenderedDOMComponentWithTag(rendered, 'label')
             TestUtils.Simulate.click(label)
-            expect(ReactDOM.findDOMNode(input).checked).to.equal(true)
+            expect(findNode(input).checked).to.equal(true)
         })
 
         it('should toggle state in MULTIPLE mode when title is clicked', function() {
-            var rendered = TestUtils.renderIntoDocument(
+            var rendered = shallow(
                 React.createElement(
                     Tabbordion,
                     { mode: 'multiple' },
@@ -127,15 +114,15 @@ describe('Tabbordion', function() {
             )
 
             var input = TestUtils.findRenderedDOMComponentWithTag(rendered, 'input')
-            expect(ReactDOM.findDOMNode(input).checked).to.equal(false)
+            expect(findNode(input).checked).to.equal(false)
 
             var label = TestUtils.findRenderedDOMComponentWithTag(rendered, 'label')
             TestUtils.Simulate.click(label)
-            expect(ReactDOM.findDOMNode(input).checked).to.equal(true)
+            expect(findNode(input).checked).to.equal(true)
         })
 
         it('should NOT toggle state in SINGLE mode when title is clicked', function() {
-            var rendered = TestUtils.renderIntoDocument(
+            var rendered = shallow(
                 React.createElement(
                     Tabbordion,
                     { initialIndex: 0, mode: 'single' },
@@ -144,15 +131,15 @@ describe('Tabbordion', function() {
             )
 
             var input = TestUtils.findRenderedDOMComponentWithTag(rendered, 'input')
-            expect(ReactDOM.findDOMNode(input).checked).to.equal(true)
+            expect(findNode(input).checked).to.equal(true)
 
             var label = TestUtils.findRenderedDOMComponentWithTag(rendered, 'label')
             TestUtils.Simulate.click(label)
-            expect(ReactDOM.findDOMNode(input).checked).to.equal(true)
+            expect(findNode(input).checked).to.equal(true)
         })
 
         it('\'s existance should affect count modifiers of parent Tabbordion', function() {
-            var rendered = TestUtils.renderIntoDocument(
+            var rendered = shallow(
                 React.createElement(
                     Tabbordion,
                     { className: 'test', initialIndex: 0, mode: 'single' },
@@ -162,13 +149,13 @@ describe('Tabbordion', function() {
                 )
             )
 
-            expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal(
+            expect(findNode(rendered).getAttribute('class')).to.equal(
                 'test test--checked-count-1 test--count-3'
             )
         })
 
         it('should be able to override props set by Tabbordion', function() {
-            var rendered = TestUtils.renderIntoDocument(
+            var rendered = shallow(
                 React.createElement(
                     Tabbordion,
                     {
@@ -191,7 +178,7 @@ describe('Tabbordion', function() {
                 )
             )
 
-            var tabbordion = ReactDOM.findDOMNode(rendered)
+            var tabbordion = findNode(rendered)
             var firstPanel = tabbordion.firstChild
             var secondPanel = firstPanel.nextSibling
 
@@ -212,24 +199,22 @@ describe('Tabbordion', function() {
 })
 
 describe('Panel', function() {
-    jsdom()
-
     var title = React.createElement('span', {}, 'Test title')
 
     it('should contain two child elements if no children passed', function() {
-        var rendered = TestUtils.renderIntoDocument(
+        var rendered = shallow(
             React.createElement(Panel, { title: title })
         )
 
-        checkChildrenTags(ReactDOM.findDOMNode(rendered).childNodes, ['INPUT', 'LABEL'])
+        checkChildrenTags(findNode(rendered).childNodes, ['INPUT', 'LABEL'])
     })
 
     it('should render title prop inside label', function() {
-        var rendered = TestUtils.renderIntoDocument(
+        var rendered = shallow(
             React.createElement(Panel, { title: title })
         )
 
-        var childNodes = ReactDOM.findDOMNode(rendered).childNodes
+        var childNodes = findNode(rendered).childNodes
 
         expect(childNodes[1].firstChild).to.equal(childNodes[1].lastChild)
         expect(childNodes[1].firstChild.nodeName).to.equal('SPAN')
@@ -237,11 +222,11 @@ describe('Panel', function() {
     })
 
     it('should contain three child elements if children passed', function() {
-        var rendered = TestUtils.renderIntoDocument(
+        var rendered = shallow(
             React.createElement(Panel, { title: title }, React.createElement('span', {}))
         )
 
-        var childNodes = ReactDOM.findDOMNode(rendered).childNodes
+        var childNodes = findNode(rendered).childNodes
 
         checkChildrenTags(childNodes, ['INPUT', 'LABEL', 'DIV'])
 
@@ -251,27 +236,27 @@ describe('Panel', function() {
     })
 
     it('should use a default class if no className is passed as prop', function() {
-        var rendered = TestUtils.renderIntoDocument(
+        var rendered = shallow(
             React.createElement(Panel, { title: title })
         )
 
-        expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal(
+        expect(findNode(rendered).getAttribute('class')).to.equal(
             'panel panel--unchecked panel--enabled panel--no-content'
         )
     })
 
     it('should add className if passed as prop', function() {
-        var rendered = TestUtils.renderIntoDocument(
+        var rendered = shallow(
             React.createElement(Panel, { className: 'test', title: title })
         )
 
-        expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal(
+        expect(findNode(rendered).getAttribute('class')).to.equal(
             'panel panel--unchecked panel--enabled panel--no-content test'
         )
     })
 
     it('should reflect given properties in className, --between should override --first and --last', function() {
-        var rendered = TestUtils.renderIntoDocument(
+        var rendered = shallow(
             React.createElement(Panel, {
                 checked: true,
                 disabled: true,
@@ -282,11 +267,11 @@ describe('Panel', function() {
             }, React.createElement('span', {}))
         )
 
-        expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal(
+        expect(findNode(rendered).getAttribute('class')).to.equal(
             'panel panel--checked panel--disabled panel--between panel--content'
         )
 
-        rendered = TestUtils.renderIntoDocument(
+        rendered = shallow(
             React.createElement(Panel, {
                 checked: true,
                 disabled: true,
@@ -297,28 +282,28 @@ describe('Panel', function() {
             }, React.createElement('span', {}))
         )
 
-        expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal(
+        expect(findNode(rendered).getAttribute('class')).to.equal(
             'panel panel--checked panel--disabled panel--first panel--last panel--content'
         )
     })
 
     it('should use only existing classModifiers', function() {
-        var rendered = TestUtils.renderIntoDocument(
+        var rendered = shallow(
             React.createElement(Panel, {
                 classModifiers: {},
                 title: title
             }, React.createElement('span', {}))
         )
 
-        expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal('panel')
+        expect(findNode(rendered).getAttribute('class')).to.equal('panel')
 
-        var childNodes = ReactDOM.findDOMNode(rendered).childNodes
+        var childNodes = findNode(rendered).childNodes
 
         expect(childNodes[0].getAttribute('class')).to.equal('panel__state')
         expect(childNodes[1].getAttribute('class')).to.equal('panel__title')
         expect(childNodes[2].getAttribute('class')).to.equal('panel__content')
 
-        rendered = TestUtils.renderIntoDocument(
+        rendered = shallow(
             React.createElement(Panel, {
                 classModifiers: {
                     unchecked: 'test'
@@ -327,9 +312,9 @@ describe('Panel', function() {
             }, React.createElement('span', {}))
         )
 
-        expect(ReactDOM.findDOMNode(rendered).getAttribute('class')).to.equal('panel panel--test')
+        expect(findNode(rendered).getAttribute('class')).to.equal('panel panel--test')
 
-        childNodes = ReactDOM.findDOMNode(rendered).childNodes
+        childNodes = findNode(rendered).childNodes
 
         expect(childNodes[0].getAttribute('class')).to.equal('panel__state panel__state--test')
         expect(childNodes[1].getAttribute('class')).to.equal('panel__title panel__title--test')
@@ -337,11 +322,11 @@ describe('Panel', function() {
     })
 
     it('should apply default classes and modifiers from classNames and classModifiers props to children', function() {
-        var rendered = TestUtils.renderIntoDocument(
+        var rendered = shallow(
             React.createElement(Panel, { title: title }, React.createElement('span', {}))
         )
 
-        var childNodes = ReactDOM.findDOMNode(rendered).childNodes
+        var childNodes = findNode(rendered).childNodes
 
         expect(childNodes[0].getAttribute('class')).to.equal(
             'panel__state panel__state--unchecked panel__state--enabled panel__state--content'
@@ -357,14 +342,14 @@ describe('Panel', function() {
     })
 
     it('should use only existing classNames on children', function() {
-        var rendered = TestUtils.renderIntoDocument(
+        var rendered = shallow(
             React.createElement(Panel, {
                 classNames: {},
                 title: title
             }, React.createElement('span', {}))
         )
 
-        var childNodes = ReactDOM.findDOMNode(rendered).childNodes
+        var childNodes = findNode(rendered).childNodes
 
         expect(childNodes[0].getAttribute('class')).to.equal(null)
         expect(childNodes[1].getAttribute('class')).to.equal(null)
@@ -372,7 +357,7 @@ describe('Panel', function() {
     })
 
     it('should allow customizing children classNames', function() {
-        var rendered = TestUtils.renderIntoDocument(
+        var rendered = shallow(
             React.createElement(Panel, {
                 classModifiers: {},
                 classNames: {
@@ -384,7 +369,7 @@ describe('Panel', function() {
             }, React.createElement('span', {}))
         )
 
-        var childNodes = ReactDOM.findDOMNode(rendered).childNodes
+        var childNodes = findNode(rendered).childNodes
 
         expect(childNodes[0].getAttribute('class')).to.equal('test1')
         expect(childNodes[1].getAttribute('class')).to.equal('test2')
@@ -392,7 +377,7 @@ describe('Panel', function() {
     })
 
     it('should allow customizing class BEM separator', function() {
-        var rendered = TestUtils.renderIntoDocument(
+        var rendered = shallow(
             React.createElement(Panel, {
                 classModifiers: {
                     unchecked: 'modifier'
@@ -407,7 +392,7 @@ describe('Panel', function() {
             }, React.createElement('span', {}))
         )
 
-        var childNodes = ReactDOM.findDOMNode(rendered).childNodes
+        var childNodes = findNode(rendered).childNodes
 
         expect(childNodes[0].getAttribute('class')).to.equal('test1 test1TESTmodifier')
         expect(childNodes[1].getAttribute('class')).to.equal('test2 test2TESTmodifier')
@@ -415,7 +400,7 @@ describe('Panel', function() {
     })
 
     it('should use index and name properties in attributes', function() {
-        var rendered = TestUtils.renderIntoDocument(
+        var rendered = shallow(
             React.createElement(Panel, {
                 index: 0,
                 name: 'test',
@@ -423,7 +408,7 @@ describe('Panel', function() {
             }, React.createElement('span', {}))
         )
 
-        var element = ReactDOM.findDOMNode(rendered)
+        var element = findNode(rendered)
 
         expect(element.childNodes[0].getAttribute('name')).to.equal('test')
         expect(element.childNodes[0].getAttribute('value')).to.equal('0')
@@ -434,7 +419,7 @@ describe('Panel', function() {
     })
 
     it('should contain ARIA and data-state attributes', function() {
-        var rendered = TestUtils.renderIntoDocument(
+        var rendered = shallow(
             React.createElement(Panel, {
                 index: 0,
                 name: 'test',
@@ -442,7 +427,7 @@ describe('Panel', function() {
             }, React.createElement('span', {}))
         )
 
-        var element = ReactDOM.findDOMNode(rendered)
+        var element = findNode(rendered)
 
         expect(element.getAttribute('aria-expanded')).to.equal('false')
         expect(element.getAttribute('aria-selected')).to.equal('false')
@@ -455,7 +440,7 @@ describe('Panel', function() {
     })
 
     it('should hide element via CSS and disable input when visible prop is set to false', function() {
-        var rendered = TestUtils.renderIntoDocument(
+        var rendered = shallow(
             React.createElement(Panel, {
                 classModifiers: { visibleBetween: 'between', visibleFirst: 'first', visibleLast: 'last' },
                 isBetween: true,
@@ -466,7 +451,7 @@ describe('Panel', function() {
             }, React.createElement('span', {}))
         )
 
-        var element = ReactDOM.findDOMNode(rendered)
+        var element = findNode(rendered)
 
         expect(element.getAttribute('class')).to.equal('panel')
         expect(element.getAttribute('style')).to.equal('display: none;')
@@ -474,7 +459,7 @@ describe('Panel', function() {
     })
 
     it('should extend shorthand BEM modifiers', function() {
-        var rendered = TestUtils.renderIntoDocument(
+        var rendered = shallow(
             React.createElement(Panel, {
                 classModifiers: {},
                 classNames: {
@@ -485,8 +470,9 @@ describe('Panel', function() {
             })
         )
 
-        var element = ReactDOM.findDOMNode(rendered)
+        var element = findNode(rendered)
 
         expect(element.getAttribute('class')).to.equal('test test--test1 TEST test--TEST1')
     })
+*/
 })

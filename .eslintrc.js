@@ -3,7 +3,7 @@ module.exports = {
         "browser": true,
         "es6": true
     },
-    "extends": "eslint:recommended",
+    "extends": ["eslint:recommended", "plugin:react/recommended"],
     "globals": {
         "__BROWSER__": true,
         "__dirname": true,
@@ -20,11 +20,19 @@ module.exports = {
             "experimentalObjectRestSpread": true,
             "jsx": true
         },
+        "ecmaVersion": 6,
         "sourceType": "module"
     },
     "plugins": [
         "react"
     ],
+    "settings": {
+        "import/resolver": {
+            node: {
+                extensions: ['.js', '.jsx']
+            }
+        }
+    },
     "rules": {
         "eol-last": [
             "error",
@@ -49,6 +57,18 @@ module.exports = {
             {
                 "allowEmptyCatch": true
             }
+        ],
+        "no-unused-vars": [
+            "error",
+            {
+                "vars": "all",
+                "args": "after-used",
+                "ignoreRestSiblings": true
+            }
+        ],
+        "object-curly-spacing": [
+            "error",
+            "always"
         ],
         "quotes": [
             "error",

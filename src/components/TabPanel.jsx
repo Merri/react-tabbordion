@@ -1,8 +1,9 @@
 import React, { Children, PureComponent } from 'react'
 import PropTypes from 'prop-types'
 
+import { addSubscriber, removeSubscriber } from '../lib/contextSubscribe'
 import { bemClassName } from '../lib/bem'
-import { getArray } from '../lib/state'
+import { getArray, isShallowlyDifferent } from '../lib/state'
 
 // we only use raf for a minor accessibility feature so it is possible to get away with this little "polyfilling"
 const raf = (
@@ -41,7 +42,6 @@ function getTabPanelProps(
         disabledPanels: disabledPanelsRaw,
         firstVisiblePanel,
         lastVisiblePanel,
-        onChangePanel,
         panelName,
         panelType,
         tabbordionId,
@@ -98,7 +98,7 @@ function getTabPanelProps(
             bemModifiers[disabled ? 'disabled' : 'enabled'],
             bemModifiers[visible],
         ]) : getArray(modifiers),
-        onChangePanel,
+        onChangePanel: tabbordion.onChangePanel,
     }
 }
 
@@ -117,32 +117,54 @@ class TabPanel extends PureComponent {
         this.onChange = this.onChange.bind(this)
         this.onClickLabel = this.onClickLabel.bind(this)
 
-        this.tabbordionPanel = {
-            getState: () => ({
+        this.subscribers = []
+
+        this.childContext = {
+            tabbordionPanel: {
+                getState: () => ({
+                    checked: this.cachedProps.checked,
+                    contentId: this.cachedProps.contentId,
+                    disabled: this.cachedProps.disabled,
+                    inputId: this.cachedProps.id,
+                    index: this.cachedProps.index,
+                    modifiers: this.cachedProps.modifiers,
+                    visible: this.cachedProps.visible,
+                }),
                 onClickLabel: this.onClickLabel,
-                checked: this.cachedProps.checked,
-                contentId: this.cachedProps.contentId,
-                disabled: this.cachedProps.disabled,
-                inputId: this.cachedProps.id,
-                index: this.cachedProps.index,
-                modifiers: this.cachedProps.modifiers,
-                visible: this.cachedProps.visible,
-            })
+                subscribe: addSubscriber(this.subscribers),
+                unsubscribe: removeSubscriber(this.subscribers),
+            },
         }
+
+        this.panelState = this.childContext.tabbordionPanel.getState()
+    }
+
+    componentDidMount() {
+        this.context.bem.subscribe(this)
+        this.context.tabbordion.subscribe(this)
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
         this.cachedProps = getTabPanelProps(nextProps, nextContext, this.uniqId)
+
+        const panelState = this.childContext.tabbordionPanel.getState()
+
+        if (isShallowlyDifferent(panelState, this.panelState)) {
+            this.subscribers.forEach(component => component.forceUpdate())
+            this.panelState = panelState
+        }
     }
 
     componentWillUnmount() {
+        this.context.bem.unsubscribe(this)
+        this.context.tabbordion.unsubscribe(this)
         delete this.cachedProps
         panelInstances--
         if (panelInstances === 0) panelUniqId = 0
     }
 
     getChildContext() {
-        return { tabbordionPanel: this.tabbordionPanel }
+        return this.childContext
     }
 
     getInputRef(input) {
@@ -231,8 +253,8 @@ TabPanel.childContextTypes = {
 }
 
 TabPanel.contextTypes = {
-    bem: PropTypes.object.isRequired,
-    tabbordion: PropTypes.object.isRequired,
+    bem: PropTypes.object,
+    tabbordion: PropTypes.object,
 }
 
 TabPanel.defaultProps = {

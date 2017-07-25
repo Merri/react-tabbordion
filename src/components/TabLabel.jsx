@@ -1,13 +1,23 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 
 import { bemClassName } from '../lib/bem'
 
-class TabLabel extends Component {
+class TabLabel extends PureComponent {
     constructor(props, context) {
         super(props, context)
 
         this.onClick = this.onClick.bind(this)
+    }
+
+    componentDidMount() {
+        this.context.bem.subscribe(this)
+        this.context.tabbordionPanel.subscribe(this)
+    }
+
+    componentWillUnmount() {
+        this.context.bem.unsubscribe(this)
+        this.context.tabbordionPanel.unsubscribe(this)
     }
 
     onClick(event) {
@@ -15,7 +25,7 @@ class TabLabel extends Component {
             return
         }
 
-        const { onClickLabel } = this.context.tabbordionPanel.getState()
+        const { onClickLabel } = this.context.tabbordionPanel
         if (onClickLabel) onClickLabel()
     }
 
@@ -38,8 +48,8 @@ class TabLabel extends Component {
 }
 
 TabLabel.contextTypes = {
-    bem: PropTypes.object.isRequired,
-    tabbordionPanel: PropTypes.object.isRequired,
+    bem: PropTypes.object,
+    tabbordionPanel: PropTypes.object,
 }
 
 TabLabel.defaultProps = {

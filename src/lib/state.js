@@ -17,7 +17,7 @@ export function getIndex({ index }) {
     return index
 }
 
-function isShallowlyDifferent(obj1, obj2) {
+export function isShallowlyDifferent(obj1, obj2) {
     if (obj1 === obj2) {
         return false
     }
@@ -30,7 +30,9 @@ function isShallowlyDifferent(obj1, obj2) {
     }
 
     return keys1.some(
-        (key, index) => key !== keys2[index] || obj1[key] !== obj2[key]
+        (key, index) => key !== keys2[index] || (
+            Array.isArray(obj1[key]) ? isShallowlyDifferentArray(obj1[key], obj2[key]) : obj1[key] !== obj2[key]
+        )
     )
 }
 

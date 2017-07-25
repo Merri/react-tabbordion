@@ -1,10 +1,33 @@
 import React, { Children, PureComponent } from 'react'
 import PropTypes from 'prop-types'
 
-import { getArray, getChecked, getDisabled, getIndex, isShallowlyDifferentArray } from '../lib/state'
+import { addSubscriber, removeSubscriber } from '../lib/contextSubscribe'
+import { getArray, getChecked, getDisabled, getIndex, isShallowlyDifferent, isShallowlyDifferentArray } from '../lib/state'
 
 let tabbordionInstances = 0
 let tabbordionUniqId = 0
+
+function getStateBem(props) {
+    return {
+        bemModifiers: props.bemModifiers,
+        bemSeparator: props.bemSeparator,
+        blockElements: props.blockElements,
+    }
+}
+
+function getStateTabbordion(context, props, state) {
+    const panels = getArray(state.stateful ? state.panels : props.panels)
+
+    return {
+        checkedPanels: panels.filter(getChecked).map(getIndex),
+        disabledPanels: panels.filter(getDisabled).map(getIndex),
+        firstVisiblePanel: context.firstVisibleIndex,
+        lastVisiblePanel: context.lastVisibleIndex,
+        panelName: props.name || context.uniqId,
+        panelType: props.mode === 'multiple' ? 'checkbox' : 'radio',
+        tabbordionId: props.id || context.uniqId,
+    }
+}
 
 class Tabbordion extends PureComponent {
     constructor(props) {
@@ -27,30 +50,28 @@ class Tabbordion extends PureComponent {
             Array.isArray(props.panels) ? props.panels : props.initialPanels
         )
 
-        this.bem = {
-            getState: () => ({
-                bemModifiers: this.props.bemModifiers,
-                bemSeparator: this.props.bemSeparator,
-                blockElements: this.props.blockElements,
-            })
+        // context subscribers
+        this.subscribers = {
+            bem: [],
+            tabbordion: [],
         }
 
-        this.tabbordion = {
-            getState: () => {
-                const panels = getArray(this.state.stateful ? this.state.panels : this.props.panels)
-
-                return {
-                    checkedPanels: panels.filter(getChecked).map(getIndex),
-                    disabledPanels: panels.filter(getDisabled).map(getIndex),
-                    firstVisiblePanel: this.firstVisibleIndex,
-                    lastVisiblePanel: this.lastVisibleIndex,
-                    onChangePanel: this.onChange,
-                    panelName: this.props.name || this.uniqId,
-                    panelType: this.props.mode === 'multiple' ? 'checkbox' : 'radio',
-                    tabbordionId: this.props.id || this.uniqId,
-                }
-            }
+        this.childContext = {
+            bem: {
+                getState: () => getStateBem(this.props),
+                subscribe: addSubscriber(this.subscribers.bem),
+                unsubscribe: removeSubscriber(this.subscribers.bem),
+            },
+            tabbordion: {
+                getState: () => getStateTabbordion(this, this.props, this.state),
+                onChangePanel: this.onChange,
+                subscribe: addSubscriber(this.subscribers.tabbordion),
+                unsubscribe: removeSubscriber(this.subscribers.tabbordion),
+            },
         }
+
+        this.bemState = getStateBem(props)
+        this.tabbordionState = getStateTabbordion(this, props, this.state)
     }
 
     componentWillReceiveProps(nextProps) {
@@ -58,6 +79,20 @@ class Tabbordion extends PureComponent {
         // only update if there were changes to the local component state
         if (nextState !== this.state) {
             this.setState(nextState)
+        }
+
+        const bemState = getStateBem(nextProps)
+
+        if (isShallowlyDifferent(bemState, this.bemState)) {
+            this.subscribers.bem.forEach(component => component.forceUpdate())
+            this.bemState = bemState
+        }
+
+        const tabbordionState = getStateTabbordion(this, nextProps, nextState)
+
+        if (isShallowlyDifferent(tabbordionState, this.tabbordionState)) {
+            this.subscribers.tabbordion.forEach(component => component.forceUpdate())
+            this.tabbordionState = tabbordionState
         }
     }
 
@@ -67,10 +102,7 @@ class Tabbordion extends PureComponent {
     }
 
     getChildContext() {
-        return {
-            bem: this.bem,
-            tabbordion: this.tabbordion,
-        }
+        return this.childContext
     }
 
     /*

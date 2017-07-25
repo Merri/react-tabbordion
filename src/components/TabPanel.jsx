@@ -1,16 +1,14 @@
 import React, { Children, PureComponent } from 'react'
-import { findDOMNode } from 'react-dom'
 import PropTypes from 'prop-types'
 
 import { bemClassName } from '../lib/bem'
 import { getArray } from '../lib/state'
-import { tabbordionBlockElementTypes, tabbordionModifierTypes } from './Tabbordion'
 
 // we only use raf for a minor accessibility feature so it is possible to get away with this little "polyfilling"
 const raf = (
     typeof window !== 'undefined' && 'requestAnimationFrame' in window
-    ? window.requestAnimationFrame
-    : setTimeout
+        ? window.requestAnimationFrame
+        : setTimeout
 )
 
 let panelInstances = 0
@@ -35,23 +33,22 @@ function getTabPanelProps(
         visible: visibleProp,
         ...props
     },
-    {
-        bemModifiers,
-        bemSeparator,
-        blockElements,
-        checkedPanels,
-        disabledPanels,
+    { bem, tabbordion },
+    uniqId
+) {
+    const {
+        checkedPanels: checkedPanelsRaw,
+        disabledPanels: disabledPanelsRaw,
         firstVisiblePanel,
         lastVisiblePanel,
         onChangePanel,
         panelName,
         panelType,
         tabbordionId,
-    },
-    uniqId
-) {
-    checkedPanels = getArray(checkedPanels)
-    disabledPanels = getArray(disabledPanels)
+    } = tabbordion.getState()
+
+    const checkedPanels = getArray(checkedPanelsRaw)
+    const disabledPanels = getArray(disabledPanelsRaw)
 
     // props have preference over what comes from context
     const name = (nameProp != null ? nameProp : panelName) || tabbordionId || `tabbordion-panel-${uniqId}`
@@ -70,10 +67,14 @@ function getTabPanelProps(
 
     // sniff the id out or use our own (will be exposed via context)
     Children.forEach(props.children, child => {
-        if (child && child.type.contextTypes && child.type.contextTypes.panelContentId) {
-            contentId = (child.props || (child._store && child._store.props) || {}).id || `${id}-content`
+        if (!contentId && child && child.type.contextTypes && child.type.contextTypes.panel) {
+            contentId = (child.props || (child._store && child._store.props) || {}).id || null
         }
     })
+
+    if (!contentId) contentId = `${id}-content`
+
+    const { bemModifiers, bemSeparator, blockElements } = bem.getState()
 
     return {
         ...props,
@@ -115,6 +116,19 @@ class TabPanel extends PureComponent {
         this.getInputRef = this.getInputRef.bind(this)
         this.onChange = this.onChange.bind(this)
         this.onClickLabel = this.onClickLabel.bind(this)
+
+        this.tabbordionPanel = {
+            getState: () => ({
+                onClickLabel: this.onClickLabel,
+                checked: this.cachedProps.checked,
+                contentId: this.cachedProps.contentId,
+                disabled: this.cachedProps.disabled,
+                inputId: this.cachedProps.id,
+                index: this.cachedProps.index,
+                modifiers: this.cachedProps.modifiers,
+                visible: this.cachedProps.visible,
+            })
+        }
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
@@ -128,16 +142,7 @@ class TabPanel extends PureComponent {
     }
 
     getChildContext() {
-        return {
-            onClickPanelLabel: this.onClickLabel,
-            panelChecked: this.cachedProps.checked,
-            panelContentId: this.cachedProps.contentId,
-            panelDisabled: this.cachedProps.disabled,
-            panelInputId: this.cachedProps.id,
-            panelIndex: this.cachedProps.index,
-            panelModifiers: this.cachedProps.modifiers,
-            panelVisible: this.cachedProps.visible,
-        }
+        return { tabbordionPanel: this.tabbordionPanel }
     }
 
     getInputRef(input) {
@@ -159,29 +164,30 @@ class TabPanel extends PureComponent {
         if (onChangePanel) onChangePanel(index)
         // make sure focus goes to the input element, that is what sane browsers do when a label is clicked
         raf(() => {
-            const input = findDOMNode(this.input)
             // of course things may go wrong so make sure all expected conditions are met before doing stuff
-            if (input && input.checked && document.activeElement !== input) input.focus()
+            if (this.input && this.input.checked && document.activeElement !== this.input) {
+                this.input.focus()
+            }
         })
     }
 
     render() {
         const {
-            bemModifiers, // eslint-disable-line
+            bemModifiers,
             bemSeparator,
             blockElements,
             checked,
-            checkedPanels, // eslint-disable-line
+            checkedPanels,
             children,
             className,
-            component: Component, // eslint-disable-line
+            component: Component,
             contentId,
             disabled,
-            disabledPanels, // eslint-disable-line
+            disabledPanels,
             id,
-            index, // eslint-disable-line
+            index,
             modifiers,
-            onChangePanel, // eslint-disable-line
+            onChangePanel,
             name,
             style,
             type,
@@ -221,28 +227,12 @@ class TabPanel extends PureComponent {
 }
 
 TabPanel.childContextTypes = {
-    onClickPanelLabel: PropTypes.func,
-    panelChecked: PropTypes.bool,
-    panelContentId: PropTypes.string,
-    panelDisabled: PropTypes.bool,
-    panelInputId: PropTypes.string,
-    panelIndex: PropTypes.number,
-    panelModifiers: PropTypes.array,
-    panelVisible: PropTypes.oneOf(['between', 'first', 'hidden', 'last']),
+    tabbordionPanel: PropTypes.object,
 }
 
 TabPanel.contextTypes = {
-    bemModifiers: PropTypes.shape(tabbordionModifierTypes),
-    bemSeparator: PropTypes.string,
-    blockElements: PropTypes.shape(tabbordionBlockElementTypes),
-    checkedPanels: PropTypes.array,
-    disabledPanels: PropTypes.array,
-    firstVisiblePanel: PropTypes.number,
-    lastVisiblePanel: PropTypes.number,
-    onChangePanel: PropTypes.func,
-    panelName: PropTypes.string,
-    panelType: PropTypes.oneOf(['checkbox', 'radio']),
-    tabbordionId: PropTypes.string,
+    bem: PropTypes.object.isRequired,
+    tabbordion: PropTypes.object.isRequired,
 }
 
 TabPanel.defaultProps = {

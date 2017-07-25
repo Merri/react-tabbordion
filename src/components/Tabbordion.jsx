@@ -26,6 +26,31 @@ class Tabbordion extends PureComponent {
             { stateful: false },
             Array.isArray(props.panels) ? props.panels : props.initialPanels
         )
+
+        this.bem = {
+            getState: () => ({
+                bemModifiers: this.props.bemModifiers,
+                bemSeparator: this.props.bemSeparator,
+                blockElements: this.props.blockElements,
+            })
+        }
+
+        this.tabbordion = {
+            getState: () => {
+                const panels = getArray(this.state.stateful ? this.state.panels : this.props.panels)
+
+                return {
+                    checkedPanels: panels.filter(getChecked).map(getIndex),
+                    disabledPanels: panels.filter(getDisabled).map(getIndex),
+                    firstVisiblePanel: this.firstVisibleIndex,
+                    lastVisiblePanel: this.lastVisibleIndex,
+                    onChangePanel: this.onChange,
+                    panelName: this.props.name || this.uniqId,
+                    panelType: this.props.mode === 'multiple' ? 'checkbox' : 'radio',
+                    tabbordionId: this.props.id || this.uniqId,
+                }
+            }
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -42,20 +67,9 @@ class Tabbordion extends PureComponent {
     }
 
     getChildContext() {
-        const panels = getArray(this.state.stateful ? this.state.panels : this.props.panels)
-
         return {
-            bemModifiers: this.props.bemModifiers,
-            bemSeparator: this.props.bemSeparator,
-            blockElements: this.props.blockElements,
-            checkedPanels: panels.filter(getChecked).map(getIndex),
-            disabledPanels: panels.filter(getDisabled).map(getIndex),
-            firstVisiblePanel: this.firstVisibleIndex,
-            lastVisiblePanel: this.lastVisibleIndex,
-            onChangePanel: this.onChange,
-            panelName: this.props.name || this.uniqId,
-            panelType: this.props.mode === 'multiple' ? 'checkbox' : 'radio',
-            tabbordionId: this.props.id || this.uniqId,
+            bem: this.bem,
+            tabbordion: this.tabbordion,
         }
     }
 
@@ -75,7 +89,7 @@ class Tabbordion extends PureComponent {
         const allowMultiChecked = props.mode === 'multiple'
 
         Children.forEach(props.children, child => {
-            if (child && child.type.contextTypes && child.type.contextTypes.tabbordionId) {
+            if (child && child.type.contextTypes && child.type.contextTypes.tabbordion) {
                 const props = child.props || (child._store && child._store.props) || {}
                 // use false to mark panels with invalid index
                 const index = props.index != null ? props.index : false
@@ -151,8 +165,8 @@ class Tabbordion extends PureComponent {
             lastVisibleIndex = nextPanels[lastVisibleIndex].index
         }
 
-        // keep in local state: we can do this in this way because these values are derived from main panels state
-        //                      also, this state is updated each time props change, thus we maintain "pureness"
+        // keep in local state: We can do this in this way because these values are derived from main panels state.
+        //                      Also, this state is updated each time props change, thus we maintain "pureness".
         this.firstVisibleIndex = firstVisibleIndex
         this.lastVisibleIndex = lastVisibleIndex
 
@@ -240,17 +254,17 @@ class Tabbordion extends PureComponent {
         // use destructuring to pick out props we don't need to pass to the rendered component
         const {
             children,
-            component: Component, // eslint-disable-line
-            bemModifiers, // eslint-disable-line
-            bemSeparator, // eslint-disable-line
-            blockElements, // eslint-disable-line
-            component, // eslint-disable-line
-            initialPanels, // eslint-disable-line
-            mode, // eslint-disable-line
-            name, // eslint-disable-line
-            onChange, // eslint-disable-line
-            onPanels, // eslint-disable-line
-            panels: panelsProp, // eslint-disable-line
+            component: Component,
+            bemModifiers,
+            bemSeparator,
+            blockElements,
+            component,
+            initialPanels,
+            mode,
+            name,
+            onChange,
+            onPanels,
+            panels: panelsProp,
             ...props
         } = this.props
 
@@ -261,7 +275,7 @@ class Tabbordion extends PureComponent {
         return (
             <Component {...props} role="tablist">
                 {Children.map(children, child => {
-                    if (child && child.type.contextTypes && child.type.contextTypes.tabbordionId) {
+                    if (child && child.type.contextTypes && child.type.contextTypes.tabbordion) {
                         const output = React.cloneElement(child, panels[panel])
                         panel++
                         return output
@@ -274,37 +288,9 @@ class Tabbordion extends PureComponent {
     }
 }
 
-export const tabbordionBlockElementTypes = {
-    content: PropTypes.string,
-    label: PropTypes.string,
-    panel: PropTypes.string,
-}
-
-export const tabbordionModifierTypes = {
-    between: PropTypes.string,
-    checked: PropTypes.string,
-    content: PropTypes.string,
-    disabled: PropTypes.string,
-    enabled: PropTypes.string,
-    first: PropTypes.string,
-    hidden: PropTypes.string,
-    last: PropTypes.string,
-    noContent: PropTypes.string,
-    unchecked: PropTypes.string,
-}
-
 Tabbordion.childContextTypes = {
-    bemModifiers: PropTypes.shape(tabbordionModifierTypes),
-    bemSeparator: PropTypes.string,
-    blockElements: PropTypes.shape(tabbordionBlockElementTypes),
-    checkedPanels: PropTypes.array,
-    disabledPanels: PropTypes.array,
-    firstVisiblePanel: PropTypes.number,
-    lastVisiblePanel: PropTypes.number,
-    onChangePanel: PropTypes.func,
-    panelName: PropTypes.string,
-    panelType: PropTypes.oneOf(['checkbox', 'radio']),
-    tabbordionId: PropTypes.string,
+    bem: PropTypes.object,
+    tabbordion: PropTypes.object,
 }
 
 Tabbordion.defaultProps = {
@@ -329,26 +315,42 @@ Tabbordion.defaultProps = {
     mode: 'single',
 }
 
-export const tabbordionPanelProps = {
+const tabbordionPanelProps = PropTypes.arrayOf(PropTypes.shape({
     checked: PropTypes.bool,
     disabled: PropTypes.bool,
     index: PropTypes.number,
     visible: PropTypes.bool,
-}
+}))
 
 Tabbordion.propTypes = {
-    bemModifiers: PropTypes.shape(tabbordionModifierTypes),
+    bemModifiers: PropTypes.shape({
+        between: PropTypes.string,
+        checked: PropTypes.string,
+        content: PropTypes.string,
+        disabled: PropTypes.string,
+        enabled: PropTypes.string,
+        first: PropTypes.string,
+        hidden: PropTypes.string,
+        last: PropTypes.string,
+        noContent: PropTypes.string,
+        unchecked: PropTypes.string,
+    }),
     bemSeparator: PropTypes.string,
-    blockElements: PropTypes.shape(tabbordionBlockElementTypes),
+    blockElements: PropTypes.shape({
+        content: PropTypes.string,
+        label: PropTypes.string,
+        panel: PropTypes.string,
+    }),
+    children: PropTypes.node,
     className: PropTypes.string,
     component: PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.string]),
     id: PropTypes.string,
-    initialPanels: PropTypes.arrayOf(PropTypes.shape(tabbordionPanelProps)),
+    initialPanels: tabbordionPanelProps,
     mode: PropTypes.oneOf(['single', 'toggle', 'multiple']),
     name: PropTypes.string,
     onChange: PropTypes.func,
     onPanels: PropTypes.func,
-    panels: PropTypes.arrayOf(PropTypes.shape(tabbordionPanelProps)),
+    panels: tabbordionPanelProps,
 }
 
 export default Tabbordion

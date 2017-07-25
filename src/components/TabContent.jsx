@@ -2,20 +2,18 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import { bemClassName } from '../lib/bem'
-import { tabbordionBlockElementTypes } from './Tabbordion'
 
-function TabContent(
-    { className, component: Component, ...props },
-    { bemSeparator, blockElements, panelContentId, panelInputId, panelModifiers }
-) {
-    const panelBem = bemClassName(blockElements, 'content', panelModifiers, bemSeparator)
+function TabContent({ className, component: Component, ...props }, { bem, tabbordionPanel }) {
+    const { bemSeparator, blockElements } = bem.getState()
+    const { contentId, inputId, modifiers } = tabbordionPanel.getState()
+    const panelBem = bemClassName(blockElements, 'content', modifiers, bemSeparator)
 
-    // panelContentId will be overwritten by props.id (intended behavior)
+    // contentId will be overwritten by props.id (intended behavior)
     return (
         <Component
-            id={panelContentId}
+            id={contentId}
             {...props}
-            aria-labelledby={panelInputId}
+            aria-labelledby={inputId}
             className={!panelBem ? className : (className ? `${panelBem} ${className}` : panelBem)}
             role="tabpanel"
         />
@@ -23,11 +21,8 @@ function TabContent(
 }
 
 TabContent.contextTypes = {
-    bemSeparator: PropTypes.string,
-    blockElements: PropTypes.shape(tabbordionBlockElementTypes),
-    panelContentId: PropTypes.string,
-    panelInputId: PropTypes.string,
-    panelModifiers: PropTypes.array,
+    bem: PropTypes.object.isRequired,
+    tabbordionPanel: PropTypes.object.isRequired,
 }
 
 TabContent.defaultProps = {

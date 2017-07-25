@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import { bemClassName } from '../lib/bem'
-import { tabbordionBlockElementTypes } from './Tabbordion'
 
 class TabLabel extends Component {
     constructor(props, context) {
@@ -16,20 +15,21 @@ class TabLabel extends Component {
             return
         }
 
-        const { onClickPanelLabel } = this.context
-        if (onClickPanelLabel) onClickPanelLabel()
+        const { onClickLabel } = this.context.tabbordionPanel.getState()
+        if (onClickLabel) onClickLabel()
     }
 
     render() {
-        const { bemSeparator, blockElements, panelInputId, panelModifiers } = this.context
+        const { bemSeparator, blockElements } = this.context.bem.getState()
+        const { inputId, modifiers } = this.context.tabbordionPanel.getState()
         const { className, component: Component, ...props } = this.props
 
-        const panelBem = bemClassName(blockElements, 'label', panelModifiers, bemSeparator)
+        const panelBem = bemClassName(blockElements, 'label', modifiers, bemSeparator)
 
         return (
             <Component
                 className={!panelBem ? className : (className ? `${panelBem} ${className}` : panelBem)}
-                htmlFor={panelInputId}
+                htmlFor={inputId}
                 onClick={this.onClick}
                 {...props}
             />
@@ -38,11 +38,8 @@ class TabLabel extends Component {
 }
 
 TabLabel.contextTypes = {
-    bemSeparator: PropTypes.string,
-    blockElements: PropTypes.shape(tabbordionBlockElementTypes),
-    onClickPanelLabel: PropTypes.func,
-    panelInputId: PropTypes.string,
-    panelModifiers: PropTypes.array,
+    bem: PropTypes.object.isRequired,
+    tabbordionPanel: PropTypes.object.isRequired,
 }
 
 TabLabel.defaultProps = {

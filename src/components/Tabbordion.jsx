@@ -58,12 +58,12 @@ class Tabbordion extends PureComponent {
 
         this.childContext = {
             bem: {
-                getState: () => getStateBem(this.props),
+                getState: () => this.bemState,
                 subscribe: addSubscriber(this.subscribers.bem),
                 unsubscribe: removeSubscriber(this.subscribers.bem),
             },
             tabbordion: {
-                getState: () => getStateTabbordion(this, this.props, this.state),
+                getState: () => this.tabbordionState,
                 onChangePanel: this.onChange,
                 subscribe: addSubscriber(this.subscribers.tabbordion),
                 unsubscribe: removeSubscriber(this.subscribers.tabbordion),

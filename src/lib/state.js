@@ -21,10 +21,20 @@ export function isShallowlyDifferent(obj1, obj2) {
     if (obj1 === obj2) {
         return false
     }
-
+    // handle undefined and null as equals
+    if (obj1 == null || obj2 == null) {
+        return obj1 != null || obj2 != null
+    } else if (typeof obj1 !== 'object') {
+        // other types must be an exact match
+        return true
+    } else if (typeof obj2 !== 'object') {
+        // type mismatch
+        return true
+    }
+    // we now know both are objects so we can do object comparisons
     const keys1 = Object.keys(obj1 || {}).sort()
     const keys2 = Object.keys(obj2 || {}).sort()
-
+    // must have same amount of keys
     if (keys1.length !== keys2.length) {
         return true
     }

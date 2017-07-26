@@ -24,11 +24,9 @@ export function isShallowlyDifferent(obj1, obj2) {
     // handle undefined and null as equals
     if (obj1 == null || obj2 == null) {
         return obj1 != null || obj2 != null
-    } else if (typeof obj1 !== 'object') {
-        // other types must be an exact match
-        return true
-    } else if (typeof obj2 !== 'object') {
-        // type mismatch
+    }
+    // non-objects must be an exact match
+    if (typeof obj1 !== 'object' || typeof obj2 !== 'object') {
         return true
     }
     // we now know both are objects so we can do object comparisons

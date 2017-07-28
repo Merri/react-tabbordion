@@ -49,6 +49,7 @@ TabContent.defaultProps = {
 TabContent.propTypes = {
     className: PropTypes.string,
     component: PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.string]),
+    style: PropTypes.object,
 }
 
 export default TabContent

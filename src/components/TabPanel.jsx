@@ -38,6 +38,7 @@ function getTabPanelProps(
     uniqId
 ) {
     const {
+        animateContent,
         checkedPanels: checkedPanelsRaw,
         disabledPanels: disabledPanelsRaw,
         firstVisiblePanel,
@@ -78,6 +79,7 @@ function getTabPanelProps(
 
     return {
         ...props,
+        animateContent,
         bemModifiers,
         bemSeparator,
         blockElements,
@@ -97,7 +99,9 @@ function getTabPanelProps(
             bemModifiers[contentId ? 'content' : 'noContent'],
             bemModifiers[disabled ? 'disabled' : 'enabled'],
             bemModifiers[visible],
-        ]) : getArray(modifiers),
+        ]).concat(
+            animateContent ? ['animated', bemModifiers[animateContent]] : []
+        ) : getArray(modifiers),
         onChangePanel: tabbordion.onChangePanel,
     }
 }
@@ -122,6 +126,7 @@ class TabPanel extends PureComponent {
         this.childContext = {
             tabbordionPanel: {
                 getState: () => ({
+                    animated: this.cachedProps.animateContent !== false,
                     checked: this.cachedProps.checked,
                     contentId: this.cachedProps.contentId,
                     disabled: this.cachedProps.disabled,

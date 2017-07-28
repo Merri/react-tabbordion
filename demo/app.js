@@ -4,6 +4,7 @@
     var Panel = React.createFactory(window.ReactTabbordion.TabPanel)
     var Label = React.createFactory(window.ReactTabbordion.TabLabel)
     var Content = React.createFactory(window.ReactTabbordion.TabContent)
+    var HContent = React.createFactory(window.ReactTabbordion.HeightTransition)
 
     var demoName = ['Tabs', 'Accordion', 'Multiselect Accordion']
 
@@ -23,7 +24,7 @@
                         name: 'demo'
                     },
                     {
-                        // animateContent: 'height',
+                        animateContent: 'height',
                         className: 'accordion',
                         blockElements: {
                             animator: 'accordion-animator',
@@ -35,7 +36,7 @@
                         name: 'demo'
                     },
                     {
-                        // animateContent: 'height',
+                        animateContent: 'height',
                         className: 'accordion',
                         blockElements: {
                             animator: 'accordion-animator',
@@ -123,7 +124,7 @@
                         Panel(
                             null,
                             Label({}, 'Panel #1'),
-                            Content(
+                            HContent(
                                 null,
                                 React.DOM.h2({}, 'Content Be Here'),
                                 React.DOM.p({}, 'Unless we have nothing.')
@@ -132,7 +133,7 @@
                         Panel(
                             null,
                             Label({}, 'Panel #2'),
-                            Content(
+                            HContent(
                                 null,
                                 React.DOM.h2({}, 'More Content Be Here'),
                                 React.DOM.p({}, 'But we have something.')

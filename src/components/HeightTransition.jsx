@@ -1,15 +1,30 @@
-import React, { PureComponent } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 
-class HeightTransition extends PureComponent {
-    constructor(props) {
-        super(props)
+import { bemClassName } from '../lib/bem'
+
+import TabContent from './TabContent'
+
+class HeightTransition extends TabContent {
+    constructor(props, context) {
+        super(props, context)
+
+        this.state = { height: null }
 
         this.getRef = this.getRef.bind(this)
     }
 
     componentDidUpdate() {
+        if (!this.child) {
+            return
+        }
 
+        const { bottom, top } = this.child.getBoundingClientRect()
+        const height = Math.ceil(bottom - top)
+
+        if (this.state.height !== height) {
+            this.setState({ height })
+        }
     }
 
     getRef(child) {
@@ -17,23 +32,39 @@ class HeightTransition extends PureComponent {
     }
 
     render() {
-        const { children, component: Component, style, ...props } = this.props
+        const { children, className, component: Component, style, ...props } = this.props
+        const { bemSeparator, blockElements } = this.context.bem.getState()
+        const { animated, checked, contentId, inputId, modifiers } = this.context.tabbordionPanel.getState()
+        const panelBem = bemClassName(blockElements, 'content', modifiers, bemSeparator)
+        const animatorBem = bemClassName(blockElements, 'animator', modifiers, bemSeparator)
 
+        const height = checked
+            ? this.state.height && this.state.height + 'px' || 'auto'
+            : '0px'
+
+        // contentId will be overwritten by props.id (intended behavior)
         return (
-            <Component {...props} style={{ ...style }}>
-                {React.cloneElement(React.Children.only(children), { ref: this.getRef })}
+            <Component
+                id={contentId}
+                {...props}
+                aria-labelledby={inputId}
+                className={!animatorBem ? className : (className ? `${animatorBem} ${className}` : animatorBem)}
+                role="tabpanel"
+                style={animated ? { ...style, height, overflow: 'hidden' } : { ...style, display: 'inline' }}
+            >
+                <div ref={this.getRef} className={panelBem}>
+                    {children}
+                </div>
             </Component>
         )
     }
 }
 
-HeightTransition.defaultProps = {
-    component: 'div',
-}
+HeightTransition.contextTypes = TabContent.contextTypes
+HeightTransition.defaultProps = TabContent.defaultProps
 
 HeightTransition.propTypes = {
-    children: PropTypes.node.isRequired,
-    component: PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.string]),
+    ...TabContent.propTypes,
     style: PropTypes.object,
 }
 

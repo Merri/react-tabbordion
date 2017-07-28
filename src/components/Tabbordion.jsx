@@ -19,6 +19,7 @@ function getStateTabbordion(context, props, state) {
     const panels = getArray(state.stateful ? state.panels : props.panels)
 
     return {
+        animateContent: props.animateContent,
         checkedPanels: panels.filter(getChecked).map(getIndex),
         disabledPanels: panels.filter(getDisabled).map(getIndex),
         firstVisiblePanel: context.firstVisibleIndex,
@@ -326,6 +327,7 @@ Tabbordion.childContextTypes = {
 }
 
 Tabbordion.defaultProps = {
+    animateContent: false,
     bemModifiers: {
         between: 'between',
         checked: 'checked',
@@ -355,6 +357,7 @@ const tabbordionPanelProps = PropTypes.arrayOf(PropTypes.shape({
 }))
 
 Tabbordion.propTypes = {
+    animateContent: PropTypes.oneOf([false, 'height']),
     bemModifiers: PropTypes.shape({
         between: PropTypes.string,
         checked: PropTypes.string,

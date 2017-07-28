@@ -100,7 +100,7 @@ function getTabPanelProps(
             bemModifiers[disabled ? 'disabled' : 'enabled'],
             bemModifiers[visible],
         ]).concat(
-            animateContent ? ['animated', bemModifiers[animateContent]] : []
+            animateContent ? ['animated', animateContent] : []
         ) : getArray(modifiers),
         onChangePanel: tabbordion.onChangePanel,
     }
@@ -126,7 +126,7 @@ class TabPanel extends PureComponent {
         this.childContext = {
             tabbordionPanel: {
                 getState: () => ({
-                    animated: this.cachedProps.animateContent !== false,
+                    animateContent: this.cachedProps.animateContent,
                     checked: this.cachedProps.checked,
                     contentId: this.cachedProps.contentId,
                     disabled: this.cachedProps.disabled,

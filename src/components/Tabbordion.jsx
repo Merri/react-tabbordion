@@ -2,7 +2,15 @@ import React, { Children, PureComponent } from 'react'
 import PropTypes from 'prop-types'
 
 import { addSubscriber, removeSubscriber } from '../lib/contextSubscribe'
-import { getArray, getChecked, getDisabled, getIndex, isShallowlyDifferent, isShallowlyDifferentArray } from '../lib/state'
+
+import {
+    getArray,
+    getChecked,
+    getDisabled,
+    getIndex,
+    isShallowlyDifferent,
+    isShallowlyDifferentArray,
+} from '../lib/state'
 
 let tabbordionInstances = 0
 let tabbordionUniqId = 0
@@ -357,7 +365,7 @@ const tabbordionPanelProps = PropTypes.arrayOf(PropTypes.shape({
 }))
 
 Tabbordion.propTypes = {
-    animateContent: PropTypes.oneOf([false, 'height']),
+    animateContent: PropTypes.oneOf([false, 'height', 'marginTop']),
     bemModifiers: PropTypes.shape({
         between: PropTypes.string,
         checked: PropTypes.string,

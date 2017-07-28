@@ -69,7 +69,6 @@
     transform: rotate(0deg);
     -webkit-transition: -webkit-transform 0.375s ease-in-out;
     transition: transform 0.375s ease-in-out;
-    will-change: transform;
 }
 
 .accordion-title--checked {
@@ -82,12 +81,22 @@
 }
 
 .accordion-animator {
-    -webkit-transition: height 0.375s ease-in-out;
-    transition: height 0.375s ease-in-out;
+    background-color: #EBEBEB;
+    -webkit-transition: background-color 0.125s ease-in-out, height 0.375s ease-in-out;
+    transition: background-color 0.125s ease-in-out, height 0.375s ease-in-out;
+}
+
+.accordion-animator:after {
+    clear: both;
+    content: '';
+    display: block;
+}
+
+.accordion-animator--checked {
+    background-color: #FAFAFA;
 }
 
 .accordion-content {
-    background: #FAFAFA;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -99,26 +108,27 @@
 }
 
 .accordion-content--animated {
-    background: #EBEBEB;
     display: block;
-    -webkit-transition: background-color 0.125s ease-in-out;
-    transition: background-color 0.125s ease-in-out;
-    will-change: background;
+    opacity: 0;
+    transform: translateY(-50%);
+    -webkit-transition: opacity 0.375s ease-in-out, transform 0.375s ease-in-out;
+    transition: opacity 0.375s ease-in-out, transform 0.375s ease-in-out;
 }
 
 .accordion-content--marginTop {
     margin-top: -65535px;
-    -webkit-transition: background-color 0.125s ease-in-out, margin-top 0.375s ease-in-out;
-    transition: background-color 0.125s ease-in-out, margin-top 0.375s ease-in-out;
-    will-change: background, margin;
+    transform: translateY(-50%);
+    -webkit-transition: margin-top 0.375s ease-in-out, opacity 0.375s ease-in-out, transform 0.375s ease-in-out;
+    transition: margin-top 0.375s ease-in-out, opacity 0.375s ease-in-out, transform 0.375s ease-in-out;
 }
 
 .accordion-content--checked {
     display: block;
+    opacity: 1;
 }
 
 .accordion-content--checked.accordion-content--animated {
-    background: #FAFAFA;
+    transform: translateY(0);
 }
 
 .accordion-content--checked.accordion-content--marginTop {

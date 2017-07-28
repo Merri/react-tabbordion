@@ -1,10 +1,9 @@
-/* global React, ReactDOM */
-;(function() {
-    var Tabbordion = React.createFactory(window.ReactTabbordion.Tabbordion)
-    var Panel = React.createFactory(window.ReactTabbordion.TabPanel)
-    var Label = React.createFactory(window.ReactTabbordion.TabLabel)
-    var Content = React.createFactory(window.ReactTabbordion.TabContent)
-    var HContent = React.createFactory(window.ReactTabbordion.HeightTransition)
+/* global React, ReactDOM, ReactTabbordion */
+(function() {
+    var Tabbordion = React.createFactory(ReactTabbordion.Tabbordion)
+    var Panel = React.createFactory(ReactTabbordion.TabPanel)
+    var Label = React.createFactory(ReactTabbordion.TabLabel)
+    var Content = React.createFactory(ReactTabbordion.TabContent)
 
     var demoName = ['Tabs', 'Accordion', 'Multiselect Accordion']
 
@@ -124,7 +123,7 @@
                         Panel(
                             null,
                             Label({}, 'Panel #1'),
-                            HContent(
+                            Content(
                                 null,
                                 React.DOM.h2({}, 'Content Be Here'),
                                 React.DOM.p({}, 'Unless we have nothing.')
@@ -133,7 +132,7 @@
                         Panel(
                             null,
                             Label({}, 'Panel #2'),
-                            HContent(
+                            Content(
                                 null,
                                 React.DOM.h2({}, 'More Content Be Here'),
                                 React.DOM.p({}, 'But we have something.')
@@ -153,4 +152,4 @@
     })
 
     ReactDOM.render(React.createElement(Demo), document.getElementById('app'))
-})();
+})()

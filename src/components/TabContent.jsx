@@ -10,7 +10,7 @@ function onResize() {
     clearTimeout(timeout)
     timeout = setTimeout(function() {
         timeout = null
-        instances.forEach(callback => callback())
+        instances.forEach(callback => callback.getState().animateContent && callback())
     }, 100)
 }
 
@@ -40,10 +40,12 @@ class TabContent extends PureComponent {
     constructor(props, context) {
         super(props, context)
 
-        this.state = { height: null }
+        this.state = { disableTransition: false, height: null }
 
         this.getRef = this.getRef.bind(this)
-        this.onResize = this.componentDidUpdate.bind(this)
+        this.onResize = this.onResize.bind(this)
+        this.update = this.update.bind(this)
+        this.onResize.getState = context.tabbordionPanel.getState
     }
 
     componentDidMount() {
@@ -61,7 +63,19 @@ class TabContent extends PureComponent {
     }
 
     componentDidUpdate() {
-        if (!this.child || !this.context.tabbordionPanel.getState().animateContent) {
+        this.update()
+    }
+
+    getRef(child) {
+        this.child = child
+    }
+
+    onResize() {
+        this.update('resize')
+    }
+
+    update(triggerer) {
+        if (!this.child) {
             return
         }
 
@@ -69,12 +83,18 @@ class TabContent extends PureComponent {
         const height = Math.ceil(bottom - top)
 
         if (this.state.height !== height) {
-            this.setState({ height })
-        }
-    }
+            if (triggerer === 'resize') {
+                this.setState({ disableTransition: true, height })
 
-    getRef(child) {
-        this.child = child
+                clearTimeout(this._dtt)
+                this._dtt = setTimeout(() => {
+                    delete this._dtt
+                    this.setState({ disableTransition: false })
+                }, 500)
+            } else {
+                this.setState({ height })
+            }
+        }
     }
 
     render() {
@@ -94,6 +114,8 @@ class TabContent extends PureComponent {
             : '0px'
         ) : null
 
+        const disabledStyle = this.state.disableTransition ? { webkitTransition: 'unset', transition: 'unset' } : null
+
         // contentId will be overwritten by props.id (intended behavior)
         return animateContent ? (
             <Component
@@ -102,9 +124,14 @@ class TabContent extends PureComponent {
                 aria-labelledby={inputId}
                 className={!animatorBem ? className : (className ? `${animatorBem} ${className}` : animatorBem)}
                 role="tabpanel"
-                style={{ ...style, height, overflow: checked && animateContent === 'marginTop' ? 'visible' : 'hidden' }}
+                style={{
+                    ...style,
+                    height,
+                    overflow: checked && animateContent === 'marginTop' ? 'visible' : 'hidden',
+                    ...disabledStyle,
+                }}
             >
-                <div ref={this.getRef} className={panelBem} style={marginTop && { marginTop }}>
+                <div ref={this.getRef} className={panelBem} style={marginTop && { marginTop, ...disabledStyle }}>
                     {children}
                 </div>
             </Component>

@@ -26,7 +26,10 @@ class TabLabel extends PureComponent {
         }
 
         const { onClickLabel } = this.context.tabbordionPanel
-        if (onClickLabel) onClickLabel()
+        if (onClickLabel) {
+            event.preventDefault()
+            onClickLabel()
+        }
     }
 
     render() {

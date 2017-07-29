@@ -181,18 +181,18 @@ class TabPanel extends PureComponent {
         if (event.defaultPrevented) {
             return
         }
-        const { index, onChange } = this.cachedProps
-        if (onChange) onChange(index)
+        const { index, onChangePanel } = this.cachedProps
+        if (onChangePanel) onChangePanel(index)
     }
 
     /** Handler for TabLabel child */
     onClickLabel() {
-        const { index, onChangePanel } = this.cachedProps
+        const { index, onChangePanel, type } = this.cachedProps
         if (onChangePanel) onChangePanel(index)
         // make sure focus goes to the input element, that is what sane browsers do when a label is clicked
         raf(() => {
             // of course things may go wrong so make sure all expected conditions are met before doing stuff
-            if (this.input && this.input.checked && document.activeElement !== this.input) {
+            if (this.input && (this.input.checked || type === 'checkbox') && document.activeElement !== this.input) {
                 this.input.focus()
             }
         })

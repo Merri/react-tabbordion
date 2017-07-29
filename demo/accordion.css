@@ -134,3 +134,8 @@
 .accordion-content--checked.accordion-content--marginTop {
     margin-top: 0;
 }
+
+.accordion-title:active:before,
+[data-state="tabbordion"]:focus ~ .accordion-title:before {
+    color: #b63;
+}

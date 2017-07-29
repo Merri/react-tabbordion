@@ -100,7 +100,7 @@ function getTabPanelProps(
             bemModifiers[disabled ? 'disabled' : 'enabled'],
             bemModifiers[visible],
         ]).concat(
-            animateContent ? ['animated', animateContent] : []
+            animateContent ? [bemModifiers.animated, animateContent] : []
         ) : getArray(modifiers),
         onChangePanel: tabbordion.onChangePanel,
     }

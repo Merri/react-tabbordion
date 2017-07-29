@@ -337,6 +337,7 @@ Tabbordion.childContextTypes = {
 Tabbordion.defaultProps = {
     animateContent: false,
     bemModifiers: {
+        animated: 'animated',
         between: 'between',
         checked: 'checked',
         content: 'content',

@@ -14,6 +14,10 @@
 Essentially Tabbordion handles the state, gives tools for complete CSS based styling, manages WAI ARIA and provides a
 great HTML/DOM structure to work with. Tabbordion is universal and therefore works both server side and client side!
 
+Keyboard usage works just like with radio buttons (or checkboxes when using `multiple` mode); the component avoids
+reinventing the wheel and takes advantage of native browser behavior where possible, which is why you can't see any code
+related to keyboard handling despite it being fully supported.
+
 You have complete control over the generated classNames, you can even disable generating them if you wish to. There is
 only one required style:
 

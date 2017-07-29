@@ -26,7 +26,7 @@ blockElements     | object        | Object containing strings to use as class bl
 initialPanels     | array         | Can provide initial panel information for `stateful` usage of Tabbordion.
 mode              | string        | Can be `single`, `toggle` or `multiple`. Read more below.
 name              | string        | Name attribute in panel's hidden input element to group them. Also used to generate
-                  |               | IDs.
+                                    IDs.
 onChange          | func          | Gets info on clicked panel index and also tells the current mode.
 onPanels          | func          | Gets new `panels` that can be used to store the state outside Tabbordion.
 panels            | array         | Active state to render. Read more below.

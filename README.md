@@ -33,17 +33,23 @@ This will hide the input elements so that they remain accessible via keyboard on
 [You're welcome to steal the demo styles.](./demo/)
 
 
-## Demo and Installation
+## What is new with v1.0?
 
-[View Tabbordion demo](https://merri.github.io/react-tabbordion/)
+- You can now make Tabbordion stateless, thus place the state where you want!
+- Full state control: Tabbordion makes sure the state is correct for given mode.
+- Viewport resize support: when using `animateContent` elements are now updated when window is resized.
+- `bemClassName` is now exposed.
+- Performance optimizations for minimal renders. All Tabbordion components now extend PureComponent.
+
+
+## Demo, Documentation and Installation
+
+View [Tabbordion demo](https://merri.github.io/react-tabbordion/) or [Documentation](./docs/).
 
 ```
 npm install react-tabbordion
 ```
 
-### Documentation
-
-[It exists.](./docs/)
 
 ### Usage example and sample output
 
@@ -100,6 +106,9 @@ const blockElements = {
     </li>
 </ul>
 ```
+
+The first tab is open as `single` mode is the default setting. If another mode is set then no tabs will be open unless
+`initialPanels` is given.
 
 
 ## Developing

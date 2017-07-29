@@ -1,3 +1,44 @@
+## v1.0.0 - 2017-07-31
+
+This is a full rewrite of Tabbordion and throws away all legacy conventions in favor of pure components and other modern
+React conventions.
+
+### `<Tabbordion />`
+
+- Allow controlling state via `panels` and `onPanels`
+- Force state to be correct for the selected `mode`
+- Optimize performance by minimal renders
+
+#### Removes
+- `contentTag` and `panelTag`
+- `initialIndex` in favor of `initialPanels`
+- `onAfterChange` in favor of new state providing `onPanels`
+- `onBeforeChange`
+
+#### Renames
+
+- `classModifiers` as `bemModifiers`
+- `classNames` as `blockModifiers`
+- `classSeparator` as `bemSeparator`
+- `tag` as `component`
+- Modifiers `visibleBetween`, `visibleFirst` and `visibleLast` renamed as `between`, `first` and `last` respectively
+
+### `<Panel />`
+
+- Separated to three new components: `<TabPanel />`, `<TabLabel />` and `<TabContent />`
+- `label` is now `TabLabel` as a child of `TabPanel`
+- Other `children` needs to be wrapped as `children` of `TabContent`
+- `TabPanel` no longer "inherits" nothing; the way props work has changed dramatically
+- `TabContent` detects viewport resizes and transitions quickly accordingly
+
+### Known issues
+
+- `TabPanel`s must be direct children of `Tabbordion`
+- `TabLabel`s and `TabContent`s must be direct children of `TabPanel`
+
+In future it may become possible to have other components in the middle, thus removing the direct child requirement.
+
+
 ## v0.5.7 - 2017-07-18
 - Fix `React.DOM.div` deprecated warning
 - Update npm dependencies

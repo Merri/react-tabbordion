@@ -30,7 +30,7 @@ only one required style:
 
 This will hide the input elements so that they remain accessible via keyboard on all browsers.
 
-[You're welcome to steal the demo styles.]('./demo/')
+[You're welcome to steal the demo styles.](./demo/)
 
 
 ## Demo and Installation
@@ -43,7 +43,7 @@ npm install react-tabbordion
 
 ### Documentation
 
-[It exists.]('./docs/')
+[It exists.](./docs/)
 
 ### Usage example and sample output
 

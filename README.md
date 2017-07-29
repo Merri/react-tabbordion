@@ -2,7 +2,7 @@
 [![Version](http://img.shields.io/npm/v/react-tabbordion.svg)](https://www.npmjs.org/package/react-tabbordion)
 [![Build Status](https://travis-ci.org/Merri/react-tabbordion.svg)](https://travis-ci.org/Merri/react-tabbordion)
 
-**Tabbordion** is a component for managing active state between multiple elements. You can make anything out of it:
+**Tabbordion** is a component for managing active state between multiple items. You can make anything out of it:
 
 - Tabs component
 - Accordion component
@@ -16,7 +16,7 @@ great HTML/DOM structure to work with. Tabbordion is universal and therefore wor
 
 Keyboard usage works just like with radio buttons (or checkboxes when using `multiple` mode); the component avoids
 reinventing the wheel and takes advantage of native browser behavior where possible, which is why you can't see any code
-related to keyboard handling despite it being fully supported.
+related to keyboard handling despite arrow keys and smart focus behavior being fully supported.
 
 You have complete control over the generated classNames, you can even disable generating them if you wish to. There is
 only one required style:
@@ -33,8 +33,6 @@ only one required style:
 ```
 
 This will hide the input elements so that they remain accessible via keyboard on all browsers.
-
-[You're welcome to steal the demo styles.](./demo/)
 
 
 ## What is new with v1.0?
@@ -53,6 +51,9 @@ View [Tabbordion demo](https://merri.github.io/react-tabbordion/) or [Documentat
 ```
 npm install react-tabbordion
 ```
+
+[You're welcome to steal the demo styles](./demo/). Also, throw an issue if you have suggestions for improvements or
+find problems with the demo styles :)
 
 
 ### Usage example and sample output

@@ -1,3 +1,4 @@
+export { bemClassName } from './lib/bem'
 export Tabbordion from './components/Tabbordion'
 export TabPanel from './components/TabPanel'
 export TabLabel from './components/TabLabel'

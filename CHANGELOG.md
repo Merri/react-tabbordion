@@ -1,7 +1,9 @@
 ## v1.0.0 - 2017-07-31
 
 This is a full rewrite of Tabbordion and throws away all legacy conventions in favor of pure components and other modern
-React conventions.
+React best practises and conventions.
+
+- Expose `bemClassName` method
 
 ### `<Tabbordion />`
 
@@ -26,7 +28,7 @@ React conventions.
 ### `<Panel />`
 
 - Separated to three new components: `<TabPanel />`, `<TabLabel />` and `<TabContent />`
-- `label` is now `TabLabel` as a child of `TabPanel`
+- `title` is now `TabLabel` as a child of `TabPanel`
 - Other `children` needs to be wrapped as `children` of `TabContent`
 - `TabPanel` no longer "inherits" nothing; the way props work has changed dramatically
 - `TabContent` detects viewport resizes and transitions quickly accordingly

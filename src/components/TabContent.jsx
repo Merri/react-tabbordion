@@ -2,68 +2,43 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 
 import { bemClassName } from '../lib/bem'
-
-const instances = []
-let timeout
-
-function onResize() {
-    clearTimeout(timeout)
-    timeout = setTimeout(function() {
-        timeout = null
-        instances.forEach(callback => callback.getState().animateContent && callback())
-    }, 100)
-}
-
-function addListener(callback) {
-    if (instances.length === 0) {
-        window.addEventListener('resize', onResize, false)
-    }
-
-    if (!instances.includes(callback)) {
-        instances.push(callback)
-    }
-}
-
-function removeListener(callback) {
-    const index = instances.indexOf(callback)
-
-    if (~index) {
-        instances.splice(index, 1)
-    }
-
-    if (instances.length === 0) {
-        window.removeEventListener('resize', onResize, false)
-    }
-}
+import { addResizeListener, removeResizeListener } from '../lib/resize'
 
 class TabContent extends PureComponent {
     constructor(props, context) {
         super(props, context)
 
-        this.state = { disableTransition: false, height: null }
+        this.state = { fastTransition: false, height: null }
 
         this.getRef = this.getRef.bind(this)
         this.onResize = this.onResize.bind(this)
         this.update = this.update.bind(this)
-        this.onResize.getState = context.tabbordionPanel.getState
     }
 
     componentDidMount() {
         this.context.bem.subscribe(this)
         this.context.tabbordionPanel.subscribe(this)
-
-        addListener(this.onResize)
-    }
-
-    componentWillUnmount() {
-        removeListener(this.onResize)
-
-        this.context.bem.unsubscribe(this)
-        this.context.tabbordionPanel.unsubscribe(this)
+        // add reference here to reduce unnecessary references server side
+        this.onResize.getState = this.context.tabbordionPanel.getState
+        addResizeListener(this.onResize)
     }
 
     componentDidUpdate() {
         this.update()
+    }
+
+    componentWillReceiveProps(props, context) {
+        // this should not happen but we know bugs happen when unexpected things happen
+        if (context.tabbordionPanel !== this.context.tabbordionPanel) {
+            this.onResize.getState = context.tabbordionPanel.getState
+        }
+    }
+
+    componentWillUnmount() {
+        removeResizeListener(this.onResize)
+
+        this.context.bem.unsubscribe(this)
+        this.context.tabbordionPanel.unsubscribe(this)
     }
 
     getRef(child) {
@@ -81,19 +56,23 @@ class TabContent extends PureComponent {
 
         const { bottom, top } = this.child.getBoundingClientRect()
         const height = Math.ceil(bottom - top)
+        let fastTransition = this.state.fastTransition
 
         if (this.state.height !== height) {
+            // make all transitions go faster to give smoother experience
             if (triggerer === 'resize') {
-                this.setState({ disableTransition: true, height })
-
-                clearTimeout(this._dtt)
-                this._dtt = setTimeout(() => {
-                    delete this._dtt
-                    this.setState({ disableTransition: false })
-                }, 500)
-            } else {
-                this.setState({ height })
+                fastTransition = true
             }
+
+            this.setState({ fastTransition, height })
+        }
+        // kills the previous timeout after each resize event so that fast mode is alive until after last resize event
+        if (triggerer === 'resize' && fastTransition) {
+            clearTimeout(this._dtt)
+            this._dtt = setTimeout(() => {
+                delete this._dtt
+                this.setState({ fastTransition: false })
+            }, 500)
         }
     }
 
@@ -114,7 +93,10 @@ class TabContent extends PureComponent {
             : '0px'
         ) : null
 
-        const disabledStyle = this.state.disableTransition ? { webkitTransition: 'unset', transition: 'unset' } : null
+        const resizeStyle = this.state.fastTransition ? {
+            webkitTransition: 'all 32ms',
+            transition: 'all 32ms',
+        } : null
 
         // contentId will be overwritten by props.id (intended behavior)
         return animateContent ? (
@@ -128,10 +110,10 @@ class TabContent extends PureComponent {
                     ...style,
                     height,
                     overflow: checked && animateContent === 'marginTop' ? 'visible' : 'hidden',
-                    ...disabledStyle,
+                    ...resizeStyle,
                 }}
             >
-                <div ref={this.getRef} className={panelBem} style={marginTop && { marginTop, ...disabledStyle }}>
+                <div ref={this.getRef} className={panelBem} style={marginTop && { marginTop, ...resizeStyle }}>
                     {children}
                 </div>
             </Component>

@@ -133,6 +133,8 @@ class TabContent extends PureComponent {
     }
 }
 
+TabContent.hasContent = true
+
 TabContent.contextTypes = {
     bem: PropTypes.object,
     tabbordionPanel: PropTypes.object,

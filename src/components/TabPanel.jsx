@@ -65,10 +65,12 @@ function getTabPanelProps(
     )
 
     let contentId = null
+    let hasContent = false
 
     // sniff the id out or use our own (will be exposed via context)
     Children.forEach(props.children, child => {
-        if (!contentId && child && child.type.contextTypes && child.type.contextTypes.panel) {
+        if (!contentId && child && child.type && child.type.hasContent) {
+            hasContent = true
             contentId = (child.props || (child._store && child._store.props) || {}).id || null
         }
     })
@@ -96,7 +98,7 @@ function getTabPanelProps(
         disabledPanels,
         modifiers: bemModifiers ? getArray(modifiers).concat([
             bemModifiers[checked ? 'checked' : 'unchecked'],
-            bemModifiers[contentId ? 'content' : 'noContent'],
+            bemModifiers[hasContent ? 'content' : 'noContent'],
             bemModifiers[disabled ? 'disabled' : 'enabled'],
             bemModifiers[visible],
         ]).concat(

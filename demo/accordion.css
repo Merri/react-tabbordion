@@ -34,8 +34,16 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    -webkit-transition: background-color 0.125s ease-in-out;
-    transition: background-color 0.125s ease-in-out;
+}
+
+.accordion-title--checked {
+    -webkit-transition: background-color 125ms ease-in-out, border-radius 62.5ms ease-in-out;
+    transition: background-color 125ms ease-in-out, border-radius 62.5ms ease-in-out;
+}
+
+.accordion-title--unchecked {
+    -webkit-transition: background-color 125ms ease-in-out, border-radius 125ms ease-in-out 312.5ms;
+    transition: background-color 125ms ease-in-out, border-radius 125ms ease-in-out 312.5ms;
 }
 
 /* fix iOS touch not triggering a click from child elements */
@@ -48,8 +56,10 @@
     border-top-right-radius: 3px;
 }
 
+.accordion-animator--last,
 .accordion-content--last,
-.accordion-title--last.accordion-title--no-content {
+.accordion-title--last.accordion-title--no-content,
+.accordion-title--last.accordion-title--unchecked {
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
 }
@@ -67,8 +77,8 @@
     top: 1rem;
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
-    -webkit-transition: -webkit-transform 0.375s ease-in-out;
-    transition: transform 0.375s ease-in-out;
+    -webkit-transition: -webkit-transform 375ms ease-in-out;
+    transition: transform 375ms ease-in-out;
 }
 
 .accordion-title--checked {
@@ -80,10 +90,15 @@
     transform: rotate(180deg);
 }
 
+.accordion-title:active:before,
+[data-state="tabbordion"]:focus ~ .accordion-title:before {
+    color: #b63;
+}
+
 .accordion-animator {
     background-color: #EBEBEB;
-    -webkit-transition: background-color 0.125s ease-in-out, height 0.375s ease-in-out;
-    transition: background-color 0.125s ease-in-out, height 0.375s ease-in-out;
+    -webkit-transition: background-color 125ms ease-in-out, height 375ms ease-in-out;
+    transition: background-color 125ms ease-in-out, height 375ms ease-in-out;
 }
 
 .accordion-animator:after {
@@ -111,15 +126,15 @@
     display: block;
     opacity: 0;
     transform: translateY(-50%);
-    -webkit-transition: opacity 0.375s ease-in-out, transform 0.375s ease-in-out;
-    transition: opacity 0.375s ease-in-out, transform 0.375s ease-in-out;
+    -webkit-transition: opacity 375ms ease-in-out, transform 375ms ease-in-out;
+    transition: opacity 375ms ease-in-out, transform 375ms ease-in-out;
 }
 
 .accordion-content--marginTop {
     margin-top: -65535px;
     transform: translateY(-50%);
-    -webkit-transition: margin-top 0.375s ease-in-out, opacity 0.375s ease-in-out, transform 0.375s ease-in-out;
-    transition: margin-top 0.375s ease-in-out, opacity 0.375s ease-in-out, transform 0.375s ease-in-out;
+    -webkit-transition: margin-top 375ms ease-in-out, opacity 375ms ease-in-out, transform 375ms ease-in-out;
+    transition: margin-top 375ms ease-in-out, opacity 375ms ease-in-out, transform 375ms ease-in-out;
 }
 
 .accordion-content--checked {
@@ -133,9 +148,4 @@
 
 .accordion-content--checked.accordion-content--marginTop {
     margin-top: 0;
-}
-
-.accordion-title:active:before,
-[data-state="tabbordion"]:focus ~ .accordion-title:before {
-    color: #b63;
 }

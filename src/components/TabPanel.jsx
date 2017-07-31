@@ -276,7 +276,6 @@ TabPanel.propTypes = {
     id: PropTypes.string,
     index: PropTypes.number,
     name: PropTypes.string,
-    onChange: PropTypes.func,
     type: PropTypes.oneOf(['checkbox', 'radio']),
     value: PropTypes.string,
     visible: PropTypes.bool,

@@ -1,9 +1,10 @@
-## v1.0.0 - 2017-07-31
+## v1.0.0 - 2017-08-02
 
 This is a full rewrite of Tabbordion and throws away all legacy conventions in favor of pure components and other modern
 React best practises and conventions.
 
 - Expose `bemClassName` method
+- Remove support for extending BEM separator prefixed classes in `className`
 
 ### `<Tabbordion />`
 

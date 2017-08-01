@@ -1,16 +1,14 @@
 /* global describe,it */
-'use strict'
+import React from 'react'
+import { shallow } from 'enzyme'
+// import sinon from 'sinon'
+import { expect } from 'chai'
 
-var React = require('react')
-var shallow = require('enzyme').shallow
-// var sinon = require('sinon')
-var expect = require('chai').expect
-
-var Tabbordion = require('../dist/module/').Tabbordion
+import { Tabbordion } from '../dist/module'
 
 describe('Tabbordion', function() {
     it('should render className and have ARIA role of tablist', function() {
-        var rendered = shallow(
+        const rendered = shallow(
             React.createElement(Tabbordion, { className: 'test test--test' })
         )
 
@@ -20,7 +18,7 @@ describe('Tabbordion', function() {
     })
 
     it('should render using given component', function() {
-        var rendered = shallow(
+        const rendered = shallow(
             React.createElement(Tabbordion, { component: 'span' })
         )
 

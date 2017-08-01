@@ -350,6 +350,7 @@ Tabbordion.defaultProps = {
     },
     bemSeparator: '--',
     blockElements: {
+        animator: 'panel__animator',
         content: 'panel__content',
         label: 'panel__label',
         panel: 'panel',

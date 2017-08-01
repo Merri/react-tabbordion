@@ -1,10 +1,32 @@
 /* global describe,it */
-import React from 'react'
-import { shallow } from 'enzyme'
-// import sinon from 'sinon'
-import { expect } from 'chai'
 
-import { Tabbordion, TabPanel } from '../dist/module'
+// setup jsdom
+const { JSDOM } = require('jsdom')
+
+const jsdom = new JSDOM('<!doctype html><html><body></body></html>')
+const { window } = jsdom
+
+function copyProps(src, target) {
+    const props = Object.getOwnPropertyNames(src)
+        .filter(prop => typeof target[prop] === 'undefined')
+        .map(prop => Object.getOwnPropertyDescriptor(src, prop))
+    Object.defineProperties(target, props)
+}
+
+global.window = window
+global.document = window.document
+global.navigator = { userAgent: 'node.js' }
+copyProps(window, global)
+
+// setup tests (note: using import is troublesome, code gets executed in the wrong order)
+const React = require('react')
+global.React = React
+
+const { mount, shallow } = require('enzyme')
+const sinon = require('sinon')
+const { expect } = require('chai')
+
+const { Tabbordion, TabPanel } = require('../dist/module')
 
 describe('Tabbordion', function() {
     it('should render className and have ARIA role of tablist', function() {
@@ -124,6 +146,42 @@ describe('TabPanel', function() {
         expect(typeof context.tabbordionPanel.onClickLabel).to.equal('function')
         expect(typeof context.tabbordionPanel.subscribe).to.equal('function')
         expect(typeof context.tabbordionPanel.unsubscribe).to.equal('function')
+    })
+
+    it('should trigger context subscribes when mounted', function() {
+        const subscribeBem = sinon.spy()
+        const subscribeTabbordion = sinon.spy()
+        const unsubscribeBem = sinon.spy()
+        const unsubscribeTabbordion = sinon.spy()
+
+        const options = {
+            context: {
+                bem: {
+                    getState: getBemState,
+                    subscribe: subscribeBem,
+                    unsubscribe: unsubscribeBem,
+                },
+                tabbordion: {
+                    getState: getSinglePanelTabbordionState,
+                    subscribe: subscribeTabbordion,
+                    unsubscribe: unsubscribeTabbordion,
+                }
+            }
+        }
+
+        const wrapper = mount(React.createElement(TabPanel), options)
+
+        expect(subscribeBem.calledOnce).to.be.true
+        expect(subscribeTabbordion.calledOnce).to.be.true
+        expect(unsubscribeBem.calledOnce).to.be.false
+        expect(unsubscribeTabbordion.calledOnce).to.be.false
+
+        wrapper.unmount()
+
+        expect(subscribeBem.calledOnce).to.be.true
+        expect(subscribeTabbordion.calledOnce).to.be.true
+        expect(unsubscribeBem.calledOnce).to.be.true
+        expect(unsubscribeTabbordion.calledOnce).to.be.true
     })
 
     it('should generate BEM classes and other rendered props from given context', function() {

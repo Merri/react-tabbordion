@@ -61,10 +61,19 @@ fit your own conventions. For example at some point some BEM conventions used a 
 You can still set `className` to `TabPanel`, `TabLabel` or `TabContent`. It will be simply appended after the classes
 generated via `BEM` convention.
 
-There is a special case though: if you have a class that begins with the `bemSeparator`, this separator prefixed class
-will be expanded to full BEM class! So `<TabLabel className="--custom WTF --another">` will expand to
-`panel__label panel__label--custom WTF panel__label--another`. This allows you to add custom flavored panels etc. while
-still following the BEM convention!
+Note that unlike v0 Tabbordion you can no longer expand BEM modifiers via `className`: instead, use `modifiers` prop.
+
+
+## `modifiers`
+
+You can add custom flavor to Tabbordion panels, labels and content by using this prop:
+
+```jsx
+<TabPanel modifiers={['custom', 'another']}>
+    <TabLabel className="WTF">
+```
+
+Which in the label will expand to `className`: `panel__label panel__label--custom panel__label--another WTF`.
 
 
 ## Generating Tabbordion BEM in your own components

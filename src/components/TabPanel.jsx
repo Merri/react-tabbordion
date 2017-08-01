@@ -65,7 +65,7 @@ function getTabPanelProps(
     )
 
     let contentId = null
-    let hasContent = false
+    let hasContent = null
 
     // sniff the id out or use our own (will be exposed via context)
     Children.forEach(props.children, child => {
@@ -88,6 +88,7 @@ function getTabPanelProps(
         checked,
         disabled,
         contentId,
+        hasContent,
         id,
         index,
         name,
@@ -101,6 +102,7 @@ function getTabPanelProps(
             bemModifiers[hasContent ? 'content' : 'noContent'],
             bemModifiers[disabled ? 'disabled' : 'enabled'],
             bemModifiers[visible],
+            ...(firstVisiblePanel === lastVisiblePanel && index === firstVisiblePanel ? [bemModifiers['last']] : [])
         ]).concat(
             animateContent ? [bemModifiers.animated, animateContent] : []
         ) : getArray(modifiers),
@@ -202,6 +204,7 @@ class TabPanel extends PureComponent {
 
     render() {
         const {
+            animateContent,
             bemModifiers,
             bemSeparator,
             blockElements,
@@ -213,6 +216,7 @@ class TabPanel extends PureComponent {
             contentId,
             disabled,
             disabledPanels,
+            hasContent,
             id,
             index,
             modifiers,
@@ -231,7 +235,7 @@ class TabPanel extends PureComponent {
         return (
             <Component
                 {...props}
-                aria-expanded={contentId && ariaSelected}
+                aria-expanded={hasContent && ariaSelected}
                 aria-selected={ariaSelected}
                 className={!panelBem ? className : (className ? `${panelBem} ${className}` : panelBem)}
                 role="tab"

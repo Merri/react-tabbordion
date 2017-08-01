@@ -26,7 +26,9 @@ const { mount, shallow } = require('enzyme')
 const sinon = require('sinon')
 const { expect } = require('chai')
 
-const { Tabbordion, TabPanel } = require('../dist/module')
+const { Tabbordion, TabPanel, TabLabel, TabContent } = require('../dist/module')
+
+function NOOP(){}
 
 describe('Tabbordion', function() {
     it('should render className and have ARIA role of tablist', function() {
@@ -80,6 +82,7 @@ function getBemState() {
         },
         bemSeparator: '--',
         blockElements: {
+            animator: 'animator',
             content: 'content',
             label: 'label',
             panel: 'panel',
@@ -312,5 +315,211 @@ describe('TabPanel', function() {
         expect(wrapper.hasClass('panel--i-am-custom')).to.be.false
         expect(wrapper.hasClass('--i-am-custom')).to.be.true
         expect(wrapper.hasClass('blergh')).to.be.true
+    })
+})
+
+function makeGetTabbordionPanelState(animateContent = false) {
+    return function() {
+        return {
+            animateContent,
+            checked: true,
+            contentId: 'contentId',
+            disabled: false,
+            inputId: 'inputId',
+            index: 0,
+            modifiers: ['modifier'],
+            visible: true,
+        }
+    }
+}
+
+describe('TabLabel', function() {
+    it('should trigger context subscribes when mounted', function() {
+        const subscribeBem = sinon.spy()
+        const subscribeTabbordionPanel = sinon.spy()
+        const unsubscribeBem = sinon.spy()
+        const unsubscribeTabbordionPanel = sinon.spy()
+
+        const options = {
+            context: {
+                bem: {
+                    getState: getBemState,
+                    subscribe: subscribeBem,
+                    unsubscribe: unsubscribeBem,
+                },
+                tabbordionPanel: {
+                    getState: makeGetTabbordionPanelState(),
+                    subscribe: subscribeTabbordionPanel,
+                    unsubscribe: unsubscribeTabbordionPanel,
+                }
+            }
+        }
+
+        const wrapper = mount(React.createElement(TabLabel), options)
+
+        expect(subscribeBem.calledOnce).to.be.true
+        expect(subscribeTabbordionPanel.calledOnce).to.be.true
+        expect(unsubscribeBem.calledOnce).to.be.false
+        expect(unsubscribeTabbordionPanel.calledOnce).to.be.false
+
+        wrapper.unmount()
+
+        expect(subscribeBem.calledOnce).to.be.true
+        expect(subscribeTabbordionPanel.calledOnce).to.be.true
+        expect(unsubscribeBem.calledOnce).to.be.true
+        expect(unsubscribeTabbordionPanel.calledOnce).to.be.true
+    })
+
+    it('should trigger onClickLabel when clicked on', function() {
+        const onClickLabel = sinon.spy()
+
+        const options = {
+            context: {
+                bem: {
+                    getState: getBemState,
+                    subscribe: NOOP,
+                    unsubscribe: NOOP,
+                },
+                tabbordionPanel: {
+                    getState: makeGetTabbordionPanelState(),
+                    onClickLabel,
+                    subscribe: NOOP,
+                    unsubscribe: NOOP,
+                }
+            }
+        }
+
+        const wrapper = mount(React.createElement(
+            TabLabel,
+            null,
+            React.createElement('span', null),
+            React.createElement('span', { onClick: function(event) { event.preventDefault() } })
+        ), options)
+
+        wrapper.simulate('click')
+        expect(onClickLabel.calledOnce).to.be.true
+
+        wrapper.childAt(0).simulate('click')
+        expect(onClickLabel.calledTwice).to.be.true
+
+        wrapper.childAt(1).simulate('click')
+        expect(onClickLabel.calledTwice).to.be.true
+    })
+
+    it('should generate BEM classes and other rendered props from given context', function() {
+        const options = {
+            context: {
+                bem: {
+                    getState: getBemState,
+                    subscribe: NOOP,
+                    unsubscribe: NOOP,
+                },
+                tabbordionPanel: {
+                    getState: makeGetTabbordionPanelState(),
+                    subscribe: NOOP,
+                    unsubscribe: NOOP,
+                }
+            }
+        }
+
+        const wrapper = shallow(React.createElement(TabLabel), options)
+
+        expect(wrapper.hasClass('label')).to.be.true
+        expect(wrapper.hasClass('label--modifier')).to.be.true
+        expect(wrapper.prop('htmlFor')).to.equal('inputId')
+    })
+})
+
+describe('TabContent', function() {
+    it('should trigger context subscribes when mounted', function() {
+        const subscribeBem = sinon.spy()
+        const subscribeTabbordionPanel = sinon.spy()
+        const unsubscribeBem = sinon.spy()
+        const unsubscribeTabbordionPanel = sinon.spy()
+
+        const options = {
+            context: {
+                bem: {
+                    getState: getBemState,
+                    subscribe: subscribeBem,
+                    unsubscribe: unsubscribeBem,
+                },
+                tabbordionPanel: {
+                    getState: makeGetTabbordionPanelState(),
+                    subscribe: subscribeTabbordionPanel,
+                    unsubscribe: unsubscribeTabbordionPanel,
+                }
+            }
+        }
+
+        const wrapper = mount(React.createElement(TabContent), options)
+
+        expect(subscribeBem.calledOnce).to.be.true
+        expect(subscribeTabbordionPanel.calledOnce).to.be.true
+        expect(unsubscribeBem.calledOnce).to.be.false
+        expect(unsubscribeTabbordionPanel.calledOnce).to.be.false
+
+        wrapper.unmount()
+
+        expect(subscribeBem.calledOnce).to.be.true
+        expect(subscribeTabbordionPanel.calledOnce).to.be.true
+        expect(unsubscribeBem.calledOnce).to.be.true
+        expect(unsubscribeTabbordionPanel.calledOnce).to.be.true
+    })
+
+    it('should generate BEM classes and other rendered props from given context without animateContent', function() {
+        const options = {
+            context: {
+                bem: {
+                    getState: getBemState,
+                    subscribe: NOOP,
+                    unsubscribe: NOOP,
+                },
+                tabbordionPanel: {
+                    getState: makeGetTabbordionPanelState(),
+                    subscribe: NOOP,
+                    unsubscribe: NOOP,
+                }
+            }
+        }
+
+        const wrapper = shallow(React.createElement(TabContent), options)
+
+        expect(wrapper.hasClass('content')).to.be.true
+        expect(wrapper.hasClass('content--modifier')).to.be.true
+        expect(wrapper.prop('id')).to.equal('contentId')
+        expect(wrapper.prop('aria-labelledby')).to.equal('inputId')
+        expect(wrapper.prop('role')).to.equal('tabpanel')
+    })
+
+    it('should generate BEM classes and other rendered props from given context WITH animateContent', function() {
+        const options = {
+            context: {
+                bem: {
+                    getState: getBemState,
+                    subscribe: NOOP,
+                    unsubscribe: NOOP,
+                },
+                tabbordionPanel: {
+                    getState: makeGetTabbordionPanelState('height'),
+                    subscribe: NOOP,
+                    unsubscribe: NOOP,
+                }
+            }
+        }
+
+        const wrapper = shallow(React.createElement(TabContent), options)
+        const wrapperChild = wrapper.childAt(0)
+
+        expect(wrapper.hasClass('animator')).to.be.true
+        expect(wrapper.hasClass('animator--modifier')).to.be.true
+        expect(wrapper.prop('id')).to.equal('contentId')
+        expect(wrapper.prop('aria-labelledby')).to.equal('inputId')
+        expect(wrapper.prop('role')).to.equal('tabpanel')
+        expect(wrapper.prop('style').height).to.equal('auto')
+        expect(wrapper.prop('style').overflow).to.equal('hidden')
+
+        expect(wrapperChild.hasClass('content')).to.be.true
+        expect(wrapperChild.hasClass('content--modifier')).to.be.true
     })
 })

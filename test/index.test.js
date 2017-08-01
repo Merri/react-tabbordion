@@ -24,6 +24,22 @@ describe('Tabbordion', function() {
 
         expect(wrapper.matchesElement(React.createElement('span'))).to.be.true
     })
+
+    it('should provide bem and tabbordion context', function() {
+        const wrapper = shallow(React.createElement(Tabbordion))
+        const context = wrapper.instance().getChildContext()
+
+        expect(context.bem).to.be.ok
+        expect(context.tabbordion).to.be.ok
+        expect(context.tabbordionPanel).to.not.be.ok
+
+        expect(typeof context.bem.getState).to.equal('function')
+        expect(typeof context.bem.subscribe).to.equal('function')
+        expect(typeof context.bem.unsubscribe).to.equal('function')
+        expect(typeof context.tabbordion.getState).to.equal('function')
+        expect(typeof context.tabbordion.subscribe).to.equal('function')
+        expect(typeof context.tabbordion.unsubscribe).to.equal('function')
+    })
 })
 
 function getBemState() {
@@ -94,6 +110,22 @@ const fourPanelContext = {
 }
 
 describe('TabPanel', function() {
+    it('should provide tabbordionPanel context', function() {
+        const options = { context: singlePanelContext }
+
+        const wrapper = shallow(React.createElement(TabPanel), options)
+        const context = wrapper.instance().getChildContext()
+
+        expect(context.bem).to.not.be.ok
+        expect(context.tabbordion).to.not.be.ok
+        expect(context.tabbordionPanel).to.be.ok
+
+        expect(typeof context.tabbordionPanel.getState).to.equal('function')
+        expect(typeof context.tabbordionPanel.onClickLabel).to.equal('function')
+        expect(typeof context.tabbordionPanel.subscribe).to.equal('function')
+        expect(typeof context.tabbordionPanel.unsubscribe).to.equal('function')
+    })
+
     it('should generate BEM classes and other rendered props from given context', function() {
         const options = { context: singlePanelContext }
 

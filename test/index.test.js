@@ -333,6 +333,32 @@ function makeGetTabbordionPanelState(animateContent = false) {
     }
 }
 
+const panelContextWithoutAnimator = {
+    bem: {
+        getState: getBemState,
+        subscribe: NOOP,
+        unsubscribe: NOOP,
+    },
+    tabbordionPanel: {
+        getState: makeGetTabbordionPanelState(),
+        subscribe: NOOP,
+        unsubscribe: NOOP,
+    }
+}
+
+const panelContextWithAnimator = {
+    bem: {
+        getState: getBemState,
+        subscribe: NOOP,
+        unsubscribe: NOOP,
+    },
+    tabbordionPanel: {
+        getState: makeGetTabbordionPanelState('height'),
+        subscribe: NOOP,
+        unsubscribe: NOOP,
+    }
+}
+
 describe('TabLabel', function() {
     it('should trigger context subscribes when mounted', function() {
         const subscribeBem = sinon.spy()
@@ -407,26 +433,21 @@ describe('TabLabel', function() {
     })
 
     it('should generate BEM classes and other rendered props from given context', function() {
-        const options = {
-            context: {
-                bem: {
-                    getState: getBemState,
-                    subscribe: NOOP,
-                    unsubscribe: NOOP,
-                },
-                tabbordionPanel: {
-                    getState: makeGetTabbordionPanelState(),
-                    subscribe: NOOP,
-                    unsubscribe: NOOP,
-                }
-            }
-        }
+        const options = { context: panelContextWithoutAnimator }
 
         const wrapper = shallow(React.createElement(TabLabel), options)
 
         expect(wrapper.hasClass('label')).to.be.true
         expect(wrapper.hasClass('label--modifier')).to.be.true
         expect(wrapper.prop('htmlFor')).to.equal('inputId')
+    })
+
+    it('should preserve className classes despite BEM classes in use', function() {
+        const options = { context: panelContextWithAnimator }
+
+        const wrapper = shallow(React.createElement(TabLabel, { className: 'hellurei' }), options)
+
+        expect(wrapper.hasClass('hellurei')).to.be.true
     })
 })
 
@@ -468,20 +489,7 @@ describe('TabContent', function() {
     })
 
     it('should generate BEM classes and other rendered props from given context without animateContent', function() {
-        const options = {
-            context: {
-                bem: {
-                    getState: getBemState,
-                    subscribe: NOOP,
-                    unsubscribe: NOOP,
-                },
-                tabbordionPanel: {
-                    getState: makeGetTabbordionPanelState(),
-                    subscribe: NOOP,
-                    unsubscribe: NOOP,
-                }
-            }
-        }
+        const options = { context: panelContextWithoutAnimator }
 
         const wrapper = shallow(React.createElement(TabContent), options)
 
@@ -493,20 +501,7 @@ describe('TabContent', function() {
     })
 
     it('should generate BEM classes and other rendered props from given context WITH animateContent', function() {
-        const options = {
-            context: {
-                bem: {
-                    getState: getBemState,
-                    subscribe: NOOP,
-                    unsubscribe: NOOP,
-                },
-                tabbordionPanel: {
-                    getState: makeGetTabbordionPanelState('height'),
-                    subscribe: NOOP,
-                    unsubscribe: NOOP,
-                }
-            }
-        }
+        const options = { context: panelContextWithAnimator }
 
         const wrapper = shallow(React.createElement(TabContent), options)
         const wrapperChild = wrapper.childAt(0)
@@ -521,5 +516,15 @@ describe('TabContent', function() {
 
         expect(wrapperChild.hasClass('content')).to.be.true
         expect(wrapperChild.hasClass('content--modifier')).to.be.true
+    })
+
+    it('should preserve className classes despite BEM classes in use', function() {
+        const options = { context: panelContextWithAnimator }
+
+        const wrapper = shallow(React.createElement(TabContent, { className: 'hellurei' }), options)
+        const wrapperChild = wrapper.childAt(0)
+
+        expect(wrapper.hasClass('hellurei')).to.be.true
+        expect(wrapperChild.hasClass('hellurei')).to.be.false
     })
 })

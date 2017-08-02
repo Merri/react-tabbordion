@@ -296,6 +296,7 @@ class Tabbordion extends PureComponent {
     render() {
         // use destructuring to pick out props we don't need to pass to the rendered component
         const {
+            animateContent,
             children,
             component: Component,
             bemModifiers,

@@ -245,7 +245,7 @@ class TabPanel extends PureComponent {
                     aria-controls={contentId}
                     checked={checked}
                     data-state="tabbordion"
-                    disabled={disabled}
+                    disabled={disabled || visible === 'hidden'}
                     id={id}
                     name={name}
                     onChange={this.onChange}

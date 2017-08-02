@@ -344,6 +344,7 @@ Tabbordion.defaultProps = {
         disabled: 'disabled',
         enabled: 'enabled',
         first: 'first',
+        hidden: 'hidden',
         last: 'last',
         noContent: 'no-content',
         unchecked: 'unchecked',

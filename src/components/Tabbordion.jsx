@@ -217,6 +217,8 @@ class Tabbordion extends PureComponent {
         if (stateful) {
             // it is mine, my own, My Preciouss...
             if (!prevState.stateful || isShallowlyDifferentArray(prevState.panels, nextPanels)) {
+                if (props.onPanels) props.onPanels(nextPanels)
+
                 return {
                     panels: nextPanels,
                     stateful,

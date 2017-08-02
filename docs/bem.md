@@ -15,6 +15,7 @@ These set the block element names for child components controlled by Tabbordion.
 
 ```js
 {
+    animator: 'panel__animator',
     content: 'panel__content',
     label: 'panel__label',
     panel: 'panel',
@@ -23,6 +24,8 @@ These set the block element names for child components controlled by Tabbordion.
 
 This means that `TabPanel` would get a `className="panel"`, while `TabLabel` would have `className="panel__label"`. You
 can disable BEM behavior by giving an empty object or to a single component by leaving a value empty or undefined.
+
+Animator is an extra element that is wrapped around content element when `animateContent` is set.
 
 
 ## `bemModifiers`
@@ -38,6 +41,7 @@ This is an object that determines modifier names for specific states. These are 
     disabled: 'disabled',
     enabled: 'enabled',
     first: 'first',
+    hidden: 'hidden',
     last: 'last',
     noContent: 'no-content',
     unchecked: 'unchecked',

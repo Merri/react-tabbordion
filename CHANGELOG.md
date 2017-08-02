@@ -1,3 +1,8 @@
+## v1.0.1 - 2017-08-02
+
+- Fix crash if a Tabbordion child does not have `type`.
+
+
 ## v1.0.0 - 2017-08-02
 
 This is a full rewrite of Tabbordion and throws away all legacy conventions in favor of pure components and other modern

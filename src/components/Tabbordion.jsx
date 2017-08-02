@@ -130,7 +130,7 @@ class Tabbordion extends PureComponent {
         const allowMultiChecked = props.mode === 'multiple'
 
         Children.forEach(props.children, child => {
-            if (child && child.type.contextTypes && child.type.contextTypes.tabbordion) {
+            if (child && child.type && child.type.contextTypes && child.type.contextTypes.tabbordion) {
                 const props = child.props || (child._store && child._store.props) || {}
                 // use false to mark panels with invalid index
                 const index = props.index != null ? props.index : false
@@ -316,7 +316,7 @@ class Tabbordion extends PureComponent {
         return (
             <Component {...props} role="tablist">
                 {Children.map(children, child => {
-                    if (child && child.type.contextTypes && child.type.contextTypes.tabbordion) {
+                    if (child && child.type && child.type.contextTypes && child.type.contextTypes.tabbordion) {
                         const output = React.cloneElement(child, panels[panel])
                         panel++
                         return output

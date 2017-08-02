@@ -64,6 +64,47 @@ describe('Tabbordion', function() {
         expect(typeof context.tabbordion.subscribe).to.equal('function')
         expect(typeof context.tabbordion.unsubscribe).to.equal('function')
     })
+
+    it('should trigger bem context updates when BEM props change', function() {
+        const wrapper = shallow(React.createElement(Tabbordion))
+        const context = wrapper.instance().getChildContext()
+
+        const subscriber = { forceUpdate: sinon.spy() }
+        context.bem.subscribe(subscriber)
+
+        wrapper.setProps({ bemSeparator: '--' })
+        expect(subscriber.forceUpdate.calledOnce).to.be.false
+
+        wrapper.setProps({ bemSeparator: '|' })
+        expect(subscriber.forceUpdate.calledOnce).to.be.true
+
+        wrapper.setProps({ bemModifiers: {} })
+        expect(subscriber.forceUpdate.calledTwice).to.be.true
+
+        wrapper.setProps({ blockElements: {} })
+        expect(subscriber.forceUpdate.calledThrice).to.be.true
+
+        context.bem.unsubscribe(subscriber)
+    })
+
+    it('should trigger tabbordion context updates when other props change', function() {
+        const wrapper = shallow(React.createElement(Tabbordion))
+        const context = wrapper.instance().getChildContext()
+
+        const subscriber = { forceUpdate: sinon.spy() }
+        context.tabbordion.subscribe(subscriber)
+
+        wrapper.setProps({ animateContent: false })
+        expect(subscriber.forceUpdate.calledOnce).to.be.false
+
+        wrapper.setProps({ animateContent: 'height' })
+        expect(subscriber.forceUpdate.calledOnce).to.be.true
+
+        wrapper.setProps({ animateContent: 'marginTop' })
+        expect(subscriber.forceUpdate.calledTwice).to.be.true
+
+        context.tabbordion.unsubscribe(subscriber)
+    })
 })
 
 function getBemState() {
@@ -76,6 +117,7 @@ function getBemState() {
             disabled: 'disabled',
             enabled: 'enabled',
             first: 'first',
+            hidden: 'hidden',
             last: 'last',
             noContent: 'no-content',
             unchecked: 'unchecked',
@@ -107,9 +149,9 @@ function getFourPanelTabbordionState() {
     return {
         animateContent: false,
         checkedPanels: [1, 2],
-        disabledPanels: [3],
+        disabledPanels: [2],
         firstVisiblePanel: 0,
-        lastVisiblePanel: 3,
+        lastVisiblePanel: 2,
         panelName: 'test',
         panelType: 'checkbox',
         tabbordionId: 'four'
@@ -230,32 +272,46 @@ describe('TabPanel', function() {
         const panel0 = shallow(React.createElement(TabPanel, { index: 0 }), options)
         const panel1 = shallow(React.createElement(TabPanel, { index: 1 }), options)
         const panel2 = shallow(React.createElement(TabPanel, { index: 2 }), options)
-        const panel3 = shallow(React.createElement(TabPanel, { index: 3 }), options)
+        const panel3 = shallow(React.createElement(TabPanel, { index: 3, visible: false }), options)
 
         expect(panel0.hasClass('panel--first')).to.be.true
         expect(panel0.hasClass('panel--between')).to.be.false
         expect(panel0.hasClass('panel--last')).to.be.false
+        expect(panel0.hasClass('panel--hidden')).to.be.false
 
         expect(panel1.hasClass('panel--first')).to.be.false
         expect(panel1.hasClass('panel--between')).to.be.true
         expect(panel1.hasClass('panel--last')).to.be.false
+        expect(panel1.hasClass('panel--hidden')).to.be.false
 
         expect(panel2.hasClass('panel--first')).to.be.false
-        expect(panel2.hasClass('panel--between')).to.be.true
-        expect(panel2.hasClass('panel--last')).to.be.false
+        expect(panel2.hasClass('panel--between')).to.be.false
+        expect(panel2.hasClass('panel--last')).to.be.true
+        expect(panel2.hasClass('panel--hidden')).to.be.false
 
         expect(panel3.hasClass('panel--first')).to.be.false
         expect(panel3.hasClass('panel--between')).to.be.false
-        expect(panel3.hasClass('panel--last')).to.be.true
+        expect(panel3.hasClass('panel--last')).to.be.false
+        expect(panel3.hasClass('panel--hidden')).to.be.true
     })
 
     it('should reflect disabled state', function() {
         const options = { context: fourPanelContext }
 
-        const wrapper = shallow(React.createElement(TabPanel, { index: 3 }), options)
+        const wrapper = shallow(React.createElement(TabPanel, { index: 2 }), options)
         const wrapperInput = wrapper.childAt(0)
 
         expect(wrapper.hasClass('panel--disabled')).to.be.true
+        expect(wrapperInput.prop('disabled')).to.be.true
+    })
+
+    it('should reflect hidden state', function() {
+        const options = { context: fourPanelContext }
+
+        const wrapper = shallow(React.createElement(TabPanel, { index: 3, visible: false }), options)
+        const wrapperInput = wrapper.childAt(0)
+
+        expect(wrapper.hasClass('panel--hidden')).to.be.true
         expect(wrapperInput.prop('disabled')).to.be.true
     })
 

@@ -33,7 +33,7 @@ function NOOP(){}
 describe('Tabbordion', function() {
     it('should render className and have ARIA role of tablist', function() {
         const wrapper = shallow(
-            React.createElement(Tabbordion, { className: 'test test--test' })
+            <Tabbordion className="test test--test" />
         )
 
         expect(wrapper.hasClass('test')).to.be.true
@@ -43,14 +43,14 @@ describe('Tabbordion', function() {
 
     it('should render using given component', function() {
         const wrapper = shallow(
-            React.createElement(Tabbordion, { component: 'span' })
+            <Tabbordion component="span" />
         )
 
-        expect(wrapper.matchesElement(React.createElement('span'))).to.be.true
+        expect(wrapper.matchesElement(<span />)).to.be.true
     })
 
     it('should provide bem and tabbordion context', function() {
-        const wrapper = shallow(React.createElement(Tabbordion))
+        const wrapper = shallow(<Tabbordion />)
         const context = wrapper.instance().getChildContext()
 
         expect(context.bem).to.be.ok
@@ -66,7 +66,7 @@ describe('Tabbordion', function() {
     })
 
     it('should trigger bem context updates when BEM props change', function() {
-        const wrapper = shallow(React.createElement(Tabbordion))
+        const wrapper = shallow(<Tabbordion />)
         const context = wrapper.instance().getChildContext()
 
         const subscriber = { forceUpdate: sinon.spy() }
@@ -88,7 +88,7 @@ describe('Tabbordion', function() {
     })
 
     it('should trigger tabbordion context updates when other props change', function() {
-        const wrapper = shallow(React.createElement(Tabbordion))
+        const wrapper = shallow(<Tabbordion />)
         const context = wrapper.instance().getChildContext()
 
         const subscriber = { forceUpdate: sinon.spy() }
@@ -180,7 +180,7 @@ describe('TabPanel', function() {
     it('should provide tabbordionPanel context', function() {
         const options = { context: singlePanelContext }
 
-        const wrapper = shallow(React.createElement(TabPanel), options)
+        const wrapper = shallow(<TabPanel />, options)
         const context = wrapper.instance().getChildContext()
 
         expect(context.bem).to.not.be.ok
@@ -214,7 +214,7 @@ describe('TabPanel', function() {
             }
         }
 
-        const wrapper = mount(React.createElement(TabPanel), options)
+        const wrapper = mount(<TabPanel />, options)
 
         expect(subscribeBem.calledOnce).to.be.true
         expect(subscribeTabbordion.calledOnce).to.be.true
@@ -232,7 +232,7 @@ describe('TabPanel', function() {
     it('should generate BEM classes and other rendered props from given context', function() {
         const options = { context: singlePanelContext }
 
-        const wrapper = shallow(React.createElement(TabPanel, { index: 0 }), options)
+        const wrapper = shallow(<TabPanel index={0} />, options)
         const wrapperInput = wrapper.childAt(0)
 
         expect(wrapper.hasClass('panel')).to.be.true
@@ -260,19 +260,18 @@ describe('TabPanel', function() {
     it('should place other children always after the input box', function() {
         const options = { context: singlePanelContext }
 
-        const div = React.createElement('div')
-        const wrapper = shallow(React.createElement(TabPanel, { index: 0 }, div), options)
+        const wrapper = shallow(<TabPanel index={0}><div /></TabPanel>, options)
 
-        expect(wrapper.childAt(1).equals(div)).be.true
+        expect(wrapper.childAt(1).equals(<div />)).be.true
     })
 
     it('should handle first/between/last BEM classes', function() {
         const options = { context: fourPanelContext }
 
-        const panel0 = shallow(React.createElement(TabPanel, { index: 0 }), options)
-        const panel1 = shallow(React.createElement(TabPanel, { index: 1 }), options)
-        const panel2 = shallow(React.createElement(TabPanel, { index: 2 }), options)
-        const panel3 = shallow(React.createElement(TabPanel, { index: 3, visible: false }), options)
+        const panel0 = shallow(<TabPanel index={0} />, options)
+        const panel1 = shallow(<TabPanel index={1} />, options)
+        const panel2 = shallow(<TabPanel index={2} />, options)
+        const panel3 = shallow(<TabPanel index={3} visible={false} />, options)
 
         expect(panel0.hasClass('panel--first')).to.be.true
         expect(panel0.hasClass('panel--between')).to.be.false
@@ -298,7 +297,7 @@ describe('TabPanel', function() {
     it('should reflect disabled state', function() {
         const options = { context: fourPanelContext }
 
-        const wrapper = shallow(React.createElement(TabPanel, { index: 2 }), options)
+        const wrapper = shallow(<TabPanel index={2} />, options)
         const wrapperInput = wrapper.childAt(0)
 
         expect(wrapper.hasClass('panel--disabled')).to.be.true
@@ -308,7 +307,7 @@ describe('TabPanel', function() {
     it('should reflect hidden state', function() {
         const options = { context: fourPanelContext }
 
-        const wrapper = shallow(React.createElement(TabPanel, { index: 3, visible: false }), options)
+        const wrapper = shallow(<TabPanel index={3} visible={false} />, options)
         const wrapperInput = wrapper.childAt(0)
 
         expect(wrapper.hasClass('panel--hidden')).to.be.true
@@ -328,7 +327,7 @@ describe('TabPanel', function() {
             visible: false,
         }
 
-        const wrapper = shallow(React.createElement(TabPanel, props), options)
+        const wrapper = shallow(<TabPanel {...props} />, options)
         const wrapperInput = wrapper.childAt(0)
 
         expect(wrapper.hasClass('panel--unchecked')).to.be.true
@@ -350,13 +349,13 @@ describe('TabPanel', function() {
             modifiers: ['i-am-custom', 'i-am-too']
         }
 
-        const wrapper = shallow(React.createElement(TabPanel, props), options)
+        const wrapper = shallow(<TabPanel {...props} />, options)
 
         expect(wrapper.hasClass('panel--i-am-custom')).to.be.true
         expect(wrapper.hasClass('panel--i-am-too')).to.be.true
     })
 
-    // this was a v0 feature that has been deprecated by modifiers prop
+    // this was a v0 feature that has been deprecated in favor of modifiers prop
     it('should NOT extend custom BEM modifiers via className', function() {
         const options = { context: singlePanelContext }
         const props = {
@@ -364,7 +363,7 @@ describe('TabPanel', function() {
             index: 0,
         }
 
-        const wrapper = shallow(React.createElement(TabPanel, props), options)
+        const wrapper = shallow(<TabPanel {...props} />, options)
 
         expect(wrapper.hasClass('panel--i-am-too')).to.be.false
         expect(wrapper.hasClass('--i-am-too')).to.be.true
@@ -437,7 +436,7 @@ describe('TabLabel', function() {
             }
         }
 
-        const wrapper = mount(React.createElement(TabLabel), options)
+        const wrapper = mount(<TabLabel />, options)
 
         expect(subscribeBem.calledOnce).to.be.true
         expect(subscribeTabbordionPanel.calledOnce).to.be.true
@@ -471,11 +470,11 @@ describe('TabLabel', function() {
             }
         }
 
-        const wrapper = mount(React.createElement(
-            TabLabel,
-            null,
-            React.createElement('span', null),
-            React.createElement('span', { onClick: function(event) { event.preventDefault() } })
+        const wrapper = mount((
+            <TabLabel>
+                <span />
+                <span onClick={function(event) { event.preventDefault() }} />
+            </TabLabel>
         ), options)
 
         wrapper.simulate('click')
@@ -491,7 +490,7 @@ describe('TabLabel', function() {
     it('should generate BEM classes and other rendered props from given context', function() {
         const options = { context: panelContextWithoutAnimator }
 
-        const wrapper = shallow(React.createElement(TabLabel), options)
+        const wrapper = shallow(<TabLabel />, options)
 
         expect(wrapper.hasClass('label')).to.be.true
         expect(wrapper.hasClass('label--modifier')).to.be.true
@@ -501,7 +500,7 @@ describe('TabLabel', function() {
     it('should preserve className classes despite BEM classes in use', function() {
         const options = { context: panelContextWithAnimator }
 
-        const wrapper = shallow(React.createElement(TabLabel, { className: 'hellurei' }), options)
+        const wrapper = shallow(<TabLabel className="hellurei" />, options)
 
         expect(wrapper.hasClass('hellurei')).to.be.true
     })
@@ -529,7 +528,7 @@ describe('TabContent', function() {
             }
         }
 
-        const wrapper = mount(React.createElement(TabContent), options)
+        const wrapper = mount(<TabContent />, options)
 
         expect(subscribeBem.calledOnce).to.be.true
         expect(subscribeTabbordionPanel.calledOnce).to.be.true
@@ -547,7 +546,7 @@ describe('TabContent', function() {
     it('should generate BEM classes and other rendered props from given context without animateContent', function() {
         const options = { context: panelContextWithoutAnimator }
 
-        const wrapper = shallow(React.createElement(TabContent), options)
+        const wrapper = shallow(<TabContent />, options)
 
         expect(wrapper.hasClass('content')).to.be.true
         expect(wrapper.hasClass('content--modifier')).to.be.true
@@ -559,7 +558,7 @@ describe('TabContent', function() {
     it('should generate BEM classes and other rendered props from given context WITH animateContent', function() {
         const options = { context: panelContextWithAnimator }
 
-        const wrapper = shallow(React.createElement(TabContent), options)
+        const wrapper = shallow(<TabContent />, options)
         const wrapperChild = wrapper.childAt(0)
 
         expect(wrapper.hasClass('animator')).to.be.true
@@ -577,7 +576,7 @@ describe('TabContent', function() {
     it('should preserve className classes despite BEM classes in use', function() {
         const options = { context: panelContextWithAnimator }
 
-        const wrapper = shallow(React.createElement(TabContent, { className: 'hellurei' }), options)
+        const wrapper = shallow(<TabContent className="hellurei" />, options)
         const wrapperChild = wrapper.childAt(0)
 
         expect(wrapper.hasClass('hellurei')).to.be.true

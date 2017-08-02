@@ -1,3 +1,9 @@
+## v1.0.2 - 2017-08-02
+
+- Fix `animateContent` being rendered to element rendered by `Tabbordion`
+- Fix `onPanels` not being triggered when in stateful mode
+
+
 ## v1.0.1 - 2017-08-02
 
 - Fix crash if a Tabbordion child does not have `type`.

@@ -1,6 +1,6 @@
 {
   "name": "react-tabbordion",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "React Tabs, Accordion, Panel, Checkbox list, Radio list Component",
   "main": "dist/module/index.js",
   "scripts": {

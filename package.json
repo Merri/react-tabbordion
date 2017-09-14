@@ -57,6 +57,6 @@
     "react-test-renderer": "^15.6.1",
     "rimraf": "^2.6.1",
     "sinon": "^2.3.8",
-    "webpack": "^2.5.0"
+    "webpack": "^3.5.6"
   }
 }

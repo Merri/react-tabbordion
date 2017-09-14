@@ -1,8 +1,7 @@
-var webpack = require('webpack')
+const webpack = require('webpack')
 
 module.exports = {
     devtool: 'source-map',
-    // I did not understand why using ./src/index.js didn't work, but at least this works
     entry: './dist/module/index.js',
     output: {
         path: __dirname + '/dist/umd/',
@@ -13,7 +12,7 @@ module.exports = {
     },
     module: {
         loaders: [
-            { test: /\.jsx?$/,
+            { test: /\.(js|jsx)?$/,
                 loader: 'babel-loader',
                 exclude: [
                     '/demo/',
@@ -23,14 +22,27 @@ module.exports = {
                     '/test/',
                 ],
                 query: {
-                    presets: ['es2015', 'stage-0', 'react']
+                    presets: [['es2015', { loose: true, modules: false }], 'stage-0', 'react']
                 }
             }
         ]
     },
     plugins: [
-        new webpack.optimize.OccurrenceOrderPlugin,
-        new webpack.optimize.UglifyJsPlugin
+        new webpack.optimize.OccurrenceOrderPlugin(),
+        new webpack.optimize.UglifyJsPlugin({
+            beautify: false,
+            comments: /^$/,
+            compress: {
+                warnings: false
+            },
+            mangle: true,
+            output: {
+                comments: false,
+                semicolons: false
+            },
+            sourceMap: true
+        }),
+        new webpack.optimize.ModuleConcatenationPlugin(),
     ],
     externals: [
         {

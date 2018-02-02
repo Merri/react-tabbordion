@@ -22,11 +22,14 @@ copyProps(window, global)
 const React = require('react')
 global.React = React
 
-const { mount, shallow } = require('enzyme')
+const { configure, mount, shallow } = require('enzyme')
 const sinon = require('sinon')
 const { expect } = require('chai')
 
 const { Tabbordion, TabPanel, TabLabel, TabContent } = require('../dist/module')
+
+const Adapter = require('enzyme-adapter-react-16')
+configure({ adapter: new Adapter() })
 
 function NOOP(){}
 
@@ -105,6 +108,26 @@ describe('Tabbordion', function() {
 
         context.tabbordion.unsubscribe(subscriber)
     })
+
+    it('should support panels added using React.Fragment', function() {
+        const wrapper = mount(<Tabbordion>
+            <React.Fragment>
+                <TabPanel>
+                    <TabLabel>Test label</TabLabel>
+                    <TabContent>
+                        Test content
+                    </TabContent>
+                </TabPanel>
+            </React.Fragment>
+        </Tabbordion>)
+
+        const context = wrapper.instance().getChildContext()
+        const state = context.tabbordion.getState()
+
+        expect(state.checkedPanels.length).to.equal(1)
+        expect(state.firstVisiblePanel).to.equal(0)
+        expect(state.lastVisiblePanel).to.equal(0)
+    })
 })
 
 function getBemState() {
@@ -141,7 +164,7 @@ function getSinglePanelTabbordionState() {
         lastVisiblePanel: 0,
         panelName: 'test',
         panelType: 'checkbox',
-        tabbordionId: 'one'
+        tabbordionId: 'one',
     }
 }
 
@@ -154,25 +177,33 @@ function getFourPanelTabbordionState() {
         lastVisiblePanel: 2,
         panelName: 'test',
         panelType: 'checkbox',
-        tabbordionId: 'four'
+        tabbordionId: 'four',
     }
 }
 
 const singlePanelContext = {
     bem: {
         getState: getBemState,
+        subscribe: NOOP,
+        unsubscribe: NOOP,
     },
     tabbordion: {
         getState: getSinglePanelTabbordionState,
+        subscribe: NOOP,
+        unsubscribe: NOOP,
     },
 }
 
 const fourPanelContext = {
     bem: {
         getState: getBemState,
+        subscribe: NOOP,
+        unsubscribe: NOOP,
     },
     tabbordion: {
         getState: getFourPanelTabbordionState,
+        subscribe: NOOP,
+        unsubscribe: NOOP,
     },
 }
 
@@ -472,7 +503,7 @@ describe('TabLabel', function() {
 
         const wrapper = mount((
             <TabLabel>
-                <span />
+                <p />
                 <span onClick={function(event) { event.preventDefault() }} />
             </TabLabel>
         ), options)
@@ -480,10 +511,10 @@ describe('TabLabel', function() {
         wrapper.simulate('click')
         expect(onClickLabel.calledOnce).to.be.true
 
-        wrapper.childAt(0).simulate('click')
+        wrapper.find('p').simulate('click')
         expect(onClickLabel.calledTwice).to.be.true
 
-        wrapper.childAt(1).simulate('click')
+        wrapper.find('span').simulate('click')
         expect(onClickLabel.calledTwice).to.be.true
     })
 

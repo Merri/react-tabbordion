@@ -1,3 +1,10 @@
+## v1.0.4 - 2018-02-02
+
+- Add support for `React.Fragment`
+- Update React to 16.2
+- Update test tools
+
+
 ## v1.0.2 - 2017-08-02
 
 - Fix `animateContent` being rendered to element rendered by `Tabbordion`

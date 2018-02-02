@@ -67,13 +67,25 @@ function getTabPanelProps(
     let contentId = null
     let hasContent = null
 
+    const childPool = [props.children]
+
     // sniff the id out or use our own (will be exposed via context)
-    Children.forEach(props.children, child => {
-        if (!contentId && child && child.type && child.type.hasContent) {
-            hasContent = true
-            contentId = (child.props || (child._store && child._store.props) || {}).id || null
-        }
-    })
+    while (!contentId && childPool.length) {
+        Children.forEach(childPool.shift(), child => {
+            if (contentId || !child || !child.type) {
+                return
+            }
+
+            const props = child.props || (child._store && child._store.props) || {}
+
+            if (child.type === React.Fragment) {
+                childPool.push(props.children)
+            } else if (child.type.hasContent) {
+                hasContent = true
+                contentId = props.id || null
+            }
+        })
+    }
 
     if (!contentId) contentId = `${id}-content`
 

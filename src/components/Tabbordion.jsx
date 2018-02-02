@@ -38,6 +38,10 @@ function getStateTabbordion(context, props, state) {
     }
 }
 
+function identity(value) {
+    return value
+}
+
 class Tabbordion extends PureComponent {
     constructor(props) {
         super(props)
@@ -128,29 +132,40 @@ class Tabbordion extends PureComponent {
         const invalidIndexes = []
 
         const allowMultiChecked = props.mode === 'multiple'
-
-        Children.forEach(props.children, child => {
-            if (child && child.type && child.type.contextTypes && child.type.contextTypes.tabbordion) {
-                const props = child.props || (child._store && child._store.props) || {}
-                // use false to mark panels with invalid index
-                const index = props.index != null ? props.index : false
-                // missing index and duplicates are invalid
-                const isInvalidIndex = index === false || usedIndexes.includes(index)
-
-                if (isInvalidIndex) {
-                    invalidIndexes.push(panelProps.length)
-                } else {
-                    usedIndexes.push(index)
+        // fragments force us to do some recursive looping to find our actual children as React.Children does not do it
+        const childPool = [props.children]
+        // this logic probably needs to be refactored so that panels register to tabbordion
+        while (childPool.length) {
+            Children.forEach(childPool.shift(), child => {
+                if (child == null || !child.type) {
+                    return
                 }
 
-                panelProps.push({
-                    checked: props.checked,
-                    disabled: props.disabled,
-                    index: isInvalidIndex ? false : index,
-                    visible: props.visible,
-                })
-            }
-        })
+                const props = child.props || (child._store && child._store.props) || {}
+
+                if (child.type === React.Fragment && props.children) {
+                    childPool.push(props.children)
+                } else if (child.type.contextTypes && child.type.contextTypes.tabbordion) {
+                    // use false to mark panels with invalid index
+                    const index = props.index != null ? props.index : false
+                    // missing index and duplicates are invalid
+                    const isInvalidIndex = index === false || usedIndexes.includes(index)
+
+                    if (isInvalidIndex) {
+                        invalidIndexes.push(panelProps.length)
+                    } else {
+                        usedIndexes.push(index)
+                    }
+
+                    panelProps.push({
+                        checked: props.checked,
+                        disabled: props.disabled,
+                        index: isInvalidIndex ? false : index,
+                        visible: props.visible,
+                    })
+                }
+            })
+        }
 
         // time to fix invalid index values
         let unusedIndex = 0
@@ -315,18 +330,28 @@ class Tabbordion extends PureComponent {
         let panel = 0
 
         const panels = this.state.stateful ? this.state.panels : panelsProp
+        const childPool = [children]
+        const clones = []
+
+        while (childPool.length) {
+            Children.forEach(childPool.shift(), child => {
+                if (child == null || !child.type) {
+                    clones.push(child)
+                } else if (child.type === React.Fragment) {
+                    childPool.push(child.props.children)
+                } else if (child.type.contextTypes && child.type.contextTypes.tabbordion) {
+                    const clone = React.cloneElement(child, panels[panel])
+                    panel++
+                    clones.push(clone)
+                } else {
+                    clones.push(child)
+                }
+            })
+        }
 
         return (
             <Component {...props} role="tablist">
-                {Children.map(children, child => {
-                    if (child && child.type && child.type.contextTypes && child.type.contextTypes.tabbordion) {
-                        const output = React.cloneElement(child, panels[panel])
-                        panel++
-                        return output
-                    } else {
-                        return child
-                    }
-                })}
+                {Children.map(clones, identity)}
             </Component>
         )
     }

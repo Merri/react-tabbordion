@@ -87,7 +87,7 @@ class Tabbordion extends PureComponent {
         this.tabbordionState = getStateTabbordion(this, props, this.state)
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         const nextState = this.getNextState(nextProps, this.state)
         // only update if there were changes to the local component state
         if (nextState !== this.state) {

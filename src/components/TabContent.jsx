@@ -27,7 +27,7 @@ class TabContent extends PureComponent {
         this.update()
     }
 
-    componentWillReceiveProps(props, context) {
+    UNSAFE_componentWillReceiveProps(props, context) {
         // this should not happen but we know bugs happen when unexpected things happen
         if (context.tabbordionPanel !== this.context.tabbordionPanel) {
             this.onResize.getState = context.tabbordionPanel.getState

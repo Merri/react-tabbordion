@@ -165,7 +165,7 @@ class TabPanel extends PureComponent {
         this.context.tabbordion.subscribe(this)
     }
 
-    componentWillReceiveProps(nextProps, nextContext) {
+    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
         this.cachedProps = getTabPanelProps(nextProps, nextContext, this.uniqId)
 
         const panelState = this.childContext.tabbordionPanel.getState()

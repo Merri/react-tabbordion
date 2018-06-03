@@ -5,13 +5,6 @@ import { addSubscriber, removeSubscriber } from '../lib/contextSubscribe'
 import { bemClassName } from '../lib/bem'
 import { getArray, isShallowlyDifferent } from '../lib/state'
 
-// we only use raf for a minor accessibility feature so it is possible to get away with this little "polyfilling"
-const raf = (
-    typeof window !== 'undefined' && 'requestAnimationFrame' in window
-        ? window.requestAnimationFrame
-        : setTimeout
-)
-
 let panelInstances = 0
 let panelUniqId = 0
 
@@ -206,7 +199,7 @@ class TabPanel extends PureComponent {
         const { index, onChangePanel, type } = this.cachedProps
         if (onChangePanel) onChangePanel(index)
         // make sure focus goes to the input element, that is what sane browsers do when a label is clicked
-        raf(() => {
+        requestAnimationFrame(() => {
             // of course things may go wrong so make sure all expected conditions are met before doing stuff
             if (this.input && (this.input.checked || type === 'checkbox') && document.activeElement !== this.input) {
                 this.input.focus()

@@ -388,13 +388,6 @@ Tabbordion.defaultProps = {
     mode: 'single',
 }
 
-const tabbordionPanelProps = PropTypes.arrayOf(PropTypes.shape({
-    checked: PropTypes.bool,
-    disabled: PropTypes.bool,
-    index: PropTypes.number,
-    visible: PropTypes.bool,
-}))
-
 Tabbordion.propTypes = {
     animateContent: PropTypes.oneOf([false, 'height', 'marginTop']),
     bemModifiers: PropTypes.shape({
@@ -419,12 +412,22 @@ Tabbordion.propTypes = {
     className: PropTypes.string,
     component: PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.string]),
     id: PropTypes.string,
-    initialPanels: tabbordionPanelProps,
+    initialPanels: PropTypes.arrayOf(PropTypes.shape({
+        checked: PropTypes.bool,
+        disabled: PropTypes.bool,
+        index: PropTypes.number,
+        visible: PropTypes.bool,
+    })),
     mode: PropTypes.oneOf(['single', 'toggle', 'multiple']),
     name: PropTypes.string,
     onChange: PropTypes.func,
     onPanels: PropTypes.func,
-    panels: tabbordionPanelProps,
+    panels: PropTypes.arrayOf(PropTypes.shape({
+        checked: PropTypes.bool,
+        disabled: PropTypes.bool,
+        index: PropTypes.number,
+        visible: PropTypes.bool,
+    })),
 }
 
 export default Tabbordion

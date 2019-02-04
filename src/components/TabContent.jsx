@@ -94,7 +94,7 @@ class TabContent extends PureComponent {
         ) : null
 
         const resizeStyle = this.state.fastTransition ? {
-            webkitTransition: 'all 32ms',
+            WebkitTransition: 'all 32ms',
             transition: 'all 32ms',
         } : null
 

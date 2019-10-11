@@ -1,3 +1,9 @@
+## UNRELEASED - 2019-10-11
+
+- Update all packages
+- Update to Babel 7
+
+
 ## v1.0.4 - 2018-02-02
 
 - Add support for `React.Fragment`

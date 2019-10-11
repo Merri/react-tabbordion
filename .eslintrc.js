@@ -32,6 +32,9 @@ module.exports = {
             node: {
                 extensions: ['.js', '.jsx']
             }
+        },
+        "react": {
+            "version": "detect"
         }
     },
     "rules": {

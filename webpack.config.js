@@ -41,9 +41,6 @@ module.exports = {
                 uglifyOptions: {
                     beautify: false,
                     comments: /^$/,
-                    compress: {
-                        warnings: false
-                    },
                     mangle: true,
                     output: {
                         comments: false,

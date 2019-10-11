@@ -1,16 +1,17 @@
 {
   "name": "react-tabbordion",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "React Tabs, Accordion, Panel, Checkbox list, Radio list Component",
   "main": "dist/module/index.js",
   "scripts": {
-    "pretest": "npm run lint",
-    "build": "npm run clean-dist && npm run build-modules && npm run build-umd",
+    "build": "npm run build-modules && npm run build-umd",
     "build-modules": "cross-env BABEL_ENV=build babel src --out-dir dist/module ",
     "build-umd": "webpack --config webpack.config.js --mode production",
     "clean-dist": "rimraf dist",
     "lint": "eslint --ext .js,.jsx .",
-    "prepublish": "npm prune && npm run build && npm test",
+    "precommit": "npm run lint && npm run test",
+    "prepare": "npm run clean-dist && npm run build",
+    "prepublishOnly": "npm test",
     "test": "mocha --require @babel/register --reporter spec"
   },
   "repository": {

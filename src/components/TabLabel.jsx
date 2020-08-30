@@ -1,67 +1,45 @@
-import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import React from 'react'
 
 import { bemClassName } from '../lib/bem'
+import { identity } from '../lib/identity'
+import { TabLabelContext } from './Tabbordion'
 
-class TabLabel extends PureComponent {
-    constructor(props, context) {
-        super(props, context)
+export class TabLabel extends React.PureComponent {
+    static contextType = TabLabelContext
 
-        this.onClick = this.onClick.bind(this)
+    static defaultProps = {
+        component: 'label',
     }
 
-    componentDidMount() {
-        this.context.bem.subscribe(this)
-        this.context.tabbordionPanel.subscribe(this)
+    static propTypes = {
+        children: PropTypes.node.isRequired,
+        className: PropTypes.string,
+        component: PropTypes.elementType,
+        forwardedRef: PropTypes.oneOfType([PropTypes.func, PropTypes.shape({ current: PropTypes.any.isRequired })]),
+        onClick: PropTypes.func,
     }
 
-    componentWillUnmount() {
-        this.context.bem.unsubscribe(this)
-        this.context.tabbordionPanel.unsubscribe(this)
-    }
-
-    onClick(event) {
-        if (event.defaultPrevented) {
-            return
-        }
-
-        const { onClickLabel } = this.context.tabbordionPanel
-        if (onClickLabel) {
-            event.preventDefault()
-            onClickLabel()
-        }
+    onClick = (event) => {
+        if (this.props.onClick) this.props.onClick(event)
+        if (event.defaultPrevented || !this.context || typeof this.context.onToggle !== 'function') return
+        this.context.onToggle(event)
     }
 
     render() {
-        const { bemSeparator, blockElements } = this.context.bem.getState()
-        const { inputId, modifiers } = this.context.tabbordionPanel.getState()
-        const { className, component: Component, ...props } = this.props
-
-        const panelBem = bemClassName(blockElements, 'label', modifiers, bemSeparator)
-
+        const { bemSeparator, blockElements, inputId, labelId, modifiers } = this.context || {}
+        const { className, component: Component, id, forwardedRef, ...props } = this.props
+        const labelBem = bemClassName(blockElements, 'label', modifiers, bemSeparator)
+        const labelClassName = [labelBem, className].filter(identity).join(' ') || undefined
         return (
             <Component
-                className={!panelBem ? className : (className ? `${panelBem} ${className}` : panelBem)}
-                htmlFor={inputId}
-                onClick={this.onClick}
                 {...props}
+                ref={forwardedRef}
+                className={labelClassName}
+                id={labelId || id}
+                onClick={this.onClick}
+                htmlFor={inputId}
             />
         )
     }
 }
-
-TabLabel.contextTypes = {
-    bem: PropTypes.object,
-    tabbordionPanel: PropTypes.object,
-}
-
-TabLabel.defaultProps = {
-    component: 'label',
-}
-
-TabLabel.propTypes = {
-    className: PropTypes.string,
-    component: PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.string]),
-}
-
-export default TabLabel

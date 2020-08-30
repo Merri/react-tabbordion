@@ -1,212 +1,263 @@
-import React, { Children, PureComponent } from 'react'
+import equal from 'fast-deep-equal'
 import PropTypes from 'prop-types'
+import React from 'react'
 
-import { addSubscriber, removeSubscriber } from '../lib/contextSubscribe'
+import { defaultBemModifiers, defaultBemSeparator, defaultBlockElements } from '../lib/bem'
+import { UniqueGenerator } from '../class/UniqueGenerator'
 
-import {
-    getArray,
-    getChecked,
-    getDisabled,
-    getIndex,
-    isShallowlyDifferent,
-    isShallowlyDifferentArray,
-} from '../lib/state'
+const uniq = new UniqueGenerator()
 
-let tabbordionInstances = 0
-let tabbordionUniqId = 0
+export const TabContentContext = React.createContext('tabbordionContent')
+export const TabLabelContext = React.createContext('tabbordionLabel')
+export const TabPanelContext = React.createContext('tabbordionPanel')
 
-function getStateBem(props) {
-    return {
-        bemModifiers: props.bemModifiers,
-        bemSeparator: props.bemSeparator,
-        blockElements: props.blockElements,
-    }
-}
-
-function getStateTabbordion(context, props, state) {
-    const panels = getArray(state.stateful ? state.panels : props.panels)
-
-    return {
-        animateContent: props.animateContent,
-        checkedPanels: panels.filter(getChecked).map(getIndex),
-        disabledPanels: panels.filter(getDisabled).map(getIndex),
-        firstVisiblePanel: context.firstVisibleIndex,
-        lastVisiblePanel: context.lastVisibleIndex,
-        panelName: props.name || context.uniqId,
-        panelType: props.mode === 'multiple' ? 'checkbox' : 'radio',
-        tabbordionId: props.id || context.uniqId,
-    }
-}
-
-function identity(value) {
-    return value
-}
-
-class Tabbordion extends PureComponent {
-    constructor(props) {
-        super(props)
-
-        tabbordionInstances++
-        this.uniqId = `tabbordion-${tabbordionUniqId}`
-        tabbordionUniqId++
-
-        this.getNextState = this.getNextState.bind(this)
-        this.onChange = this.onChange.bind(this)
-
-        this.firstVisibleIndex = null
-        this.lastVisibleIndex = null
-
-        // panels always overrides initialPanels
-        this.state = this.getNextState(
-            props,
-            { stateful: false },
-            Array.isArray(props.panels) ? props.panels : props.initialPanels
-        )
-
-        // context subscribers
-        this.subscribers = {
-            bem: [],
-            tabbordion: [],
-        }
-
-        this.childContext = {
-            bem: {
-                getState: () => this.bemState,
-                subscribe: addSubscriber(this.subscribers.bem),
-                unsubscribe: removeSubscriber(this.subscribers.bem),
-            },
-            tabbordion: {
-                getState: () => this.tabbordionState,
-                onChangePanel: this.onChange,
-                subscribe: addSubscriber(this.subscribers.tabbordion),
-                unsubscribe: removeSubscriber(this.subscribers.tabbordion),
-            },
-        }
-
-        this.bemState = getStateBem(props)
-        this.tabbordionState = getStateTabbordion(this, props, this.state)
-    }
-
-    UNSAFE_componentWillReceiveProps(nextProps) {
-        const nextState = this.getNextState(nextProps, this.state)
-        // only update if there were changes to the local component state
-        if (nextState !== this.state) {
-            this.setState(nextState)
-        }
-
-        const bemState = getStateBem(nextProps)
-
-        if (isShallowlyDifferent(bemState, this.bemState)) {
-            this.subscribers.bem.forEach(component => component.forceUpdate())
-            this.bemState = bemState
-        }
-
-        const tabbordionState = getStateTabbordion(this, nextProps, nextState)
-
-        if (isShallowlyDifferent(tabbordionState, this.tabbordionState)) {
-            this.subscribers.tabbordion.forEach(component => component.forceUpdate())
-            this.tabbordionState = tabbordionState
-        }
-    }
-
-    componentWillUnmount() {
-        tabbordionInstances--
-        if (tabbordionInstances === 0) tabbordionUniqId = 0
-    }
-
-    getChildContext() {
-        return this.childContext
-    }
-
-    /*
-     * Controls props and does those nasty little staties we kills them My Precious, *gollum* *gollum*
-     * @param {object} props Props received by the component
-     * @param {object} prevState State contained in the component
-     * @param {array} initialPanels Initial panels state when component is mounted as a stateful component
-     * @return {object} State to be used by the component
-     */
-    getNextState(props, prevState, initialPanels) {
-        const panels = getArray(prevState.stateful ? prevState.panels : initialPanels || props.panels)
-        const panelProps = []
-        const usedIndexes = []
-        const invalidIndexes = []
-
-        const allowMultiChecked = props.mode === 'multiple'
-        // fragments force us to do some recursive looping to find our actual children as React.Children does not do it
-        const childPool = [props.children]
-        // this logic probably needs to be refactored so that panels register to tabbordion
-        while (childPool.length) {
-            Children.forEach(childPool.shift(), child => {
-                if (child == null || !child.type) {
-                    return
+/**
+ * Recursively search for a child elements that uses given context and return the first matches props.
+ * @param  {array|object} children  React elements
+ * @param  {array} contextTypes     Array of React Context
+ * @return {array}                  Array of element props in the same order as array of React Context.
+ */
+function getPropsByElementContext(children, contextTypes) {
+    let missingCount = contextTypes.length
+    const props = contextTypes.map(() => null)
+    const stack = [children]
+    while (missingCount && stack.length) {
+        React.Children.forEach(stack.shift(), (child) => {
+            if (missingCount === 0 || child == null || !child.type) return
+            const index = contextTypes.indexOf(child.type.contextType)
+            if (~index) {
+                if (!props[index]) {
+                    props[index] = child.props || {}
+                    missingCount--
                 }
-
-                const props = child.props || (child._store && child._store.props) || {}
-
-                if (child.type === React.Fragment && props.children) {
-                    childPool.push(props.children)
-                } else if (child.type.contextTypes && child.type.contextTypes.tabbordion) {
-                    // use false to mark panels with invalid index
-                    const index = props.index != null ? props.index : false
-                    // missing index and duplicates are invalid
-                    const isInvalidIndex = index === false || usedIndexes.includes(index)
-
-                    if (isInvalidIndex) {
-                        invalidIndexes.push(panelProps.length)
-                    } else {
-                        usedIndexes.push(index)
-                    }
-
-                    panelProps.push({
-                        checked: props.checked,
-                        disabled: props.disabled,
-                        index: isInvalidIndex ? false : index,
-                        visible: props.visible,
-                    })
-                }
-            })
-        }
-
-        // time to fix invalid index values
-        let unusedIndex = 0
-
-        while (invalidIndexes.length > 0) {
-            // find the next usable index value
-            while (usedIndexes.includes(unusedIndex)) {
-                unusedIndex++
+            } else if (child.props.children) {
+                stack.push(child.props.children)
             }
-            // use the index value
-            panelProps[invalidIndexes.shift()].index = unusedIndex
-            // try another index on the next round
-            unusedIndex++
-        }
+        })
+    }
+    return props
+}
 
-        // now that we know the indexes we can link to existing data; if it happens to exist, of course
+/**
+ * Recursively retrieve all panel element props in order; ensures unique index for each panel.
+ * @param  {array|object} children  React elements
+ * @return {array}                  Array of panel element props
+ */
+function getPanelElementProps(children) {
+    const consumedIndexes = new Set()
+    const panelWithoutIndex = []
+    const elementProps = []
+    const stack = [children]
+    while (stack.length) {
+        React.Children.forEach(stack.shift(), (child) => {
+            if (child == null || !child.type) {
+                return
+            }
+            if (child.type.contextType === TabPanelContext) {
+                const index = ~~child.props.index
+                const isValidIndex = !consumedIndexes.has(index)
+                if (isValidIndex) {
+                    consumedIndexes.add(index)
+                } else {
+                    panelWithoutIndex.push(elementProps.length)
+                }
+                const [contentProps, labelProps] = getPropsByElementContext(child.props.children, [
+                    TabContentContext,
+                    TabLabelContext,
+                ])
+                elementProps.push({
+                    ...child.props,
+                    contentId: contentProps && contentProps.id,
+                    hasContent: contentProps != null,
+                    index: isValidIndex ? index : null,
+                    labelId: labelProps && labelProps.id,
+                })
+            } else if (child.props.children) {
+                stack.push(child.props.children)
+            }
+        })
+    }
+    // fill in missing indexes now that valid ones have been reserved
+    for (let nextIndex = 0; panelWithoutIndex.length > 0; nextIndex++) {
+        while (consumedIndexes.has(nextIndex)) {
+            nextIndex++
+        }
+        elementProps[panelWithoutIndex.shift()].index = nextIndex
+    }
+    return elementProps
+}
+
+/**
+ * Toggles index of given panels to checked/unchecked. Ensures valid checked state of each panel in given mode.
+ * @param  {Object} options
+ * @param  {Number} options.index   Index of panel to toggle
+ * @param  {String} options.mode    single, toggle, or multiple
+ * @param  {Array}  options.panels  Panels
+ * @return {Array}                  Updated panels
+ */
+export function updatePanelsByToggle({ index, mode, panels }) {
+    const panelIndex = panels.findIndex((panel) => panel.index === index)
+    if (!~panelIndex) return panels
+    const checkedPanel = panels[panelIndex]
+    switch (mode) {
+        case 'multiple': {
+            // any panel can be in any checked state
+            const nextPanels = panels.slice(0)
+            nextPanels[panelIndex] = {
+                checked: !checkedPanel.checked,
+                disabled: checkedPanel.disabled,
+                index,
+                visible: checkedPanel.visible,
+            }
+            return nextPanels
+        }
+        case 'toggle': {
+            // only one can remain checked, however it can also be unchecked
+            const nextPanels = panels.map((panel) => {
+                const checked = panel === checkedPanel ? !checkedPanel.checked : false
+                return checked === panel.checked
+                    ? panel
+                    : {
+                          checked,
+                          disabled: panel.disabled,
+                          index: panel.index,
+                          visible: panel.visible,
+                      }
+            })
+            return nextPanels
+        }
+        default: {
+            // one panel must always be checked
+            const stateWillUpdate = panels.some((panel) => panel.checked !== (panel === checkedPanel))
+            if (!stateWillUpdate) return panels
+            const nextPanels = panels.map((panel) => {
+                const checked = panel === checkedPanel
+                return checked === panel.checked
+                    ? panel
+                    : {
+                          checked,
+                          disabled: panel.disabled,
+                          index: panel.index,
+                          visible: panel.visible,
+                      }
+            })
+            return nextPanels
+        }
+    }
+}
+
+export class Tabbordion extends React.PureComponent {
+    /**
+     * Use after rendering static HTML to reset fallback ID used to generate panel ids and name attribute to avoid
+     * inconsistencies between renders. Since the unique number generator is minimalistic and simple it is not fit for
+     * complex use cases such as code-splitting. You can avoid relying on this code by always giving unique id & name
+     * props (can be same). You can use react-uid to get reliable dynamic IDs.
+     */
+    static resetSSR = uniq.reset
+
+    static defaultProps = {
+        animateContent: false,
+        bemModifiers: defaultBemModifiers,
+        bemSeparator: defaultBemSeparator,
+        blockElements: defaultBlockElements,
+        component: 'ul',
+        inputProps: { 'data-state': 'tabbordion' },
+        mode: 'single',
+    }
+
+    static propTypes = {
+        animateContent: PropTypes.oneOf([false, 'height', 'marginTop']),
+        bemModifiers: PropTypes.exact({
+            animated: PropTypes.string,
+            between: PropTypes.string,
+            checked: PropTypes.string,
+            content: PropTypes.string,
+            disabled: PropTypes.string,
+            enabled: PropTypes.string,
+            first: PropTypes.string,
+            hidden: PropTypes.string,
+            last: PropTypes.string,
+            noContent: PropTypes.string,
+            unchecked: PropTypes.string,
+        }),
+        bemSeparator: PropTypes.string,
+        blockElements: PropTypes.exact({
+            animator: PropTypes.string,
+            content: PropTypes.string,
+            label: PropTypes.string,
+            panel: PropTypes.string,
+        }),
+        children: PropTypes.node,
+        className: PropTypes.string,
+        component: PropTypes.elementType,
+        forwardedRef: PropTypes.oneOfType([PropTypes.func, PropTypes.shape({ current: PropTypes.any.isRequired })]),
+        id: PropTypes.string,
+        initialPanels: PropTypes.arrayOf(
+            PropTypes.shape({
+                checked: PropTypes.bool,
+                disabled: PropTypes.bool,
+                index: PropTypes.number,
+                visible: PropTypes.bool,
+            })
+        ),
+        inputProps: PropTypes.object,
+        mode: PropTypes.oneOf(['single', 'toggle', 'multiple']),
+        name: PropTypes.string,
+        onChange: PropTypes.func,
+        onPanels: PropTypes.func,
+        panels: PropTypes.arrayOf(
+            PropTypes.shape({
+                checked: PropTypes.bool,
+                disabled: PropTypes.bool,
+                index: PropTypes.number,
+                visible: PropTypes.bool,
+            })
+        ),
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        const allowMultiChecked = props.mode === 'multiple'
+        const id = props.id || props.name || state.fallback
+        const name = props.name || state.fallback
+        const type = allowMultiChecked ? 'checkbox' : 'radio'
+        // get panel element props with fixed indexes
+        const elementProps = getPanelElementProps(props.children)
+
         let checkedCount = 0
         let firstVisibleIndex = null
         let lastVisibleIndex = null
+        const hasOnPanels = typeof props.onPanels === 'function'
+        const isControlled = hasOnPanels && Array.isArray(props.panels)
+        const panels =
+            (state.panels ? (isControlled ? props.panels : state.panels) : props.initialPanels || props.panels) || []
+        // build internal state for panels
+        const contextPanels = elementProps.map((panelProps, index) => {
+            const panel = panels.find((panel) => panel.index === panelProps.index) || {}
 
-        const nextPanels = panelProps.map((props, index) => {
-            const panel = panels.find(panel => panel.index === props.index) || { checked, disabled, visible }
+            const checked =
+                (panelProps.checked != null ? panelProps.checked : !!panel.checked) &&
+                (allowMultiChecked || checkedCount === 0)
 
-            const checked = (
-                props.checked != null ? props.checked : !!panel.checked
-            ) && (allowMultiChecked || checkedCount === 0)
-
-            const disabled = props.disabled != null ? props.disabled : !!panel.disabled
-            const visible = props.visible != null ? props.visible : (panel.visible === false ? false : true)
+            const visible = panelProps.visible != null ? panelProps.visible : panel.visible === false ? false : true
 
             if (visible) {
+                if (checked) checkedCount++
+                if (firstVisibleIndex == null) firstVisibleIndex = index
                 lastVisibleIndex = index
-                if (firstVisibleIndex == null) firstVisibleIndex = lastVisibleIndex
             }
 
-            if (checked && visible) checkedCount++
+            const inputId = panelProps.id != null ? panelProps.id : `${id}-${panelProps.index}`
 
             return {
                 checked,
-                disabled,
-                index: props.index,
+                contentId: panelProps.contentId != null ? panelProps.contentId : `${inputId}-content`,
+                disabled: panelProps.disabled != null ? panelProps.disabled : !!panel.disabled,
+                hasContent: panelProps.hasContent,
+                index: panelProps.index,
+                inputId,
+                labelId: panelProps.labelId != null ? panelProps.labelId : `${inputId}-label`,
+                modifiers: Array.isArray(panelProps.modifiers) ? panelProps.modifiers.slice(0) : [],
+                value: panelProps.value != null ? panelProps.value : String(panelProps.index),
                 visible,
             }
         })
@@ -214,220 +265,120 @@ class Tabbordion extends PureComponent {
         if (firstVisibleIndex != null) {
             // one panel must always be checked in single mode
             if (checkedCount === 0 && props.mode !== 'multiple' && props.mode !== 'toggle') {
-                nextPanels[firstVisibleIndex].checked = true
+                contextPanels[firstVisibleIndex].checked = true
             }
-            // it is now safe to use the actual indexes instead of references
-            firstVisibleIndex = nextPanels[firstVisibleIndex].index
-            lastVisibleIndex = nextPanels[lastVisibleIndex].index
         }
 
-        // keep in local state: We can do this in this way because these values are derived from main panels state.
-        //                      Also, this state is updated each time props change, thus we maintain "pureness".
-        this.firstVisibleIndex = firstVisibleIndex
-        this.lastVisibleIndex = lastVisibleIndex
-
-        // determine who will own the state
-        const stateful = !props.onChange || !props.onPanels || !Array.isArray(props.panels)
-
-        if (stateful) {
-            // it is mine, my own, My Preciouss...
-            if (!prevState.stateful || isShallowlyDifferentArray(prevState.panels, nextPanels)) {
-                if (props.onPanels) props.onPanels(nextPanels)
-
-                return {
-                    panels: nextPanels,
-                    stateful,
+        if (props.bemModifiers) {
+            contextPanels.forEach((panel, index) => {
+                panel.modifiers.push(
+                    props.bemModifiers[panel.checked ? 'checked' : 'unchecked'],
+                    props.bemModifiers[panel.hasContent ? 'content' : 'noContent'],
+                    props.bemModifiers[panel.disabled ? 'disabled' : 'enabled']
+                )
+                if (index > firstVisibleIndex && index < lastVisibleIndex) {
+                    panel.modifiers.push(props.bemModifiers.between)
+                } else {
+                    if (firstVisibleIndex === index) panel.modifiers.push(props.bemModifiers.first)
+                    if (lastVisibleIndex === index) panel.modifiers.push(props.bemModifiers.last)
                 }
-            }
-        } else {
-            // provide updated state to whomever will own it
-            if (isShallowlyDifferentArray(panels, nextPanels)) {
-                props.onPanels(nextPanels)
-            }
-            // clear local state
-            if (prevState.stateful) {
-                return { panels: null, stateful }
-            }
+                if (props.animateContent) {
+                    panel.modifiers.push(props.bemModifiers.animated, props.animateContent)
+                }
+            })
         }
 
-        return prevState
+        // public panel state to expose
+        const nextPanels = contextPanels.map((panel) => ({
+            checked: panel.checked,
+            disabled: panel.disabled,
+            index: panel.index,
+            visible: panel.visible,
+        }))
+
+        const nextState = {}
+
+        if (isControlled && !equal(props.panels, nextPanels)) props.onPanels(nextPanels)
+        if (!equal(state.panels, contextPanels)) {
+            if (!isControlled && hasOnPanels) props.onPanels(nextPanels)
+            nextState.panels = contextPanels
+        }
+
+        if (state.animateContent !== props.animateContent) nextState.animateContent = props.animateContent
+        if (!equal(state.bemModifiers, props.bemModifiers)) nextState.bemModifiers = props.bemModifiers
+        if (state.bemSeparator !== props.bemSeparator) nextState.bemSeparator = props.bemSeparator
+        if (!equal(state.blockElements, props.blockElements)) nextState.blockElements = props.blockElements
+        if (!equal(state.inputProps, props.inputProps)) nextState.inputProps = props.inputProps
+        if (state.id !== id) nextState.id = id
+        if (state.name !== name) nextState.name = name
+        if (state.type !== type) nextState.type = type
+
+        return Object.keys(nextState).length > 0 ? nextState : null
     }
 
-    onChange(index) {
-        const { mode } = this.props
+    state = {
+        animateContent: false,
+        bemModifiers: defaultBemModifiers,
+        bemSeparator: defaultBemSeparator,
+        blockElements: defaultBlockElements,
+        fallback: 'tabbordion',
+        id: 'tabbordion',
+        name: 'tabbordion',
+        onToggle: (index) => {
+            const panels = updatePanelsByToggle({ index, mode: this.props.mode, panels: this.state.panels })
+            if (typeof this.props.onChange === 'function') {
+                this.props.onChange({ index, mode: this.props.mode, panels })
+            }
+            const isControlled = typeof this.props.onPanels === 'function' && Array.isArray(this.props.panels)
+            if (!isControlled && this.state.panels !== panels) {
+                this.setState({ panels })
+            }
+        },
+        panels: null,
+        type: 'radio',
+        claims: [],
+        claim: (component) => {
+            if (!this.state.claims.includes(component)) this.state.claims.push(component)
+        },
+        unclaim: (component) => {
+            const index = this.state.claims.indexOf(component)
+            if (~index) this.state.claims.splice(index, 1)
+        },
+    }
 
-        if (!this.state.stateful) {
-            this.props.onChange({
-                index,
-                mode,
-            })
-            return
-        }
+    constructor() {
+        super()
+        // the "most tolerable minimalist solution" until there is a native React solution for consistent IDs
+        this.state.fallback = `tabbordion-${uniq.get()}`
+    }
 
-        // we can mutate this state as we please because we own this state
-        const panel = this.state.panels.find(panel => panel.index === index)
-
-        if (panel == null) {
-            throw new Error('Unexpected invalid panel index: ' + index)
-        }
-
-        let didMutate = false
-
-        switch (mode) {
-            case 'toggle':
-                // only one can be active, but also none can be active (radio, but allow unselect)
-                this.state.panels.forEach(togglePanel => {
-                    if (togglePanel !== panel && togglePanel.checked) {
-                        togglePanel.checked = false
-                    }
-                })
-                panel.checked = !panel.checked
-                didMutate = true
-                break
-            case 'multiple':
-                // no state restrictions/relations (checkbox)
-                panel.checked = !panel.checked
-                didMutate = true
-                break
-            default:
-                // only one panel must stay active (radio)
-                this.state.panels.forEach(togglePanel => {
-                    if (togglePanel !== panel && togglePanel.checked) {
-                        togglePanel.checked = false
-                        didMutate = true
-                    }
-                })
-                if (!panel.checked) {
-                    panel.checked = true
-                    didMutate = true
-                }
-        }
-
-        if (didMutate) {
-            this.setState({ panels: this.state.panels.slice(0) })
-        }
+    componentWillUnmount() {
+        // this code will only execute on browser: check Tabbordion.resetSSR() if doing server side render
+        uniq.resolve()
     }
 
     render() {
-        // use destructuring to pick out props we don't need to pass to the rendered component
         const {
             animateContent,
-            children,
-            component: Component,
             bemModifiers,
             bemSeparator,
             blockElements,
-            component,
+            component: Component,
+            forwardedRef,
             initialPanels,
+            inputProps,
             mode,
             name,
             onChange,
             onPanels,
-            panels: panelsProp,
+            panels,
             ...props
         } = this.props
 
-        let panel = 0
-
-        const panels = this.state.stateful ? this.state.panels : panelsProp
-        const childPool = [children]
-        const clones = []
-
-        while (childPool.length) {
-            Children.forEach(childPool.shift(), child => {
-                if (child == null || !child.type) {
-                    clones.push(child)
-                } else if (child.type === React.Fragment) {
-                    childPool.push(child.props.children)
-                } else if (child.type.contextTypes && child.type.contextTypes.tabbordion) {
-                    const clone = React.cloneElement(child, panels[panel])
-                    panel++
-                    clones.push(clone)
-                } else {
-                    clones.push(child)
-                }
-            })
-        }
-
         return (
-            <Component {...props} role="tablist">
-                {Children.map(clones, identity)}
-            </Component>
+            <TabPanelContext.Provider value={this.state}>
+                <Component ref={forwardedRef} {...props} role="tablist" />
+            </TabPanelContext.Provider>
         )
     }
 }
-
-Tabbordion.childContextTypes = {
-    bem: PropTypes.object,
-    tabbordion: PropTypes.object,
-}
-
-Tabbordion.defaultProps = {
-    animateContent: false,
-    bemModifiers: {
-        animated: 'animated',
-        between: 'between',
-        checked: 'checked',
-        content: 'content',
-        disabled: 'disabled',
-        enabled: 'enabled',
-        first: 'first',
-        hidden: 'hidden',
-        last: 'last',
-        noContent: 'no-content',
-        unchecked: 'unchecked',
-    },
-    bemSeparator: '--',
-    blockElements: {
-        animator: 'panel__animator',
-        content: 'panel__content',
-        label: 'panel__label',
-        panel: 'panel',
-    },
-    component: 'ul',
-    mode: 'single',
-}
-
-Tabbordion.propTypes = {
-    animateContent: PropTypes.oneOf([false, 'height', 'marginTop']),
-    bemModifiers: PropTypes.shape({
-        between: PropTypes.string,
-        checked: PropTypes.string,
-        content: PropTypes.string,
-        disabled: PropTypes.string,
-        enabled: PropTypes.string,
-        first: PropTypes.string,
-        hidden: PropTypes.string,
-        last: PropTypes.string,
-        noContent: PropTypes.string,
-        unchecked: PropTypes.string,
-    }),
-    bemSeparator: PropTypes.string,
-    blockElements: PropTypes.shape({
-        content: PropTypes.string,
-        label: PropTypes.string,
-        panel: PropTypes.string,
-    }),
-    children: PropTypes.node,
-    className: PropTypes.string,
-    component: PropTypes.oneOfType([PropTypes.func, PropTypes.object, PropTypes.string]),
-    id: PropTypes.string,
-    initialPanels: PropTypes.arrayOf(PropTypes.shape({
-        checked: PropTypes.bool,
-        disabled: PropTypes.bool,
-        index: PropTypes.number,
-        visible: PropTypes.bool,
-    })),
-    mode: PropTypes.oneOf(['single', 'toggle', 'multiple']),
-    name: PropTypes.string,
-    onChange: PropTypes.func,
-    onPanels: PropTypes.func,
-    panels: PropTypes.arrayOf(PropTypes.shape({
-        checked: PropTypes.bool,
-        disabled: PropTypes.bool,
-        index: PropTypes.number,
-        visible: PropTypes.bool,
-    })),
-}
-
-export default Tabbordion

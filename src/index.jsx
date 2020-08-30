@@ -1,5 +1,0 @@
-export { bemClassName } from './lib/bem'
-export { default as Tabbordion } from './components/Tabbordion'
-export { default as TabPanel } from './components/TabPanel'
-export { default as TabLabel } from './components/TabLabel'
-export { default as TabContent } from './components/TabContent'

@@ -4049,7 +4049,7 @@ tap-out@^3.0.0:
     split "1.0.0"
     trim "0.0.1"
 
-tape@5.0.1:
+tape@5.0.1, tape@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/tape/-/tape-5.0.1.tgz#0d70ce90a586387c4efda4393e72872672a416a3"
   integrity sha512-wVsOl2shKPcjdJdc8a+PwacvrOdJZJ57cLUXlxW4TQ2R6aihXwG0m0bKm4mA4wjtQNTaLMCrYNEb4f9fjHKUYQ==

@@ -10,35 +10,6 @@ const NOOP = () => {}
 
 describe('Tabbordion', async (assert) => {
     {
-        const blockElements = {
-            content: 'tabs-content',
-            panel: 'tabs-panel',
-            label: 'tabs-title'
-        }
-
-        const $ = render(
-            <Tabbordion blockElements={blockElements} className="tabs" name="unique-identifier">
-                <TabPanel>
-                    <TabLabel>My title</TabLabel>
-                    <TabContent>
-                        <h2>Sample</h2>
-                        <p>Content</p>
-                    </TabContent>
-                </TabPanel>
-                <TabPanel>
-                    <TabLabel>Another title</TabLabel>
-                    <TabContent>
-                        <h2>Another Sample</h2>
-                        <p>Some other kind of content</p>
-                    </TabContent>
-                </TabPanel>
-            </Tabbordion>
-        ) //
-
-        console.log($('body').html())
-    }
-
-    {
         const $ = render(<Tabbordion />) //
         Tabbordion.resetSSR()
 

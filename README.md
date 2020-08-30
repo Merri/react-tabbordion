@@ -1,5 +1,6 @@
 # react-tabbordion
 [![Version](http://img.shields.io/npm/v/react-tabbordion.svg)](https://www.npmjs.org/package/react-tabbordion)
+[![NPM-Size](https://flat.badgen.net/bundlephobia/minzip/react-tabbordion)](https://www.npmjs.com/package/react-tabbordion)
 [![Build Status](https://travis-ci.org/Merri/react-tabbordion.svg)](https://travis-ci.org/Merri/react-tabbordion)
 
 With Tabbordion you can make your own components such as Tabs or Accordions! Tabbordion will manage the state while you

@@ -57,7 +57,8 @@ const blockElements = {
 </Tabbordion>
 ```
 
-<details><summary>Output HTML</summary><p>
+<details><summary>Output HTML</summary>
+
 ```html
 <ul class="tabs" role="tablist">
     <li class="tabs-panel tabs-panel--checked tabs-panel--content tabs-panel--enabled tabs-panel--first">
@@ -123,7 +124,8 @@ const blockElements = {
     </li>
 </ul>
 ```
-</p></details>
+
+</details>
 
 You don't need to define `index` props, Tabbordion component will fill those automatically. However it is recommended to
 define them when using controlled state.

@@ -1,7 +1,7 @@
 {
     "name": "react-tabbordion",
-    "description": "React Tabs, Accordion, Panel, Checkbox list, Radio list Component",
-    "version": "2.0.0-rc.0",
+    "description": "Components and hooks to create your own React Tabs and Accordion components",
+    "version": "2.0.0-beta.0",
     "author": "Vesa Piittinen <vesa.piittinen@gmail.com>",
     "bugs": {
         "url": "https://github.com/Merri/react-tabbordion/issues"

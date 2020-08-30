@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 
-## [unreleased]
+## [2.0.0-beta.0]
 
 Rewrite to use modern React class syntax and Context API thus removing use of deprecated React APIs and legacy browser
 support. Compatible with v1, but your code may break if it has relied on undocumented edge cases or internal behavior.

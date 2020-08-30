@@ -1,4 +1,7 @@
+/* the CSS in this file is IE8 (or browsers in 2015) compatible: the only modern thing is the system font */
 .traditional-tabs {
+    font-family: sans-serif;
+    font-family: var(--system-font);
     list-style: none;
     margin: 0;
     padding: 0;
@@ -23,7 +26,8 @@
 }
 
 .traditional-tabs-title {
-    background: #EBEBEB;
+    background: #DBDFE5;
+    border-bottom: thin solid #B7C0CD;
     color: #363636;
     cursor: pointer;
     display: inline-block;
@@ -38,7 +42,7 @@
 
 .traditional-tabs-title--between,
 .traditional-tabs-title--last {
-    border-left: 1px solid #D2D2D2;
+    border-left: thin solid #B7C0CD;
 }
 
 .traditional-tabs-title--first {
@@ -51,6 +55,7 @@
 
 .traditional-tabs-title--checked {
     background: #FAFAFA;
+    border-bottom-color: #FAFAFA;
 }
 
 .traditional-tabs-content {

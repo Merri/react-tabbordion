@@ -1,4 +1,7 @@
+/* the CSS in this file is IE8 (or browsers in 2015) compatible: the only modern thing is the system font */
 .accordion {
+    font-family: sans-serif;
+    font-family: var(--system-font);
     list-style: none;
     margin: 0;
     padding: 0;
@@ -19,11 +22,11 @@
 
 .accordion-panel--between,
 .accordion-panel--last {
-    border-top: 1px solid #D2D2D2;
+    border-top: thin solid #B7C0CD;
 }
 
 .accordion-title {
-    background: #EBEBEB;
+    background: #DBDFE5;
     color: #363636;
     cursor: pointer;
     display: block;
@@ -96,7 +99,7 @@
 }
 
 .accordion-animator {
-    background-color: #EBEBEB;
+    background-color: #DBDFE5;
     -webkit-transition: background-color 125ms ease-in-out, height 375ms ease-in-out;
     transition: background-color 125ms ease-in-out, height 375ms ease-in-out;
 }
@@ -131,7 +134,7 @@
 }
 
 .accordion-content--marginTop {
-    margin-top: -65535px;
+    margin-top: -50000px;
     transform: translateY(-50%);
     -webkit-transition: margin-top 375ms ease-in-out, opacity 375ms ease-in-out, transform 375ms ease-in-out;
     transition: margin-top 375ms ease-in-out, opacity 375ms ease-in-out, transform 375ms ease-in-out;

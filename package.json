@@ -1,69 +1,58 @@
 {
-  "name": "react-tabbordion",
-  "version": "1.0.5",
-  "description": "React Tabs, Accordion, Panel, Checkbox list, Radio list Component",
-  "main": "dist/module/index.js",
-  "scripts": {
-    "build": "npm run build-modules && npm run build-umd",
-    "build-modules": "cross-env BABEL_ENV=build babel src --out-dir dist/module ",
-    "build-umd": "webpack --config webpack.config.js --mode production",
-    "clean-dist": "rimraf dist",
-    "lint": "eslint --ext .js,.jsx .",
-    "precommit": "npm run lint && npm run test",
-    "prepare": "npm run clean-dist && npm run build",
-    "prepublishOnly": "npm test",
-    "test": "mocha --require @babel/register --reporter spec"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/merri/react-tabbordion.git"
-  },
-  "author": "Vesa Piittinen",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/merri/react-tabbordion/issues"
-  },
-  "homepage": "https://merri.github.io/react-tabbordion/",
-  "keywords": [
-    "react",
-    "react-component",
-    "accordion",
-    "panel",
-    "tabs",
-    "a11y",
-    "bem"
-  ],
-  "peerDependencies": {
-    "prop-types": ">=15",
-    "react": ">=16.3"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.6.4",
-    "@babel/core": "^7.6.4",
-    "@babel/plugin-proposal-object-rest-spread": "^7.6.2",
-    "@babel/preset-env": "^7.6.3",
-    "@babel/preset-react": "^7.6.3",
-    "@babel/register": "^7.6.2",
-    "babel-eslint": "^10.0.3",
-    "babel-loader": "^8.0.6",
-    "chai": "^4.2.0",
-    "cross-env": "^6.0.3",
-    "enzyme": "^3.10.0",
-    "enzyme-adapter-react-16": "^1.15.1",
-    "eslint": "^6.5.1",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-react": "^7.16.0",
-    "jsdom": "^15.1.1",
-    "mocha": "^6.2.1",
-    "prop-types": "^15.7.2",
-    "react": "^16.10.2",
-    "react-dom": "^16.10.2",
-    "react-test-renderer": "^16.10.2",
-    "rimraf": "^3.0.0",
-    "sinon": "^7.5.0",
-    "uglifyjs-webpack-plugin": "^2.2.0",
-    "webpack": "^4.41.0",
-    "webpack-cli": "^3.3.9"
-  },
-  "dependencies": {}
+    "name": "react-tabbordion",
+    "description": "React Tabs, Accordion, Panel, Checkbox list, Radio list Component",
+    "version": "2.0.0-rc.0",
+    "author": "Vesa Piittinen <vesa.piittinen@gmail.com>",
+    "bugs": {
+        "url": "https://github.com/Merri/react-tabbordion/issues"
+    },
+    "homepage": "https://github.com/Merri/react-tabbordion#readme",
+    "keywords": [
+        "react",
+        "react-component",
+        "accordion",
+        "panel",
+        "tabs",
+        "a11y",
+        "bem"
+    ],
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/merri/react-tabbordion.git"
+    },
+    "main": "dist/index.js",
+    "umd:main": "dist/index.umd.js",
+    "module": "dist/index.esm.js",
+    "esmodule": "dist/index.modern.js",
+    "source": "src/index.js",
+    "scripts": {
+        "start": "microbundle watch",
+        "prepare": "microbundle --name ReactTabbordion --external react,prop-types --globals react=React,prop-types=PropTypes --jsx React.createElement",
+        "coverage": "nyc yarn test",
+        "test": "riteway -r sucrase/register src/test/**/*.test.js | tap-nirvana",
+        "demo": "deno run --allow-net --allow-read demo.js"
+    },
+    "files": [
+        "dist/*",
+        "src/*"
+    ],
+    "devDependencies": {
+        "flow-bin": "0.131.0",
+        "microbundle": "0.12.3",
+        "nyc": "^15.1.0",
+        "prettier": "^2.0.5",
+        "prop-types": "^15.7.2",
+        "react": "16.13.1",
+        "riteway": "^6.1.2",
+        "sucrase": "^3.15.0",
+        "tap-nirvana": "^1.1.0"
+    },
+    "peerDependencies": {
+        "prop-types": "^15.7.0",
+        "react": "^16.8.0"
+    },
+    "dependencies": {
+        "fast-deep-equal": "^3.1.3"
+    }
 }

@@ -1,0 +1,89 @@
+:root {
+    --system-font:
+        -apple-system,
+        BlinkMacSystemFont,
+        Segoe UI,
+        Helvetica,
+        Arial,
+        sans-serif,
+        Apple Color Emoji,
+        Segoe UI Emoji;
+    --code-font: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+}
+
+html {
+    background: #253447;
+    color: #E9E9E9;
+    font-family: cheap-palatino-ripoff;
+}
+
+code, kbd, pre, samp { font-family: var(--code-font); }
+
+body {
+    margin: 2em auto;
+    padding: 2em 3em;
+    max-width: 40em;
+}
+
+a:link,
+a:visited {
+    color: #1698CE;
+    text-decoration: none;
+}
+
+a:hover,
+a:focus {
+    outline: none;
+    text-decoration: underline;
+}
+
+footer {
+    background: #4C5D6A;
+    border-radius: 3px;
+    color: #FAFAFA;
+    font-size: 0.875em;
+    font-style: italic;
+    margin-top: 2em;
+    padding: 1em;
+    text-align: center;
+}
+
+.about a:link,
+.about a:visited,
+footer a:link,
+footer a:visited {
+    color: #5AC1ED;
+}
+
+footer .fa-stack-1x {
+    color: #363636;
+}
+
+footer .fa-stack-2x {
+    color: #FAFAFA;
+}
+
+footer .fa-download {
+    color: #1C720E;
+}
+
+.demo {
+    clear: both;
+    padding: 1em;
+}
+
+.about {
+    list-style: square;
+    margin: 1em 2em 2em;
+}
+
+.about__title {
+    display: list-item;
+    font-size: 1.25em;
+    font-weight: bold;
+}
+
+.about__content {
+    margin: 0 0 2em;
+    padding: 0;
+}

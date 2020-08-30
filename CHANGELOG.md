@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Release new version of v1 to fix missing beta tag in first v2 beta release
 
 
-## [1.0.5] - 2019-10-11
+## [2.0.0-beta.0] - 2020-08-30
 
 Rewrite to use modern React class syntax and Context API thus removing use of deprecated React APIs and legacy browser
 support. Compatible with v1, but your code may break if it has relied on undocumented edge cases or internal behavior.

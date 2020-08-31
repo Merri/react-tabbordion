@@ -1,6 +1,11 @@
 # react-tabbordion
 [![Version](http://img.shields.io/npm/v/react-tabbordion.svg)](https://www.npmjs.org/package/react-tabbordion)
+[![NPM-Size](https://flat.badgen.net/bundlephobia/minzip/react-tabbordion)](https://www.npmjs.com/package/react-tabbordion)
 [![Build Status](https://travis-ci.org/Merri/react-tabbordion.svg)](https://travis-ci.org/Merri/react-tabbordion)
+
+> Version 2.0 is now on beta, check it out!
+> `npm install react-tabbordion@beta`
+> For more information see [v2 branch @ GitHub](https://github.com/Merri/react-tabbordion/tree/v2)
 
 **Tabbordion** is a component for managing active state between multiple items. You can make anything out of it:
 

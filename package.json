@@ -1,7 +1,7 @@
 {
     "name": "react-tabbordion",
     "description": "Components and hooks to create your own React Tabs and Accordion components",
-    "version": "2.0.0-beta.0",
+    "version": "2.0.0-beta.1",
     "author": "Vesa Piittinen <vesa.piittinen@gmail.com>",
     "bugs": {
         "url": "https://github.com/Merri/react-tabbordion/issues"

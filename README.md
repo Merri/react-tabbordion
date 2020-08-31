@@ -1,7 +1,7 @@
 # react-tabbordion
-[![Version](http://img.shields.io/npm/v/react-tabbordion.svg)](https://www.npmjs.org/package/react-tabbordion)
-[![NPM-Size](https://flat.badgen.net/bundlephobia/minzip/react-tabbordion)](https://www.npmjs.com/package/react-tabbordion)
-[![Build Status](https://travis-ci.org/Merri/react-tabbordion.svg)](https://travis-ci.org/Merri/react-tabbordion)
+[![Version](https://img.shields.io/npm/v/react-tabbordion/latest)](https://www.npmjs.org/package/react-tabbordion)
+[![NPM-Size](https://img.shields.io/bundlephobia/minzip/react-tabbordion@latest)](https://www.npmjs.com/package/react-tabbordion)
+[![Build Status](https://img.shields.io/travis/merri/react-tabbordion/v1)](https://travis-ci.org/Merri/react-tabbordion)
 
 > Version 2.0 is now on beta, check it out!
 >

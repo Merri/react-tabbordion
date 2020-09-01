@@ -110,10 +110,22 @@ describe('TabLabel', async (assert) => {
     {
         const onClick = createClick()
         const onToggle = createClick()
+        shallowSimulateClick(TabLabel, { children: 'Test' }, TabLabelContext, { onToggle })
+        assert({
+            given: 'label is clicked when context with click handler is provided',
+            should: 'trigger onToggle handler',
+            actual: onToggle.clickCount,
+            expected: 1,
+        })
+    }
+
+    {
+        const onClick = createClick()
+        const onToggle = createClick()
         shallowSimulateClick(TabLabel, { children: 'Test', onClick }, TabLabelContext, { onToggle })
         assert({
-            given: 'label is clicked when context is provided',
-            should: 'trigger onToggle handler',
+            given: 'label is clicked when context and click handlers are provided',
+            should: 'trigger both onClick and onToggle handlers',
             actual: { onClick: onClick.clickCount, onToggle: onToggle.clickCount },
             expected: { onClick: 1, onToggle: 1 },
         })

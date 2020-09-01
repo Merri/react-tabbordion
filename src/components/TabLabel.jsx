@@ -28,7 +28,7 @@ export class TabLabel extends React.PureComponent {
     }
 
     render() {
-        const { bemSeparator, blockElements, inputId, labelId, modifiers } = this.context || {}
+        const { bemSeparator, blockElements, inputId, labelId, modifiers } = this.context
         const { className, component: Component, id, forwardedRef, htmlFor, ...props } = this.props
         const labelBem = bemClassName(blockElements, 'label', modifiers, bemSeparator)
         const labelClassName = [labelBem, className].filter(identity).join(' ') || undefined

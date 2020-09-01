@@ -74,8 +74,7 @@ export class TabContent extends React.PureComponent {
     }
 
     render() {
-        const ctx = this.context || {}
-        const { animateContent, bemSeparator, blockElements, checked, contentId, labelId, modifiers } = ctx
+        const { animateContent, bemSeparator, blockElements, checked, contentId, labelId, modifiers } = this.context
         const { children, className, component: Component, forwardedRef, style, resizeDuration, ...props } = this.props
         const { resizeTransition, height } = this.state
         const contentBem = bemClassName(blockElements, 'content', modifiers, bemSeparator)

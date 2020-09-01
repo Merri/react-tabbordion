@@ -23,7 +23,7 @@ export class TabLabel extends React.PureComponent {
 
     onClick = (event) => {
         if (this.props.onClick) this.props.onClick(event)
-        if (event.defaultPrevented || !this.context || typeof this.context.onToggle !== 'function') return
+        if (event.defaultPrevented || typeof this.context.onToggle !== 'function') return
         this.context.onToggle(event)
     }
 

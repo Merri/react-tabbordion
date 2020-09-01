@@ -17,6 +17,7 @@ export class TabLabel extends React.PureComponent {
         className: PropTypes.string,
         component: PropTypes.elementType,
         forwardedRef: PropTypes.oneOfType([PropTypes.func, PropTypes.shape({ current: PropTypes.any.isRequired })]),
+        htmlFor: PropTypes.string,
         onClick: PropTypes.func,
     }
 
@@ -28,7 +29,7 @@ export class TabLabel extends React.PureComponent {
 
     render() {
         const { bemSeparator, blockElements, inputId, labelId, modifiers } = this.context || {}
-        const { className, component: Component, id, forwardedRef, ...props } = this.props
+        const { className, component: Component, id, forwardedRef, htmlFor, ...props } = this.props
         const labelBem = bemClassName(blockElements, 'label', modifiers, bemSeparator)
         const labelClassName = [labelBem, className].filter(identity).join(' ') || undefined
         return (
@@ -38,7 +39,7 @@ export class TabLabel extends React.PureComponent {
                 className={labelClassName}
                 id={labelId || id}
                 onClick={this.onClick}
-                htmlFor={inputId}
+                htmlFor={inputId || htmlFor}
             />
         )
     }

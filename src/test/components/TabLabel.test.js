@@ -1,9 +1,8 @@
 import { describe } from 'riteway'
-import PropTypes from 'prop-types'
 import render from 'riteway/render-component'
 import React from 'react'
 
-import { createClick, shallowSimulateClick } from '../shallow'
+import { createClick, shallowSimulateClick } from '../utils.test'
 import { defaultBemModifiers, defaultBemSeparator, defaultBlockElements } from '../../lib/bem'
 import { TabLabelContext } from '../../components/Tabbordion'
 import { TabLabel } from '../..'

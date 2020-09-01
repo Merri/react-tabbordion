@@ -30,7 +30,7 @@ export class TabPanel extends React.PureComponent {
     }
 
     static getPanelProps(component) {
-        const context = component.context || {}
+        const context = component.context
         const panels = context.panels || []
         const panelIndex = (context.claims || []).indexOf(component)
         return {
@@ -51,11 +51,11 @@ export class TabPanel extends React.PureComponent {
 
     constructor(props, context) {
         super(props, context)
-        if (context) context.claim(this)
+        if (typeof context.claim === 'function') context.claim(this)
     }
 
     componentWillUnmount() {
-        if (context) context.unclaim(this)
+        if (typeof context.unclaim === 'function') context.unclaim(this)
     }
 
     onChange = (event) => {
@@ -107,7 +107,7 @@ export class TabPanel extends React.PureComponent {
 
         const panelBem = bemClassName(blockElements, 'panel', modifiers, bemSeparator)
         const panelClassName = [panelBem, className].filter(identity).join(' ') || undefined
-        const hidden = !visible
+        const hidden = visible != null ? !visible : undefined
         const panelContext = {
             animateContent,
             bemModifiers,
@@ -139,20 +139,22 @@ export class TabPanel extends React.PureComponent {
                         id={this.props.id}
                         style={style}
                     >
-                        <input
-                            {...inputProps}
-                            aria-controls={contentId}
-                            aria-selected={checked}
-                            checked={checked}
-                            disabled={disabled || hidden}
-                            id={inputId}
-                            name={name}
-                            onChange={this.onChange}
-                            ref={this.input}
-                            role="tab"
-                            type={type}
-                            value={value}
-                        />
+                        {name != null && (
+                            <input
+                                {...inputProps}
+                                aria-controls={contentId}
+                                aria-selected={checked}
+                                checked={checked}
+                                disabled={disabled || hidden}
+                                id={inputId}
+                                name={name}
+                                onChange={this.onChange}
+                                ref={this.input}
+                                role="tab"
+                                type={type}
+                                value={value}
+                            />
+                        )}
                         {children}
                     </Component>
                 </TabContentContext.Provider>

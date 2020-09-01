@@ -121,7 +121,7 @@ export class TabContent extends React.PureComponent {
                     aria-hidden={!checked}
                     aria-labelledby={labelId}
                     className={[contentBem, className].filter(identity).join(' ') || undefined}
-                    id={contentId}
+                    id={contentId || this.props.id}
                     role="tabpanel"
                     style={this.contentStyle}
                     tabIndex={~~checked - 1}
@@ -138,7 +138,7 @@ export class TabContent extends React.PureComponent {
                 aria-hidden={!checked}
                 aria-labelledby={labelId}
                 className={[animatorBem, className].filter(identity).join(' ') || undefined}
-                id={contentId}
+                id={contentId || this.props.id}
                 role="tabpanel"
                 style={this.animatorStyle}
                 tabIndex={~~checked - 1}

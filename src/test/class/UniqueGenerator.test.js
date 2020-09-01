@@ -85,4 +85,16 @@ describe('UniqueGenerator', async (assert) => {
         actual: firstNumber === firstNumberAfterReset,
         expected: true,
     })
+
+    uniq.resolve()
+    uniq.resolve()
+
+    const firstNumberAfterExtraResolves = uniq.get()
+
+    assert({
+        given: 'first get() after resolve() is called more time than get()',
+        should: 'receive number that is equal to original first number',
+        actual: firstNumber === firstNumberAfterReset,
+        expected: true,
+    })
 })

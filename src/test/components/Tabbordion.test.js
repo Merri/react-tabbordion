@@ -2,11 +2,17 @@ import { describe } from 'riteway'
 import render from 'riteway/render-component'
 import React from 'react'
 
+import { TabPanelContext } from '../../components/Tabbordion'
 import { defaultBemModifiers, defaultBemSeparator, defaultBlockElements } from '../../lib/bem'
-import { identity } from '../../lib/identity'
-import { Tabbordion, TabPanel, TabLabel, TabContent, updatePanelsByToggle } from '../..'
+import { Tabbordion, updatePanelsByToggle } from '../..'
+import { createTestPanel } from '../utils.test'
 
 const NOOP = () => {}
+
+class MockPanel extends React.Component {
+    static contextType = TabPanelContext
+    render = () => null
+}
 
 describe('Tabbordion', async (assert) => {
     {
@@ -78,43 +84,6 @@ describe('Tabbordion', async (assert) => {
     }
 })
 
-function createTestPanel({
-    animateContent,
-    checked,
-    id = 'tabbordion',
-    disabled,
-    hasContent,
-    index,
-    isBetween,
-    isFirst,
-    isLast,
-    value,
-    visible,
-}) {
-    const inputId = `${id}-${index}`
-    return {
-        checked: !!checked,
-        contentId: `${inputId}-content`,
-        disabled: !!disabled,
-        hasContent: !!hasContent,
-        index,
-        inputId,
-        labelId: `${inputId}-label`,
-        modifiers: [
-            checked ? 'checked' : 'unchecked',
-            hasContent ? 'content' : 'no-content',
-            disabled ? 'disabled' : 'enabled',
-            isFirst && 'first',
-            isLast && 'last',
-            isBetween && 'between',
-            animateContent && 'animated',
-            animateContent,
-        ].filter(identity),
-        value: value != null ? value : String(index),
-        visible: visible != null ? visible : true,
-    }
-}
-
 describe('Tabbordion.getDerivedStateFromProps', async (assert) => {
     const defaultNextState = {
         panels: [],
@@ -144,7 +113,7 @@ describe('Tabbordion.getDerivedStateFromProps', async (assert) => {
         const panel = createTestPanel({ checked: true, id: 'test-id', index: 0, isFirst: true, isLast: true })
         const props = {
             ...Tabbordion.defaultProps,
-            children: <TabPanel />,
+            children: <MockPanel />,
             panels: [panel],
         }
         const state = {
@@ -186,7 +155,7 @@ describe('Tabbordion.getDerivedStateFromProps', async (assert) => {
     {
         const props = {
             ...Tabbordion.defaultProps,
-            children: [<TabPanel key={0} />, <TabPanel key={1} />, <TabPanel key={2} />],
+            children: [<MockPanel key={0} />, <MockPanel key={1} />, <MockPanel key={2} />],
         }
         const state = { fallback: 'tabbordion' }
 
@@ -208,7 +177,7 @@ describe('Tabbordion.getDerivedStateFromProps', async (assert) => {
     {
         const props = {
             ...Tabbordion.defaultProps,
-            children: [<TabPanel key={0} />, <TabPanel key={1} />, <TabPanel key={2} />],
+            children: [<MockPanel key={0} />, <MockPanel key={1} />, <MockPanel key={2} />],
             initialPanels: [{ index: 1, checked: true }],
             panels: [{ index: 2, checked: true }],
         }
@@ -268,11 +237,11 @@ describe('Tabbordion.getDerivedStateFromProps', async (assert) => {
 
     {
         const children = [
-            <TabPanel key={0} index={0} checked={false} />,
-            <TabPanel key={1} index="0" checked />,
-            <TabPanel key={2} index={0} checked={false} />,
-            <TabPanel key={3} index="" />,
-            <TabPanel key={4} checked />,
+            <MockPanel key={0} index={0} checked={false} />,
+            <MockPanel key={1} index="0" checked />,
+            <MockPanel key={2} index={0} checked={false} />,
+            <MockPanel key={3} index="" />,
+            <MockPanel key={4} checked />,
         ]
 
         const props = { ...Tabbordion.defaultProps, children }
@@ -296,10 +265,10 @@ describe('Tabbordion.getDerivedStateFromProps', async (assert) => {
 
     {
         const children = [
-            <TabPanel key={0} index={2} checked={false} />,
-            <TabPanel key={1} index="1" checked />,
-            <TabPanel key={2} index={1e9} checked={false} />,
-            <TabPanel key={3} index={-1} />,
+            <MockPanel key={0} index={2} checked={false} />,
+            <MockPanel key={1} index="1" checked />,
+            <MockPanel key={2} index={1e9} checked={false} />,
+            <MockPanel key={3} index={-1} />,
         ]
 
         const props = { ...Tabbordion.defaultProps, children }
@@ -322,10 +291,10 @@ describe('Tabbordion.getDerivedStateFromProps', async (assert) => {
 
     {
         const children = [
-            <TabPanel key={0} checked={false} />,
-            <TabPanel key={1} checked />,
-            <TabPanel key={2} checked={false} />,
-            <TabPanel key={3} checked />,
+            <MockPanel key={0} checked={false} />,
+            <MockPanel key={1} checked />,
+            <MockPanel key={2} checked={false} />,
+            <MockPanel key={3} checked />,
         ]
 
         const props = { ...Tabbordion.defaultProps, children, mode: 'multiple' }
@@ -349,10 +318,10 @@ describe('Tabbordion.getDerivedStateFromProps', async (assert) => {
 
     {
         const children = [
-            <TabPanel key={0} checked={false} />,
-            <TabPanel key={1} checked disabled />,
-            <TabPanel key={2} checked={false} />,
-            <TabPanel key={3} checked />,
+            <MockPanel key={0} checked={false} />,
+            <MockPanel key={1} checked disabled />,
+            <MockPanel key={2} checked={false} />,
+            <MockPanel key={3} checked />,
         ]
 
         const props = { ...Tabbordion.defaultProps, children, mode: 'multiple' }
@@ -376,10 +345,10 @@ describe('Tabbordion.getDerivedStateFromProps', async (assert) => {
 
     {
         const children = [
-            <TabPanel key={0} checked={false} />,
-            <TabPanel key={1} checked disabled visible={false} />,
-            <TabPanel key={2} checked={false} />,
-            <TabPanel key={3} checked />,
+            <MockPanel key={0} checked={false} />,
+            <MockPanel key={1} checked disabled visible={false} />,
+            <MockPanel key={2} checked={false} />,
+            <MockPanel key={3} checked />,
         ]
 
         const props = { ...Tabbordion.defaultProps, children, mode: 'multiple' }

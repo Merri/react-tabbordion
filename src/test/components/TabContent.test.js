@@ -8,12 +8,12 @@ import { TabContent } from '../..'
 
 describe('TabContent', async (assert) => {
     {
-        const $ = render(<TabContent>Content</TabContent>) //
+        const $ = render(<TabContent />) //
         assert({
             given: 'nothing',
             should: 'render a div',
             actual: $('body').html(),
-            expected: '<div aria-hidden="true" role="tabpanel" tabindex="-1">Content</div>',
+            expected: '<div aria-hidden="true" role="tabpanel" tabindex="-1"></div>',
         })
     }
 
@@ -32,17 +32,13 @@ describe('TabContent', async (assert) => {
     }
 
     {
-        const $ = render(
-            <TabContent className="test-class" id="test-id" style={{ background: 'black' }}>
-                Content
-            </TabContent>
-        ) //
+        const $ = render(<TabContent className="test-class" id="test-id" style={{ background: 'black' }} />) //
         assert({
             given: 'common props',
             should: 'render them as attributes',
             actual: $('body').html(),
             expected:
-                '<div id="test-id" aria-hidden="true" class="test-class" role="tabpanel" style="background:black" tabindex="-1">Content</div>',
+                '<div id="test-id" aria-hidden="true" class="test-class" role="tabpanel" style="background:black" tabindex="-1"></div>',
         })
     }
 
@@ -68,7 +64,7 @@ describe('TabContent', async (assert) => {
     {
         const $ = render(
             <TabContentContext.Provider value={contentContext}>
-                <TabContent>Content</TabContent>
+                <TabContent />
             </TabContentContext.Provider>
         ) //
         assert({
@@ -76,14 +72,14 @@ describe('TabContent', async (assert) => {
             should: 'render attributes with values derived from context',
             actual: $('body').html(),
             expected:
-                '<div aria-hidden="false" aria-labelledby="label-id" class="panel__content panel__content--test" id="content-id" role="tabpanel" tabindex="0">Content</div>',
+                '<div aria-hidden="false" aria-labelledby="label-id" class="panel__content panel__content--test" id="content-id" role="tabpanel" tabindex="0"></div>',
         })
     }
 
     {
         const $ = render(
             <TabContentContext.Provider value={heightContext}>
-                <TabContent>Content</TabContent>
+                <TabContent />
             </TabContentContext.Provider>
         ) //
         assert({
@@ -91,14 +87,14 @@ describe('TabContent', async (assert) => {
             should: 'render with animator element',
             actual: $('body').html(),
             expected:
-                '<div aria-hidden="false" aria-labelledby="label-id" class="panel__animator panel__animator--test" id="content-id" role="tabpanel" style="height:auto;overflow:hidden;-webkit-transition:none;transition:none" tabindex="0"><div class="panel__content panel__content--test">Content</div></div>'
+                '<div aria-hidden="false" aria-labelledby="label-id" class="panel__animator panel__animator--test" id="content-id" role="tabpanel" style="height:auto;overflow:hidden;-webkit-transition:none;transition:none" tabindex="0"><div class="panel__content panel__content--test"></div></div>',
         })
     }
 
     {
         const $ = render(
             <TabContentContext.Provider value={marginTopContext}>
-                <TabContent>Content</TabContent>
+                <TabContent />
             </TabContentContext.Provider>
         ) //
         assert({
@@ -106,14 +102,14 @@ describe('TabContent', async (assert) => {
             should: 'render with animator element',
             actual: $('body').html(),
             expected:
-                '<div aria-hidden="false" aria-labelledby="label-id" class="panel__animator panel__animator--test" id="content-id" role="tabpanel" style="overflow:hidden;-webkit-transition:none;transition:none" tabindex="0"><div class="panel__content panel__content--test" style="margin-top:0px;-webkit-transition:none;transition:none">Content</div></div>'
+                '<div aria-hidden="false" aria-labelledby="label-id" class="panel__animator panel__animator--test" id="content-id" role="tabpanel" style="overflow:hidden;-webkit-transition:none;transition:none" tabindex="0"><div class="panel__content panel__content--test" style="margin-top:0px;-webkit-transition:none;transition:none"></div></div>',
         })
     }
 
     {
         const $ = render(
             <TabContentContext.Provider value={{ ...heightContext, checked: false }}>
-                <TabContent>Content</TabContent>
+                <TabContent />
             </TabContentContext.Provider>
         ) //
         assert({
@@ -121,14 +117,14 @@ describe('TabContent', async (assert) => {
             should: 'render with animator element',
             actual: $('body').html(),
             expected:
-                '<div aria-hidden="true" aria-labelledby="label-id" class="panel__animator panel__animator--test" id="content-id" role="tabpanel" style="height:0px;overflow:hidden;-webkit-transition:none;transition:none" tabindex="-1"><div class="panel__content panel__content--test">Content</div></div>'
+                '<div aria-hidden="true" aria-labelledby="label-id" class="panel__animator panel__animator--test" id="content-id" role="tabpanel" style="height:0px;overflow:hidden;-webkit-transition:none;transition:none" tabindex="-1"><div class="panel__content panel__content--test"></div></div>',
         })
     }
 
     {
         const $ = render(
             <TabContentContext.Provider value={{ ...marginTopContext, checked: false }}>
-                <TabContent>Content</TabContent>
+                <TabContent />
             </TabContentContext.Provider>
         ) //
         assert({
@@ -136,7 +132,7 @@ describe('TabContent', async (assert) => {
             should: 'render with animator element',
             actual: $('body').html(),
             expected:
-                '<div aria-hidden="true" aria-labelledby="label-id" class="panel__animator panel__animator--test" id="content-id" role="tabpanel" style="overflow:hidden;-webkit-transition:none;transition:none" tabindex="-1"><div class="panel__content panel__content--test" style="margin-top:-50000px;-webkit-transition:none;transition:none">Content</div></div>'
+                '<div aria-hidden="true" aria-labelledby="label-id" class="panel__animator panel__animator--test" id="content-id" role="tabpanel" style="overflow:hidden;-webkit-transition:none;transition:none" tabindex="-1"><div class="panel__content panel__content--test" style="margin-top:-50000px;-webkit-transition:none;transition:none"></div></div>',
         })
     }
 })

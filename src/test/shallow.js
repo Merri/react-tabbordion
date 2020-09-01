@@ -22,10 +22,11 @@ class Event {
     }
 }
 
-export function createClick() {
+export function createClick(handler) {
     function click(event) {
         click.clickCount++
         click.lastClickEvent = event
+        if (typeof handler === 'function') handler(event)
     }
     click.clickCount = 0
     return click

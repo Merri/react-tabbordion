@@ -130,4 +130,16 @@ describe('TabLabel', async (assert) => {
             expected: { onClick: 1, onToggle: 1 },
         })
     }
+
+    {
+        const onClick = createClick((event) => void event.preventDefault())
+        const onToggle = createClick()
+        shallowSimulateClick(TabLabel, { children: 'Test', onClick }, TabLabelContext, { onToggle })
+        assert({
+            given: 'onClick calls preventDefault',
+            should: 'not trigger onToggle',
+            actual: { onClick: onClick.clickCount, onToggle: onToggle.clickCount },
+            expected: { onClick: 1, onToggle: 0 },
+        })
+    }
 })

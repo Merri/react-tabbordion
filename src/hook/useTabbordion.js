@@ -126,7 +126,7 @@ export function useTabbordion({ focusClick = '', id, initial = null, multiple = 
     )
 
     const [tabButton, tabItem, tabPanel, tabState] = useMemo(() => {
-        return ['button', 'item', 'panel', 'state'].map((type) => (nextKey, disabled = false) => {
+        return ['button', 'item', 'panel', 'state'].map((type) => (nextKey, disabled) => {
             if (nextKey == null) {
                 throw new Error('useTabbordion.tab' + type[0].toUpperCase() + type.slice(1) + ': must give a key!')
             }
@@ -142,8 +142,7 @@ export function useTabbordion({ focusClick = '', id, initial = null, multiple = 
             const labelId = `${tabId}-label`
             const panelId = `${tabId}-panel`
             // override because tabPanel is for UI use case which only works with JavaScript
-            const ariaHidden = ((type === 'panel' || jsEnabled) && !checked) || null
-            const ariaDisabled = disabled || null
+            const ariaHidden = ((type === 'panel' || jsEnabled) && !checked) || undefined
             const props = {
                 button: {
                     'aria-controls': panelId,
@@ -155,7 +154,7 @@ export function useTabbordion({ focusClick = '', id, initial = null, multiple = 
                     onMouseDown: onToggleFocus,
                     onMouseUp: onToggleFocus,
                     role: 'tab',
-                    tabIndex: accordion && keys.length === 0 ? null : checked ? 0 : -1,
+                    tabIndex: accordion && keys.length === 0 ? undefined : checked ? 0 : -1,
                     type: 'button',
                     value,
                 },
@@ -173,16 +172,16 @@ export function useTabbordion({ focusClick = '', id, initial = null, multiple = 
                     role: 'tab',
                     value,
                 },
-                item: { 'aria-disabled': ariaDisabled, 'aria-expanded': checked },
+                item: { 'aria-disabled': disabled, 'aria-expanded': checked },
                 label: {
-                    'aria-disabled': ariaDisabled,
+                    'aria-disabled': disabled,
                     id: labelId,
                     htmlFor: tabId,
                     onMouseDown: onToggleFocus,
                     onMouseUp: onToggleFocus,
                 },
                 panel: {
-                    'aria-disabled': ariaDisabled,
+                    'aria-disabled': disabled,
                     'aria-hidden': ariaHidden,
                     'aria-labelledby': type === 'panel' ? tabId : labelId,
                     id: panelId,

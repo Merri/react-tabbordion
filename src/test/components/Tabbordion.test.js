@@ -1,11 +1,10 @@
 import { describe } from 'riteway'
-import render from 'riteway/render-component'
 import React from 'react'
 
 import { TabPanelContext } from '../../components/Tabbordion'
 import { defaultBemModifiers, defaultBemSeparator, defaultBlockElements } from '../../lib/bem'
 import { Tabbordion, updatePanelsByToggle } from '../..'
-import { createTestPanel } from '../utils.test'
+import { createTestPanel, renderToHtml } from '../utils.test'
 
 const NOOP = () => {}
 
@@ -16,19 +15,19 @@ class MockPanel extends React.Component {
 
 describe('Tabbordion', async (assert) => {
     {
-        const $ = render(<Tabbordion />) //
+        const html = renderToHtml(<Tabbordion />) //
         Tabbordion.resetSSR()
 
         assert({
             given: 'nothing',
             should: 'render a ul with tablist role',
-            actual: $('body').html(),
-            expected: '<ul role="tablist"></ul>',
+            actual: html,
+            expected: '\n<ul role="tablist"></ul>\n',
         })
     }
 
     {
-        const $ = render(
+        const html = renderToHtml(
             <Tabbordion component="div" role="presentation">
                 Hello
             </Tabbordion>
@@ -38,13 +37,13 @@ describe('Tabbordion', async (assert) => {
         assert({
             given: 'component="div", role="presentation", and children',
             should: 'render a div with tablist role and children',
-            actual: $('body').html(),
-            expected: '<div role="tablist">Hello</div>',
+            actual: html,
+            expected: '\n<div role="tablist">Hello</div>\n',
         })
     }
 
     {
-        const $ = render(
+        const html = renderToHtml(
             <Tabbordion
                 animateContent="height"
                 bemModifiers={{}}
@@ -63,13 +62,13 @@ describe('Tabbordion', async (assert) => {
         assert({
             given: 'supported custom props',
             should: 'not render them as HTML attributes',
-            actual: $('body').html(),
-            expected: '<ul role="tablist"></ul>',
+            actual: html,
+            expected: '\n<ul role="tablist"></ul>\n',
         })
     }
 
     {
-        const $ = render(
+        const html = renderToHtml(
             <Tabbordion aria-hidden="true" className="tabbordion" id="id" style={{ backgroundColor: 'black' }} />
         ) //
         Tabbordion.resetSSR()
@@ -77,9 +76,9 @@ describe('Tabbordion', async (assert) => {
         assert({
             given: 'className, id, and other standard HTML attributes',
             should: 'render them as HTML attributes',
-            actual: $('body').html(),
+            actual: html,
             expected:
-                '<ul aria-hidden="true" class="tabbordion" id="id" style="background-color:black" role="tablist"></ul>',
+                '\n<ul aria-hidden="true" class="tabbordion" id="id" style="background-color: black" role="tablist"></ul>\n',
         })
     }
 })

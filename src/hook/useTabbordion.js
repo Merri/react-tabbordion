@@ -18,7 +18,7 @@ function updateKeysFromIndex(index, keys, panelKey, setKey, accordion, multiple)
     }
 }
 
-export function useTabbordion({ focusClick = '', id, initial = null, multiple = false, toggle = false }) {
+export function useTabbordion({ focusClick = '', id, initial = null, multiple = false, toggle = false } = {}) {
     if (!id) throw new Error('useTabbordion: must give ID!')
     const accordion = multiple || toggle
     const activeProps = useRef(null)

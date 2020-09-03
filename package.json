@@ -30,7 +30,7 @@
         "start": "microbundle watch",
         "prepare": "microbundle --name ReactTabbordion --external react,prop-types --globals react=React,prop-types=PropTypes --jsx React.createElement",
         "coverage": "nyc yarn test",
-        "test": "cross-env NODE_ENV=production riteway -r sucrase/register src/test/**/*.test.js | tap-nirvana",
+        "test": "cross-env NODE_ENV=production riteway -r sucrase/register src/test/**/*.test.js | tap-difflet",
         "demo": "deno run --allow-net --allow-read demo.js"
     },
     "files": [
@@ -50,7 +50,7 @@
         "riteway": "^6.1.2",
         "shallow-with-context": "^0.2.4",
         "sucrase": "^3.15.0",
-        "tap-nirvana": "^1.1.0",
+        "tap-difflet": "^0.7.2",
         "tape": "^5.0.1"
     },
     "peerDependencies": {

@@ -136,13 +136,12 @@ export class TabPanel extends React.PureComponent {
                         {...props}
                         className={panelClassName}
                         hidden={hidden}
-                        id={this.props.id}
                         style={style}
                     >
                         {name != null && (
                             <input
                                 {...inputProps}
-                                aria-controls={contentId}
+                                aria-controls={hasContent ? contentId : undefined}
                                 aria-selected={checked}
                                 checked={checked}
                                 disabled={disabled || hidden}

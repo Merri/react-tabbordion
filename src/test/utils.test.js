@@ -26,6 +26,12 @@ class Event {
     }
 }
 
+/**
+ * Creates a click handler to allow tracking number of calls to function.
+ *
+ * @param      {Function}  handler  The handler
+ * @return     {Function}  Function which contains clickCount and lastClickEvent
+ */
 export function createClick(handler) {
     function click(event) {
         click.clickCount++
@@ -36,6 +42,9 @@ export function createClick(handler) {
     return click
 }
 
+/**
+ * Allow unit testing component click functionality via props and optionally via context.
+ */
 export function shallowSimulateClick(component, props, context, contextValue) {
     // https://github.com/enzymejs/enzyme/issues/2189
     const Component = context ? withContext(component, contextValue) : component
@@ -81,6 +90,13 @@ export function createTestPanel({
     }
 }
 
+/**
+ * Insert claiming methods and array to React context object. Claiming is a workaround to rely on React lifecycle order
+ * over reliance on valid index/key references.
+ *
+ * @param      {object}  context  Context
+ * @return     {object}  Context with claims
+ */
 export function withClaims(context) {
     const nextContext = {
         ...context,
@@ -97,7 +113,7 @@ export function withClaims(context) {
 }
 
 const htmlOptions = {
-    format: 'html',
+    parser: 'html',
     printWidth: 120,
     tabWidth: 4,
     useTabs: false,
@@ -109,6 +125,12 @@ const htmlOptions = {
     fluid: false,
 }
 
+/**
+ * Renders pretty formatted static HTML of a given React element.
+ *
+ * @param      {object}  element  React element
+ * @return     {string}  HTML
+ */
 export function renderToHtml(element) {
-    return '\n' + prettier.format(renderToStaticMarkup(element), htmlOptions).slice(1)
+    return '\n' + prettier.format(renderToStaticMarkup(element), htmlOptions)
 }

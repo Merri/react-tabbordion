@@ -18,24 +18,14 @@ function updateKeysFromIndex(index, keys, panelKey, setKey, accordion, multiple)
     }
 }
 
-export function useTabbordion({ focusClick = '', id, initial = null, multiple = false, onToggle, toggle = false }) {
+export function useTabbordion({ focusClick = '', id, initial = null, multiple = false, toggle = false }) {
     if (!id) throw new Error('useTabbordion: must give ID!')
     const accordion = multiple || toggle
     const activeProps = useRef(null)
-    const [keys, setKeysState] = useState(() => (Array.isArray(initial) ? initial : initial != null ? [initial] : []))
+    const [keys, setKeys] = useState(() => (Array.isArray(initial) ? initial : initial != null ? [initial] : []))
     const [panelIndex] = useState(() => new Map())
     const [panelKey] = useState(() => new Map())
     const total = useRef(0)
-    // for legacy Tabbordion support
-    const setKeys = useMemo(() => {
-        if (!onToggle) return setKeysState
-        return (nextKeys) => {
-            const removed = keys.filter((key) => !nextKeys.includes(key))
-            const added = nextKeys.filter((key) => !keys.includes(key))
-            removed.forEach(onToggle)
-            added.forEach(onToggle)
-        }
-    }, [keys, onToggle])
     // make it possible to access contents of server side rendered HTML even when JS is disabled
     const [jsEnabled, setJsEnabled] = useState(false)
     useEffect(() => {

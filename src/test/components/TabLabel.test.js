@@ -1,50 +1,49 @@
 import { describe } from 'riteway'
-import render from 'riteway/render-component'
 import React from 'react'
 
-import { createClick, shallowSimulateClick } from '../utils.test'
+import { createClick, renderToHtml, shallowSimulateClick } from '../utils.test'
 import { defaultBemModifiers, defaultBemSeparator, defaultBlockElements } from '../../lib/bem'
 import { TabLabelContext } from '../../components/Tabbordion'
 import { TabLabel } from '../..'
 
 describe('TabLabel', async (assert) => {
     {
-        const $ = render(<TabLabel />) //
+        const html = renderToHtml(<TabLabel />) //
         assert({
             given: 'nothing',
             should: 'render a label',
-            actual: $('body').html(),
-            expected: '<label></label>',
+            actual: html,
+            expected: '\n<label></label>\n',
         })
     }
 
     {
-        const $ = render(<TabLabel className="test-class" id="test-id" htmlFor="test-for" tabIndex={0} />) //
+        const html = renderToHtml(<TabLabel className="test-class" id="test-id" htmlFor="test-for" tabIndex={0} />) //
         assert({
             given: 'basic attributes',
             should: 'render a label with basic attributes',
-            actual: $('body').html(),
-            expected: '<label tabindex="0" class="test-class" id="test-id" for="test-for"></label>',
+            actual: html,
+            expected: '\n<label tabindex="0" class="test-class" id="test-id" for="test-for"></label>\n',
         })
     }
 
     {
-        const $ = render(<TabLabel component="div" />) //
+        const html = renderToHtml(<TabLabel component="div" />) //
         assert({
             given: 'div as component',
             should: 'render a div',
-            actual: $('body').html(),
-            expected: '<div></div>',
+            actual: html,
+            expected: '\n<div></div>\n',
         })
     }
 
     {
-        const $ = render(<TabLabel>Test</TabLabel>) //
+        const html = renderToHtml(<TabLabel>Test</TabLabel>) //
         assert({
             given: 'children',
             should: 'render children',
-            actual: $('body').html(),
-            expected: '<label>Test</label>',
+            actual: html,
+            expected: '\n<label>Test</label>\n',
         })
     }
 
@@ -66,7 +65,7 @@ describe('TabLabel', async (assert) => {
     }
 
     {
-        const $ = render(
+        const html = renderToHtml(
             <TabLabelContext.Provider value={labelContext}>
                 <TabLabel />
             </TabLabelContext.Provider>
@@ -74,14 +73,19 @@ describe('TabLabel', async (assert) => {
         assert({
             given: 'context',
             should: 'render attributes with values derived from context',
-            actual: $('body').html(),
-            expected:
-                '<label class="panel__label panel__label--checked panel__label--content panel__label--enabled panel__label--first panel__label--last" id="label-id" for="input-id"></label>',
+            actual: html,
+            expected: `
+<label
+    class="panel__label panel__label--checked panel__label--content panel__label--enabled panel__label--first panel__label--last"
+    id="label-id"
+    for="input-id"
+></label>
+`,
         })
     }
 
     {
-        const $ = render(
+        const html = renderToHtml(
             <TabLabelContext.Provider value={labelContext}>
                 <TabLabel className="test-class" id="test-id" htmlFor="test-for" tabIndex={0} />
             </TabLabelContext.Provider>
@@ -89,9 +93,15 @@ describe('TabLabel', async (assert) => {
         assert({
             given: 'context and attributes',
             should: 'in conflict render context attributes over given attributes',
-            actual: $('body').html(),
-            expected:
-                '<label tabindex="0" class="panel__label panel__label--checked panel__label--content panel__label--enabled panel__label--first panel__label--last test-class" id="label-id" for="input-id"></label>',
+            actual: html,
+            expected: `
+<label
+    tabindex="0"
+    class="panel__label panel__label--checked panel__label--content panel__label--enabled panel__label--first panel__label--last test-class"
+    id="label-id"
+    for="input-id"
+></label>
+`,
         })
     }
 

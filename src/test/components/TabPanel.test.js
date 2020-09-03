@@ -1,25 +1,24 @@
 import { describe } from 'riteway'
-import render from 'riteway/render-component'
 import React from 'react'
 
 import { defaultBemModifiers, defaultBemSeparator, defaultBlockElements } from '../../lib/bem'
 import { TabPanelContext } from '../../components/Tabbordion'
 import { TabPanel } from '../..'
-import { createTestPanel, withClaims } from '../utils.test'
+import { createTestPanel, renderToHtml, withClaims } from '../utils.test'
 
 describe('TabPanel', async (assert) => {
     {
-        const $ = render(<TabPanel />) //
+        const html = renderToHtml(<TabPanel />) //
         assert({
             given: 'nothing',
             should: 'render a list item',
-            actual: $('body').html(),
-            expected: '<li></li>',
+            actual: html,
+            expected: '\n<li></li>\n',
         })
     }
 
     {
-        const $ = render(
+        const html = renderToHtml(
             <TabPanel
                 checked
                 className="test-class"
@@ -38,14 +37,17 @@ describe('TabPanel', async (assert) => {
         assert({
             given: 'supported props',
             should: 'render based on the props',
-            actual: $('body').html(),
-            expected:
-                '<div class="test-class" id="test-id" style="background:green"><input type="radio" aria-selected="true" checked name="test-name" role="tab" value="test-value"></div>',
+            actual: html,
+            expected: `
+<div class="test-class" style="background: green">
+    <input type="radio" aria-selected="true" checked="" name="test-name" role="tab" value="test-value" />
+</div>
+`
         })
     }
 
     {
-        const $ = render(
+        const html = renderToHtml(
             <TabPanel
                 animateContent="height"
                 bemModifiers={defaultBemModifiers}
@@ -57,13 +59,13 @@ describe('TabPanel', async (assert) => {
         assert({
             given: 'context props through regular props',
             should: 'ignore the props',
-            actual: $('body').html(),
-            expected: '<li></li>',
+            actual: html,
+            expected: '\n<li></li>\n',
         })
     }
 
     {
-        const $ = render(
+        const html = renderToHtml(
             <TabPanelContext.Provider
                 value={withClaims({
                     animateContent: 'height',
@@ -91,14 +93,27 @@ describe('TabPanel', async (assert) => {
         assert({
             given: 'context',
             should: 'render based on given props',
-            actual: $('body').html(),
-            expected:
-                '<li class="panel panel--checked panel--content panel--enabled panel--first panel--last"><input type="radio" data-test="test" aria-controls="test-id-0-content" aria-selected="true" checked id="test-id-0" name="test-name" role="tab" value="0"></li>',
+            actual: html,
+            expected: `
+<li class="panel panel--checked panel--content panel--enabled panel--first panel--last">
+    <input
+        type="radio"
+        data-test="test"
+        aria-controls="test-id-0-content"
+        aria-selected="true"
+        checked=""
+        id="test-id-0"
+        name="test-name"
+        role="tab"
+        value="0"
+    />
+</li>
+`
         })
     }
 
     {
-        const $ = render(
+        const html = renderToHtml(
             <TabPanelContext.Provider
                 value={withClaims({
                     animateContent: 'marginTop',
@@ -130,9 +145,24 @@ describe('TabPanel', async (assert) => {
         assert({
             given: 'context with some reversed settings',
             should: 'render based on given props',
-            actual: $('body').html(),
-            expected:
-                '<li class="panel panel--unchecked panel--no-content panel--disabled panel--between panel--animated panel--marginTop test-class" hidden><input type="radio" data-test="test" aria-controls="test-id-1-content" aria-selected="false" disabled id="test-id-1" name="test-name" role="tab" value="1"></li>',
+            actual: html,
+            expected: `
+<li
+    class="panel panel--unchecked panel--no-content panel--disabled panel--between panel--animated panel--marginTop test-class"
+    hidden=""
+>
+    <input
+        type="radio"
+        data-test="test"
+        aria-selected="false"
+        disabled=""
+        id="test-id-1"
+        name="test-name"
+        role="tab"
+        value="1"
+    />
+</li>
+`
         })
     }
 })

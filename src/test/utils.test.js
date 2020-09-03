@@ -1,6 +1,8 @@
 import Adapter from 'enzyme-adapter-react-16'
 import Enzyme, { shallow } from 'enzyme'
+import prettier from 'prettier'
 import React from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
 import { withContext } from 'shallow-with-context'
 
 import { identity } from '../lib/identity'
@@ -89,7 +91,24 @@ export function withClaims(context) {
         unclaim: (component) => {
             const index = nextContext.claims.indexOf(component)
             if (~index) nextContext.claims.splice(index, 1)
-        }
+        },
     }
     return nextContext
+}
+
+const htmlOptions = {
+    format: 'html',
+    printWidth: 120,
+    tabWidth: 4,
+    useTabs: false,
+    semi: false,
+    singleQuote: true,
+    trailingComma: 'es5',
+    bracketSpacing: true,
+    jsxBracketSameLine: false,
+    fluid: false,
+}
+
+export function renderToHtml(element) {
+    return '\n' + prettier.format(renderToStaticMarkup(element), htmlOptions).slice(1)
 }

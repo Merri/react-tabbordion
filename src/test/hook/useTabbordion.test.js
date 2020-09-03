@@ -15,7 +15,7 @@ describe('useTabbordion', async (assert) => {
             given: 'call without param',
             should: 'throw',
             actual: Try(() => renderToHtml(<WithoutParam />)),
-            expected: TypeError("Cannot read property 'focusClick' of undefined"),
+            expected: Error('useTabbordion: must give options object!'),
         })
     }
 

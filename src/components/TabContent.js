@@ -118,7 +118,7 @@ export class TabContent extends React.PureComponent {
                 <Component
                     {...props}
                     ref={forwardedRef}
-                    aria-hidden={!checked}
+                    aria-expanded={checked}
                     aria-labelledby={labelId}
                     className={[contentBem, className].filter(identity).join(' ') || undefined}
                     id={contentId || this.props.id}
@@ -135,7 +135,7 @@ export class TabContent extends React.PureComponent {
             <Component
                 {...props}
                 ref={forwardedRef}
-                aria-hidden={!checked}
+                aria-expanded={checked}
                 aria-labelledby={labelId}
                 className={[animatorBem, className].filter(identity).join(' ') || undefined}
                 id={contentId || this.props.id}

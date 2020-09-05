@@ -1,7 +1,7 @@
 {
     "name": "react-tabbordion",
     "description": "Components and hooks to create your own React Tabs and Accordion components",
-    "version": "2.0.0-beta.1",
+    "version": "2.0.0-beta.2",
     "author": "Vesa Piittinen <vesa.piittinen@gmail.com>",
     "bugs": {
         "url": "https://github.com/Merri/react-tabbordion/issues"
@@ -30,7 +30,8 @@
         "start": "microbundle watch",
         "prepare": "microbundle --name ReactTabbordion --external react,prop-types --globals react=React,prop-types=PropTypes --jsx React.createElement",
         "coverage": "nyc yarn test",
-        "test": "cross-env NODE_ENV=production riteway -r sucrase/register src/test/**/*.test.js | tap-difflet",
+        "test": "cross-env NODE_ENV=test riteway -r sucrase/register/js src/test/**/*.test.js | tap-difflet",
+        "jest": "jest",
         "demo": "deno run --allow-net --allow-read demo.js"
     },
     "files": [
@@ -38,20 +39,19 @@
         "src/*"
     ],
     "devDependencies": {
+        "@testing-library/react": "^11.0.2",
         "cross-env": "^7.0.2",
-        "enzyme": "^3.11.0",
-        "enzyme-adapter-react-16": "^1.15.4",
         "flow-bin": "0.131.0",
+        "jsdom": "^16.4.0",
+        "jsdom-global": "^3.0.2",
         "microbundle": "0.12.3",
         "nyc": "^15.1.0",
         "prettier": "^2.0.5",
         "prop-types": "^15.7.2",
         "react": "16.13.1",
         "riteway": "^6.1.2",
-        "shallow-with-context": "^0.2.4",
         "sucrase": "^3.15.0",
-        "tap-difflet": "^0.7.2",
-        "tape": "^5.0.1"
+        "tap-difflet": "^0.7.2"
     },
     "peerDependencies": {
         "prop-types": "^15.7.0",

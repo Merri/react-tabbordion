@@ -1,7 +1,9 @@
+import { fireEvent, render } from '@testing-library/react'
+import dom from 'jsdom-global'
 import { describe } from 'riteway'
 import React from 'react'
 
-import { createClick, renderToHtml, shallowSimulateClick } from '../utils.test'
+import { createClick, renderToHtml } from '../utils.test'
 import { defaultBemModifiers, defaultBemSeparator, defaultBlockElements } from '../../lib/bem'
 import { TabLabelContext } from '../../components/Tabbordion'
 import { TabLabel } from '../..'
@@ -105,9 +107,12 @@ describe('TabLabel', async (assert) => {
         })
     }
 
+    const cleanup = dom()
+
     {
         const onClick = createClick()
-        shallowSimulateClick(TabLabel, { onClick })
+        const { container } = render(<TabLabel onClick={onClick}>Test</TabLabel>) //
+        fireEvent.click(container.firstChild)
         assert({
             given: 'label is clicked',
             should: 'trigger onClick handler',
@@ -119,19 +124,12 @@ describe('TabLabel', async (assert) => {
     {
         const onClick = createClick()
         const onToggle = createClick()
-        shallowSimulateClick(TabLabel, { children: 'Test' }, TabLabelContext, { onToggle })
-        assert({
-            given: 'label is clicked when context with click handler is provided',
-            should: 'trigger onToggle handler',
-            actual: onToggle.clickCount,
-            expected: 1,
-        })
-    }
-
-    {
-        const onClick = createClick()
-        const onToggle = createClick()
-        shallowSimulateClick(TabLabel, { children: 'Test', onClick }, TabLabelContext, { onToggle })
+        const { container } = render(
+            <TabLabelContext.Provider value={{ onToggle }}>
+                <TabLabel onClick={onClick}>Test</TabLabel>
+            </TabLabelContext.Provider>
+        ) //
+        fireEvent.click(container.firstChild)
         assert({
             given: 'label is clicked when context and click handlers are provided',
             should: 'trigger both onClick and onToggle handlers',
@@ -143,7 +141,12 @@ describe('TabLabel', async (assert) => {
     {
         const onClick = createClick((event) => void event.preventDefault())
         const onToggle = createClick()
-        shallowSimulateClick(TabLabel, { children: 'Test', onClick }, TabLabelContext, { onToggle })
+        const { container } = render(
+            <TabLabelContext.Provider value={{ onToggle }}>
+                <TabLabel onClick={onClick}>Test</TabLabel>
+            </TabLabelContext.Provider>
+        ) //
+        fireEvent.click(container.firstChild)
         assert({
             given: 'onClick calls preventDefault',
             should: 'not trigger onToggle',
@@ -151,4 +154,6 @@ describe('TabLabel', async (assert) => {
             expected: { onClick: 1, onToggle: 0 },
         })
     }
+
+    cleanup()
 })

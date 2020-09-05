@@ -1,30 +1,9 @@
-import Adapter from 'enzyme-adapter-react-16'
-import Enzyme, { shallow } from 'enzyme'
 import prettier from 'prettier'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { withContext } from 'shallow-with-context'
 
 import { identity } from '../lib/identity'
-
-Enzyme.configure({ adapter: new Adapter() })
-
-class Event {
-    constructor(type, opts) {
-        this.type = type
-        this.bubbles = !!(opts && opts.bubbles)
-        this.cancelable = !!(opts && opts.cancelable)
-    }
-    stopPropagation() {
-        this._stop = true
-    }
-    stopImmediatePropagation() {
-        this._end = this._stop = true
-    }
-    preventDefault() {
-        this.defaultPrevented = true
-    }
-}
 
 /**
  * Creates a click handler to allow tracking number of calls to function.
@@ -40,17 +19,6 @@ export function createClick(handler) {
     }
     click.clickCount = 0
     return click
-}
-
-/**
- * Allow unit testing component click functionality via props and optionally via context.
- */
-export function shallowSimulateClick(component, props, context, contextValue) {
-    // https://github.com/enzymejs/enzyme/issues/2189
-    const Component = context ? withContext(component, contextValue) : component
-    const wrapper = shallow(<Component {...props} />, { context: contextValue })
-    wrapper.simulate('click', new Event('click'))
-    return wrapper
 }
 
 export function createTestPanel({

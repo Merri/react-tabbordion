@@ -13,13 +13,13 @@ describe('TabContent', async (assert) => {
             given: 'nothing',
             should: 'render a div',
             actual: html,
-            expected: '\n<div aria-hidden="true" role="tabpanel" tabindex="-1"></div>\n',
+            expected: '\n<div role="tabpanel" tabindex="-1"></div>\n',
         })
     }
 
     {
         const html = renderToHtml(
-            <TabContent aria-hidden="false" role="presentational" tabIndex={0}>
+            <TabContent aria-expanded="false" role="presentational" tabIndex={0}>
                 Content
             </TabContent>
         ) //
@@ -27,7 +27,7 @@ describe('TabContent', async (assert) => {
             given: 'props controlled by state',
             should: 'ignore the props',
             actual: html,
-            expected: '\n<div aria-hidden="true" role="tabpanel" tabindex="-1">Content</div>\n',
+            expected: '\n<div role="tabpanel" tabindex="-1">Content</div>\n',
         })
     }
 
@@ -38,7 +38,7 @@ describe('TabContent', async (assert) => {
             should: 'render them as attributes',
             actual: html,
             expected:
-                '\n<div id="test-id" aria-hidden="true" class="test-class" role="tabpanel" style="background: black" tabindex="-1"></div>\n',
+                '\n<div id="test-id" class="test-class" role="tabpanel" style="background: black" tabindex="-1"></div>\n',
         })
     }
 
@@ -73,7 +73,7 @@ describe('TabContent', async (assert) => {
             actual: html,
             expected: `
 <div
-    aria-hidden="false"
+    aria-expanded="true"
     aria-labelledby="label-id"
     class="panel__content panel__content--test"
     id="content-id"
@@ -96,7 +96,7 @@ describe('TabContent', async (assert) => {
             actual: html,
             expected: `
 <div
-    aria-hidden="false"
+    aria-expanded="true"
     aria-labelledby="label-id"
     class="panel__animator panel__animator--test"
     id="content-id"
@@ -122,7 +122,7 @@ describe('TabContent', async (assert) => {
             actual: html,
             expected: `
 <div
-    aria-hidden="false"
+    aria-expanded="true"
     aria-labelledby="label-id"
     class="panel__animator panel__animator--test"
     id="content-id"
@@ -151,7 +151,7 @@ describe('TabContent', async (assert) => {
             actual: html,
             expected: `
 <div
-    aria-hidden="true"
+    aria-expanded="false"
     aria-labelledby="label-id"
     class="panel__animator panel__animator--test"
     id="content-id"
@@ -177,7 +177,7 @@ describe('TabContent', async (assert) => {
             actual: html,
             expected: `
 <div
-    aria-hidden="true"
+    aria-expanded="false"
     aria-labelledby="label-id"
     class="panel__animator panel__animator--test"
     id="content-id"

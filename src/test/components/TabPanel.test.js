@@ -13,7 +13,7 @@ describe('TabPanel', async (assert) => {
             given: 'nothing',
             should: 'render a list item',
             actual: html,
-            expected: '\n<li></li>\n',
+            expected: '\n<li role="tab"></li>\n',
         })
     }
 
@@ -39,8 +39,8 @@ describe('TabPanel', async (assert) => {
             should: 'render based on the props',
             actual: html,
             expected: `
-<div class="test-class" style="background: green">
-    <input type="radio" aria-selected="true" checked="" name="test-name" role="tab" value="test-value" />
+<div aria-selected="true" class="test-class" role="tab" style="background: green">
+    <input type="radio" checked="" name="test-name" value="test-value" />
 </div>
 `
         })
@@ -60,7 +60,7 @@ describe('TabPanel', async (assert) => {
             given: 'context props through regular props',
             should: 'ignore the props',
             actual: html,
-            expected: '\n<li></li>\n',
+            expected: '\n<li role="tab"></li>\n',
         })
     }
 
@@ -95,18 +95,13 @@ describe('TabPanel', async (assert) => {
             should: 'render based on given props',
             actual: html,
             expected: `
-<li class="panel panel--checked panel--content panel--enabled panel--first panel--last">
-    <input
-        type="radio"
-        data-test="test"
-        aria-controls="test-id-0-content"
-        aria-selected="true"
-        checked=""
-        id="test-id-0"
-        name="test-name"
-        role="tab"
-        value="0"
-    />
+<li
+    aria-controls="test-id-0-content"
+    aria-selected="true"
+    class="panel panel--checked panel--content panel--enabled panel--first panel--last"
+    role="tab"
+>
+    <input type="radio" data-test="test" checked="" id="test-id-0" name="test-name" value="0" />
 </li>
 `
         })
@@ -148,19 +143,12 @@ describe('TabPanel', async (assert) => {
             actual: html,
             expected: `
 <li
+    aria-selected="false"
     class="panel panel--unchecked panel--no-content panel--disabled panel--between panel--animated panel--marginTop test-class"
     hidden=""
+    role="tab"
 >
-    <input
-        type="radio"
-        data-test="test"
-        aria-selected="false"
-        disabled=""
-        id="test-id-1"
-        name="test-name"
-        role="tab"
-        value="1"
-    />
+    <input type="radio" data-test="test" disabled="" id="test-id-1" name="test-name" value="1" />
 </li>
 `
         })

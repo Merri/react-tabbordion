@@ -66,9 +66,15 @@ export class TabPanel extends React.PureComponent {
     }
 
     onClickLabel = (event) => {
-        this.onChange(event)
+        if (event.defaultPrevented) return
+        if (typeof this.context.onToggle === 'function') {
+            this.context.onToggle(this.panelContext.index)
+        }
+        /**
+         * Most common native browser behavior when clicking a label is to focus input element. Not all browsers follow
+         * this logic. Thus we enforce it to maintain keyboard access and similar behavior in all browsers.
+         */
         event.preventDefault()
-        // enforce similar browser behavior by focusing the input element after state change (maintains keyboard access)
         this.setState(null, () => {
             const input = this.input.current
             if (input && (input.checked || input.type === 'checkbox') && document.activeElement !== input) {

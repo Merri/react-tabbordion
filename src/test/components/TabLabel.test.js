@@ -139,6 +139,22 @@ describe('TabLabel', async (assert) => {
     }
 
     {
+        const onToggle = createClick()
+        const { container } = render(
+            <TabLabelContext.Provider value={{ onToggle }}>
+                <TabLabel>Test</TabLabel>
+            </TabLabelContext.Provider>
+        ) //
+        fireEvent.click(container.firstChild)
+        assert({
+            given: 'label is clicked when context click handler is provided without onClick handler',
+            should: 'trigger onToggle handler',
+            actual: { onToggle: onToggle.clickCount },
+            expected: { onToggle: 1 },
+        })
+    }
+
+    {
         const onClick = createClick((event) => void event.preventDefault())
         const onToggle = createClick()
         const { container } = render(

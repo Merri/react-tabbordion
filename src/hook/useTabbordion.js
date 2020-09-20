@@ -20,21 +20,33 @@ function updateKeysFromIndex(index, keys, panelKey, setKey, accordion, multiple)
 
 export function useTabbordion(options) {
     if (!options || typeof options !== 'object') throw new Error('useTabbordion: must give options object!')
-    const { focusClick = '', id, initial = null, multiple = false, toggle = false } = options
+    const { hydrated, id, initial = null, multiple = false, toggle = false } = options
     if (!id) throw new Error('useTabbordion: must give ID!')
     const accordion = multiple || toggle
     const activeProps = useRef(null)
-    const [keys, setKeys] = useState(() => (Array.isArray(initial) ? initial : initial != null ? [initial] : []))
+    const [keysRaw, setKeys] = useState(() => (Array.isArray(initial) ? initial : initial != null ? [initial] : []))
     const [panelIndex] = useState(() => new Map())
     const [panelKey] = useState(() => new Map())
     const total = useRef(0)
-    // make it possible to access contents of server side rendered HTML even when JS is disabled
-    const [jsEnabled, setJsEnabled] = useState(false)
+
+    // protection against invalid states when doing edge cases (changing to/from toggle or multiple mode)
+    const keys = useMemo(() =>
+        (!accordion && keysRaw.length === 0 && panelKey.has(0) && [panelKey.get(0)]) ||
+        (!multiple && keysRaw.length > 1 && keysRaw.slice(0, 1)) ||
+        keysRaw
+    , [accordion, keysRaw, multiple])
+
     useEffect(() => {
-        if (!accordion && keys.length === 0 && panelKey.has(0)) setKeys([panelKey.get(0)])
-        setJsEnabled(true)
-        // eslint-disable-next-line
+        if (keys !== keysRaw) setKeys(keys)
+    }, [keys, keysRaw])
+
+    const [isMounted, setIsMounted] = useState(false)
+    useEffect(() => {
+        setIsMounted(true)
     }, [])
+
+    // allow telling hydration state outside of component to allow for more efficient renders when in SPA mode
+    const isHydrated = hydrated != null ? hydrated : isMounted
 
     const onChangeOrClick = useCallback(
         (event) => {
@@ -69,7 +81,10 @@ export function useTabbordion(options) {
                     break
                 case 'Delete':
                 case 'Escape':
-                    if (accordion && keys.length) setKeys([])
+                    if (accordion && keys.length) {
+                        event.preventDefault()
+                        setKeys([])
+                    }
                     break
                 default:
             }
@@ -77,48 +92,24 @@ export function useTabbordion(options) {
         [accordion, id, keys, multiple, panelKey, setKeys]
     )
 
-    const onToggleFocus = useCallback(
-        (event) => {
-            if (!focusClick || event.defaultPrevented) return
-            let target = event.target
-            while (target && target.value == null && event.target.htmlFor == null) target = target.parentElement
-            if (!target) return
-            const id = target.value != null ? target.id : target.htmlFor
-            const closing =
-                accordion &&
-                (target.value != null ? target.getAttribute('tabindex') === '0' : document.getElementById(id).checked)
-            // the code keeps active focus state out of tab element and within panel, except if panel is hidden
-            if (!closing || event.type === 'mousedown') {
-                if (focusClick === 'panel') {
-                    const panel = document.getElementById(id + '-panel')
-                    if (panel) requestAnimationFrame(() => panel.tabIndex === 0 && panel.focus())
-                } else {
-                    requestAnimationFrame(() => document.activeElement.blur())
-                }
-            } else if (closing && event.type === 'mouseup') {
-                if (focusClick === 'panel') document.getElementById(id).focus()
-                else document.activeElement.blur()
-            }
-        },
-        [accordion, focusClick]
-    )
-
     const setActive = useCallback(
         (nextKey) => {
             if (Array.isArray(nextKey)) {
                 if (!accordion) return
-                const keys = nextKey.filter(panelIndex.has)
+                const keys = nextKey.filter(key => panelIndex.has(key))
                 if (keys.length > 1 && !multiple) return
-                setKeysState(keys)
-                return
-            } else if (panelIndex.has(nextKey)) setKeysState([nextKey])
-            else if (nextKey == null && accordion) setKeysState([])
+                setKeys(keys)
+            } else if (panelIndex.has(nextKey)) {
+                setKeys([nextKey])
+            } else if (nextKey == null && accordion) {
+                setKeys([])
+            }
         },
         [accordion, multiple, panelIndex]
     )
 
     const [tabButton, tabItem, tabPanel, tabState] = useMemo(() => {
-        return ['button', 'item', 'panel', 'state'].map((type) => (nextKey, disabled) => {
+        return ['button', 'item', 'panel', 'state'].map((type) => (nextKey) => {
             if (nextKey == null) {
                 throw new Error('useTabbordion.tab' + type[0].toUpperCase() + type.slice(1) + ': must give a key!')
             }
@@ -133,47 +124,41 @@ export function useTabbordion(options) {
             const tabId = `${id}-${index}`
             const labelId = `${tabId}-label`
             const panelId = `${tabId}-panel`
-            // override because tabPanel is for UI use case which only works with JavaScript
-            const ariaHidden = ((type === 'panel' || jsEnabled) && !checked) || undefined
+            // in SSR serve the HTML in format that allows CSS-only usage when JavaScript is disabled
+            const ariaHidden = (isHydrated && !checked) || undefined
             const props = {
                 button: {
                     'aria-controls': panelId,
                     'aria-selected': checked,
-                    disabled,
                     id: tabId,
                     onClick: onChangeOrClick,
                     onKeyDown,
-                    onMouseDown: onToggleFocus,
-                    onMouseUp: onToggleFocus,
                     role: 'tab',
                     tabIndex: accordion && keys.length === 0 ? undefined : checked ? 0 : -1,
                     type: 'button',
                     value,
                 },
                 input: {
-                    'aria-controls': panelId,
-                    'aria-labelledby': labelId,
-                    'aria-selected': checked,
                     checked,
-                    disabled,
                     id: tabId,
                     onChange: onChangeOrClick,
                     onKeyDown,
                     name: id,
                     type: accordion ? 'checkbox' : 'radio',
-                    role: 'tab',
                     value,
                 },
-                item: { 'aria-disabled': disabled, 'aria-expanded': checked },
+                item: {
+                    'aria-controls': panelId,
+                    'aria-labelledby': labelId,
+                    'aria-selected': checked,
+                    role: 'tab',
+                },
                 label: {
-                    'aria-disabled': disabled,
                     id: labelId,
                     htmlFor: tabId,
-                    onMouseDown: onToggleFocus,
-                    onMouseUp: onToggleFocus,
                 },
                 panel: {
-                    'aria-disabled': disabled,
+                    'aria-expanded': checked,
                     'aria-hidden': ariaHidden,
                     'aria-labelledby': type === 'panel' ? tabId : labelId,
                     id: panelId,
@@ -185,7 +170,7 @@ export function useTabbordion(options) {
             activeProps.current = props
             return activeProps.current[type]
         })
-    }, [accordion, id, jsEnabled, keys, onChangeOrClick, onKeyDown, onToggleFocus, panelIndex, panelKey])
+    }, [accordion, id, isHydrated, keys, onChangeOrClick, onKeyDown, panelIndex, panelKey])
 
     const getProps = useCallback((type) => {
         if (activeProps.current == null) throw new Error('useTabbordion.getProps: must call .tabItem first!')

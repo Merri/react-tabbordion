@@ -5,6 +5,24 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 
+## [2.0.0-beta.2] - 2020-09-20
+
+### Added
+
+- React Testing Library and JSDOM
+- Lots of tests
+- `useTabbordion`: boolean `hydrate` option to allow App level control of hydrated state
+
+### Removed
+
+- Enzyme
+- `useTabbordion`: `focusClick` option, use CSS `focus-visible` instead
+
+### Fixed
+
+- `<TabPanel />`: no longer render `hasContent` into DOM
+
+
 ## [2.0.0-beta.1] - 2020-08-31
 
 - Publish with beta tag in npm

@@ -1,7 +1,6 @@
 import prettier from 'prettier'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { withContext } from 'shallow-with-context'
 
 import { identity } from '../lib/identity'
 

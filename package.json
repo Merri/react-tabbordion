@@ -54,7 +54,7 @@
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-react": "^7.20.6",
     "jsdom": "^15.2.1",
-    "mocha": "^6.2.3",
+    "mocha": "^10.2.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
